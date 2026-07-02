@@ -1,0 +1,16 @@
+{
+  "name": "Bibliothèque Marina",
+  "short_name": "MarinaBooks",
+  "description": "Application personnelle de suivi de lectures.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#18111f",
+  "theme_color": "#18111f",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

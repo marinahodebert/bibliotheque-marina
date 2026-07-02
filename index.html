@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Bibliothèque Marina</title>
+  <meta name="theme-color" content="#18111f" />
+  <meta name="description" content="Application personnelle de suivi de lectures Kindle et Books." />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">MarinaBooks</p>
+      <h1>Bibliothèque Marina</h1>
+    </div>
+    <button id="themeToggle" class="icon-btn" type="button" aria-label="Changer le thème">☾</button>
+  </header>
+
+  <main class="container">
+    <section class="hero card">
+      <div>
+        <h2>Ton tableau de bord lecture</h2>
+        <p>Recherche, filtre, retrouve tes séries et repère les tomes manquants.</p>
+      </div>
+      <div class="hero-actions">
+        <button id="addBookBtn" class="primary-btn" type="button">+ Ajouter</button>
+        <button id="exportBtn" class="ghost-btn" type="button">Exporter</button>
+        <label class="ghost-btn import-label">Importer<input id="importInput" type="file" accept="application/json" /></label>
+      </div>
+    </section>
+
+    <section id="stats" class="stats-grid"></section>
+
+    <section class="card controls">
+      <input id="searchInput" type="search" placeholder="Rechercher un titre, auteur, série…" />
+      <div class="filters">
+        <select id="yearFilter"><option value="">Toutes les années</option></select>
+        <select id="authorFilter"><option value="">Tous les auteurs</option></select>
+        <select id="seriesFilter"><option value="">Toutes les séries</option></select>
+        <select id="statusFilter"><option value="">Tous les statuts</option><option value="lu">Lu</option><option value="à lire">À lire</option><option value="en cours">En cours</option><option value="abandonné">Abandonné</option></select>
+        <select id="missingFilter"><option value="">Tous</option><option value="visible">Visibles Kindle</option><option value="missing">Disparus Kindle</option></select>
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Vues">
+      <button class="tab active" data-view="books" type="button">Livres</button>
+      <button class="tab" data-view="authors" type="button">Auteurs</button>
+      <button class="tab" data-view="series" type="button">Séries</button>
+      <button class="tab" data-view="missing" type="button">À vérifier</button>
+    </nav>
+
+    <section id="content" class="content"></section>
+  </main>
+
+  <dialog id="bookDialog" class="dialog">
+    <form id="bookForm" method="dialog">
+      <div class="dialog-head">
+        <h2>Ajouter un livre</h2>
+        <button class="icon-btn" value="cancel" type="submit">×</button>
+      </div>
+      <label>Titre<input name="title" required /></label>
+      <label>Auteur<input name="author" /></label>
+      <label>Série<input name="series" /></label>
+      <label>Tome<input name="tome" inputmode="numeric" /></label>
+      <label>Année<input name="year" inputmode="numeric" /></label>
+      <label>Statut<select name="status"><option value="lu">Lu</option><option value="en cours">En cours</option><option value="à lire">À lire</option><option value="abandonné">Abandonné</option></select></label>
+      <label>Notes<textarea name="notes" rows="3"></textarea></label>
+      <button class="primary-btn" value="default" type="submit">Ajouter</button>
+    </form>
+  </dialog>
+
+  <script src="data/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
