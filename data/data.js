@@ -16,7 +16,7 @@
 // soit directement ici en copiant un bloc ci-dessous.
 // ============================================================
 
-const BOOKS = [
+window.BOOKS = [
   { title: "Un Amour Inéluctable (La Famille Bennett)", author: "Layla Hagen", series: "La Famille Bennett", tome: "", year: 2021, dateAdded: "", status: "lu", missing: false, notes: "" },
   { title: "Un amour éternel (La Famille Bennett)", author: "Layla Hagen", series: "La Famille Bennett", tome: "", year: 2021, dateAdded: "", status: "lu", missing: false, notes: "" },
   { title: "Un amour captivant (La Famille Bennett)", author: "Layla Hagen", series: "La Famille Bennett", tome: "", year: 2021, dateAdded: "", status: "lu", missing: false, notes: "" },
