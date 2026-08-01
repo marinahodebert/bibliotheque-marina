@@ -1,10 +1,11 @@
-/* global BOOKS */
 const STORAGE_KEY = "marinaBooksLocalAdds";
 const PREF_KEY = "marinaBooksTheme";
+const BOOKS_URL = "data/books.json";
 
 let currentView = "books";
 let localAdds = loadLocalAdds();
-let allBooks = normalizeBooks([...(window.BOOKS || []), ...localAdds]);
+let remoteBooks = [];
+let allBooks = [];
 
 const els = {
   stats: document.querySelector("#stats"),
@@ -21,12 +22,26 @@ const els = {
 
 init();
 
-function init() {
+async function init() {
   applyTheme();
   registerSW();
   bindEvents();
+  remoteBooks = await loadRemoteBooks();
+  allBooks = normalizeBooks([...remoteBooks, ...localAdds]);
   populateFilters();
   render();
+}
+
+async function loadRemoteBooks() {
+  try {
+    const res = await fetch(BOOKS_URL, { cache: "no-cache" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.error("Impossible de charger data/books.json", err);
+    els.content.innerHTML = `<div class="empty card">Impossible de charger la bibliothèque (${err.message}). Vérifie ta connexion et recharge la page.</div>`;
+    return [];
+  }
 }
 
 function bindEvents() {
@@ -168,7 +183,7 @@ function addBook(e) {
   const book = { ...data, year: data.year ? Number(data.year) : new Date().getFullYear(), missing: false, dateAdded: new Date().toISOString().slice(0,10) };
   localAdds.push(book);
   saveLocalAdds();
-  allBooks = normalizeBooks([...(window.BOOKS || []), ...localAdds]);
+  allBooks = normalizeBooks([...remoteBooks, ...localAdds]);
   populateFilters();
   els.form.reset();
   els.dialog.close();
@@ -189,7 +204,7 @@ async function importData(e) {
   const json = JSON.parse(await file.text());
   localAdds = Array.isArray(json.localAdds) ? json.localAdds : Array.isArray(json) ? json : [];
   saveLocalAdds();
-  allBooks = normalizeBooks([...(window.BOOKS || []), ...localAdds]);
+  allBooks = normalizeBooks([...remoteBooks, ...localAdds]);
   populateFilters();
   render();
 }
