@@ -993,10 +993,14 @@ function renderRecap() {
   const connected = !!(cfg && cfg.token);
   const totalRaw = allDetections.length;
   const totalUnique = consolidated.length;
+  const noiseCount = allDetections.filter(d => isKindleUiNoise(d.title, d.author)).length;
   // Détections brutes absorbées lors de la fusion (doublons entre captures) :
   // ne concerne jamais les livres uniques finaux, donc jamais compté comme
   // "ignoré" — c'est un phénomène de la fusion, pas une décision sur un livre.
-  const mergedAway = Math.max(0, totalRaw - totalUnique);
+  // Le bruit d'interface filtré ne doit surtout pas être compté ici : ce
+  // n'est pas une fusion, c'est une exclusion (sinon les 3 bruits filtrés
+  // apparaissent à tort comme "3 fusionnés").
+  const mergedAway = Math.max(0, totalRaw - noiseCount - totalUnique);
   const ignoredList = consolidated
     .map((entry, idx) => ({ entry, idx, reason: ignoredReason(entry) }))
     .filter(x => x.reason);
