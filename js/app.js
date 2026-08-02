@@ -795,11 +795,50 @@ function looksLikeNoiseFragment(line) {
   return !/\p{Ll}/u.test(letters);
 }
 // Retire un préfixe tout en majuscules collé devant le vrai titre (ex.
-// "PIPER SULLIVAN Curvy Fake Wife..." -> "Curvy Fake Wife...") : ce sont des
-// fragments de jaquette/nom d'autrice répétés par le copier-coller Kindle.
-function stripLeadingCapsNoise(line) {
+// "PIPER SULLIVAN Curvy Fake Wife..." -> "Curvy Fake Wife...") — mais
+// SEULEMENT si ce préfixe est démontrablement un écho de quelque chose
+// qu'on connaît déjà : soit le nom de l'autrice/auteur déjà extrait de la
+// ligne marqueur, soit un mot qui réapparaît plus loin dans le titre lui-même
+// (ex. "FAUX MARIAGE Faux mariage pour..."). Un simple mot en majuscules non
+// reconnu (ex. "BOSS et Bad Boy", où "BOSS" fait partie du vrai titre) n'est
+// jamais retiré : sans preuve de répétition, on ne touche à rien.
+function stripLeadingCapsNoise(line, author) {
   const m = line.match(/^((?:[A-ZÀ-Þ]{2,}[:.'-]?\s+)+)(?=[A-ZÀ-Þ][a-zà-ÿ]|[a-zà-ÿ])/);
-  return m ? line.slice(m[1].length).trim() : line;
+  if (!m) return line;
+  const rest = line.slice(m[1].length);
+  const prefixWords = clean(m[1]).split(/[^a-z0-9]+/).filter(Boolean);
+  const authorClean = clean(author || "");
+
+  const isAuthorEcho = authorClean.length > 3 && prefixWords.join(" ") === authorClean;
+  const restWords = clean(rest).split(/[^a-z0-9]+/).filter(Boolean);
+  const meaningfulPrefixWords = prefixWords.filter(w => w.length >= 4);
+  const isTitleEcho = meaningfulPrefixWords.length > 0 && meaningfulPrefixWords.every(w => restWords.includes(w));
+
+  return (isAuthorEcho || isTitleEcho) ? rest.trim() : line;
+}
+// Après le retrait du préfixe majuscule, il reste parfois un seul mot en
+// minuscule collé devant le vrai titre (ex. "passion Le gardien de sa
+// passion (...)") : un fragment de jaquette pris entre le nom d'autrice et
+// le titre. On ne le retire QUE si ce même mot réapparaît plus loin dans le
+// titre reconnu qui suit - c'est cette répétition qui donne la confiance
+// qu'il s'agit d'un écho de jaquette et pas d'un vrai premier mot de titre.
+// Sans cette double condition (mot isolé + répété), on ne touche à rien :
+// mieux vaut un titre imparfait qu'une suppression hasardeuse.
+function stripLeadingEchoWord(title, maxPasses = 2) {
+  let result = title;
+  for (let i = 0; i < maxPasses; i++) {
+    const m = result.match(/^([a-zà-ÿ]{5,})\s+(?=[A-ZÀ-Þ][a-zà-ÿ])/);
+    if (!m) break;
+    const rest = result.slice(m[0].length);
+    const wordClean = clean(m[1]);
+    const restWords = clean(rest).split(/[^a-z0-9]+/).filter(Boolean);
+    if (!restWords.includes(wordClean)) break;
+    result = rest;
+  }
+  return result;
+}
+function cleanTitleLine(raw, author) {
+  return stripLeadingEchoWord(stripLeadingCapsNoise(raw, author));
 }
 
 function parseKindleText(raw) {
@@ -810,7 +849,7 @@ function parseKindleText(raw) {
     const usable = lines.filter(l => !looksLikeNoiseFragment(l));
     const pairs = [];
     for (let i = 0; i < usable.length; i += 2) {
-      pairs.push({ title: stripLeadingCapsNoise(usable[i]), author: usable[i + 1] || "", incomplete: !usable[i + 1] });
+      pairs.push({ title: cleanTitleLine(usable[i], usable[i + 1] || ""), author: usable[i + 1] || "", incomplete: !usable[i + 1] });
     }
     return pairs;
   }
@@ -833,7 +872,7 @@ function parseKindleText(raw) {
         titleLines = [];
       }
       if (titleLines.length) {
-        records.push({ title: stripLeadingCapsNoise(titleLines.join(" ")), author, incomplete: !author });
+        records.push({ title: cleanTitleLine(titleLines.join(" "), author), author, incomplete: !author });
       }
       buffer = [];
       continue;
