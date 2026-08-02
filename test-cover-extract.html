@@ -985,7 +985,8 @@ function renderRecap() {
     </ul>
     <div class="write-actions">
       <button id="validateBtn">${connected ? "Valider et écrire sur GitHub" : "Valider (simulation — connecte GitHub pour écrire réellement)"}</button>
-      ${connected && t.add > 0 ? `<button id="microTestBtn" class="ghost-btn" type="button">Tester avec 1 seul livre</button>` : ""}
+      ${connected && t.add > 0 ? `<button id="microTestAddBtn" class="ghost-btn" type="button">Tester : 1 nouveau livre</button>` : ""}
+      ${connected && (t.addCover + t.replaceCover) > 0 ? `<button id="microTestCoverBtn" class="ghost-btn" type="button">Tester : 1 couverture existante</button>` : ""}
     </div>
     <div id="writeConfirmArea"></div>
     <p class="recap-note" id="validateResult"></p>`;
@@ -1012,38 +1013,57 @@ function renderRecap() {
         `Simulation : ${t2.add} nouveau(x) livre(s) ajouté(s), ${t2.addCover} couverture(s) ajoutée(s), ${t2.replaceCover} couverture(s) remplacée(s), ${ignoredList.length} livre(s) unique(s) sans action, ${mergedAway} détection(s) fusionnée(s). Aucune écriture réelle n'a été faite : books.json et le dépôt ne sont pas modifiés à cette étape.`;
       return;
     }
-    showWriteConfirm(consolidated, false);
+    showWriteConfirm(consolidated, "full");
   });
-  const microTestBtn = document.getElementById("microTestBtn");
-  if (microTestBtn) {
-    microTestBtn.addEventListener("click", () => showWriteConfirm(consolidated, true));
+  const microTestAddBtn = document.getElementById("microTestAddBtn");
+  if (microTestAddBtn) {
+    microTestAddBtn.addEventListener("click", () => showWriteConfirm(consolidated, "test-add"));
+  }
+  const microTestCoverBtn = document.getElementById("microTestCoverBtn");
+  if (microTestCoverBtn) {
+    microTestCoverBtn.addEventListener("click", () => showWriteConfirm(consolidated, "test-cover"));
   }
 
   renderDiagnostic();
 }
 
 // Affiche le récapitulatif de confirmation avant toute écriture réelle
-// (irréversible en pratique) ; `microTestOnly` restreint le lot au premier
-// livre "add" trouvé, pour un test réel à risque minimal avant le lot complet.
-function showWriteConfirm(list, microTestOnly) {
+// (irréversible en pratique). `mode` :
+//  - "full"       : tout le lot, tel que coché dans la prévisualisation.
+//  - "test-add"    : restreint au premier livre "add" (nouveau livre), pour
+//                    un test réel à risque minimal avant le lot complet.
+//  - "test-cover" : restreint au premier livre "add-cover"/"replace-cover",
+//                    pour vérifier qu'une fiche existante est bien enrichie
+//                    sans créer de doublon.
+function showWriteConfirm(list, mode) {
   const area = document.getElementById("writeConfirmArea");
   const resultEl = document.getElementById("validateResult");
   resultEl.textContent = "";
 
-  const scoped = microTestOnly ? list.filter(e => e.action === "add").slice(0, 1) : list;
+  let scoped = list;
+  if (mode === "test-add") scoped = list.filter(e => e.action === "add").slice(0, 1);
+  else if (mode === "test-cover") scoped = list.filter(e => e.action === "add-cover" || e.action === "replace-cover").slice(0, 1);
+
   const mutations = KindleCoverSync.buildMutationsFromConsolidated(scoped, capturedImages);
   if (!mutations.adds.length && !Object.keys(mutations.edits).length) {
     area.innerHTML = "";
-    resultEl.textContent = microTestOnly
+    resultEl.textContent = mode === "test-add"
       ? "Aucun livre « nouveau » à tester (essaie de cocher au moins un ajout)."
-      : "Rien à écrire : aucune action cochée.";
+      : mode === "test-cover"
+        ? "Aucune couverture existante à tester (essaie de cocher au moins un « ajouter/remplacer la couverture »)."
+        : "Rien à écrire : aucune action cochée.";
     return;
   }
 
   const cfg = MarinaSync.getGitHubConfig();
-  const label = microTestOnly
-    ? `Micro-test : 1 nouveau livre, ${mutations.tally.files} fichier(s), 1 commit sur ${cfg.branch}.`
-    : `${mutations.tally.adds} nouveau(x) livre(s), ${mutations.tally.edits} couverture(s) ajoutée(s)/remplacée(s), ${mutations.tally.files} fichier(s) au total, en 1 seul commit sur ${cfg.branch}.`;
+  let label;
+  if (mode === "test-add") {
+    label = `Micro-test : 1 nouveau livre « ${escapeHtml(scoped[0].title)} », ${mutations.tally.files} fichier(s), 1 commit sur ${cfg.branch}.`;
+  } else if (mode === "test-cover") {
+    label = `Micro-test : couverture pour le livre existant « ${escapeHtml(scoped[0].existingMatch.title)} » (aucun nouveau livre créé), ${mutations.tally.files} fichier(s), 1 commit sur ${cfg.branch}.`;
+  } else {
+    label = `${mutations.tally.adds} nouveau(x) livre(s), ${mutations.tally.edits} couverture(s) ajoutée(s)/remplacée(s), ${mutations.tally.files} fichier(s) au total, en 1 seul commit sur ${cfg.branch}.`;
+  }
 
   area.innerHTML = `<div class="write-confirm">
     <p>${label}</p>
@@ -1055,16 +1075,16 @@ function showWriteConfirm(list, microTestOnly) {
   </div>`;
 
   document.getElementById("cancelWriteBtn").addEventListener("click", () => { area.innerHTML = ""; });
-  document.getElementById("confirmWriteBtn").addEventListener("click", () => executeRealCommit(mutations, microTestOnly));
+  document.getElementById("confirmWriteBtn").addEventListener("click", () => executeRealCommit(mutations, mode));
 }
 
-async function executeRealCommit(mutations, microTestOnly) {
+async function executeRealCommit(mutations, mode) {
   const area = document.getElementById("writeConfirmArea");
   const resultEl = document.getElementById("validateResult");
   const cfg = MarinaSync.getGitHubConfig();
   const fingerprint = capturesFingerprint(capturedImages);
 
-  if (!microTestOnly) {
+  if (mode === "full") {
     const already = await getMatchingLastCommit(fingerprint);
     if (already && !area.dataset.confirmedDespiteDuplicate) {
       area.dataset.confirmedDespiteDuplicate = "1";
@@ -1076,7 +1096,7 @@ async function executeRealCommit(mutations, microTestOnly) {
         </div>
       </div>`;
       document.getElementById("cancelWriteBtn2").addEventListener("click", () => { area.innerHTML = ""; });
-      document.getElementById("confirmWriteAnywayBtn").addEventListener("click", () => executeRealCommit(mutations, microTestOnly));
+      document.getElementById("confirmWriteAnywayBtn").addEventListener("click", () => executeRealCommit(mutations, mode));
       return;
     }
   }
@@ -1086,10 +1106,13 @@ async function executeRealCommit(mutations, microTestOnly) {
 
   try {
     const result = await KindleCoverSync.commitBatchAtomic(cfg, mutations, {
-      concurrency: microTestOnly ? 1 : 4,
+      concurrency: mode !== "full" ? 1 : 4,
       onProgress: (done, total) => { progressText.textContent = `Envoi en cours… ${done}/${total}`; },
     });
-    await markBatchAsCommitted(fingerprint, result.commitSha);
+    // Ne marquer le lot complet comme "déjà écrit" que pour un run "full" —
+    // un micro-test n'écrit qu'un sous-ensemble volontairement restreint, il
+    // ne faut pas que ça bloque/avertisse à tort le vrai lot complet ensuite.
+    if (mode === "full") await markBatchAsCommitted(fingerprint, result.commitSha);
     const warn = result.missingEdits.length
       ? ` (attention : ${result.missingEdits.length} livre(s) visé(s) par une mise à jour de couverture n'ont plus été retrouvés dans books.json)`
       : "";
@@ -1107,7 +1130,7 @@ async function executeRealCommit(mutations, microTestOnly) {
       <p style="color:#ff9457;">Échec : ${escapeHtml(msg)}</p>
       <div class="btn-row"><button id="retryWriteBtn">Réessayer</button></div>
     </div>`;
-    document.getElementById("retryWriteBtn").addEventListener("click", () => executeRealCommit(mutations, microTestOnly));
+    document.getElementById("retryWriteBtn").addEventListener("click", () => executeRealCommit(mutations, mode));
   }
 }
 
