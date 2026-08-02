@@ -76,12 +76,34 @@
   @keyframes flashHighlight { 0%, 100% { box-shadow: none; } 15% { box-shadow: 0 0 0 3px rgba(255,180,84,.85); } }
   .persist-bar { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.2rem; }
   .persist-bar button { background: #232326; color: #f2f1ee; font-weight: 600; }
+  .github-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; margin-bottom: 1rem; padding: .8rem 1rem; background: #1b1b1e; border-radius: 10px; font-size: .85rem; color: #cfcdd3; }
+  .github-bar button { background: #232326; color: #f2f1ee; font-weight: 600; padding: .5rem .8rem; }
+  .github-form { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+  .github-form input { background: #232326; color: #f2f1ee; border: 1px solid rgba(242,241,238,.16); border-radius: 7px; padding: .5rem .6rem; font: inherit; font-size: .82rem; }
+  .github-form input#ghRepoInput { width: 210px; }
+  .github-form input#ghBranchInput { width: 110px; }
+  .github-form input#ghTokenInput { width: 200px; }
+  .write-confirm { margin-top: .8rem; padding: .8rem 1rem; background: #201c19; border: 1px solid rgba(255,148,87,.4); border-radius: 8px; font-size: .85rem; }
+  .write-confirm .btn-row { display: flex; gap: .6rem; margin-top: .6rem; }
+  .ghost-btn { background: transparent !important; border: 1px solid rgba(242,241,238,.3); color: #f2f1ee; }
+  .write-actions { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: .5rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Prototype — extraction multi-captures Kindle</h1>
   <p class="intro">Outil jetable, indépendant de l'application. Dépose plusieurs captures de ta bibliothèque Kindle <b>dans l'ordre où tu les as prises</b> (elles peuvent se chevaucher) : chacune est détectée et découpée, l'OCR récupère titre/auteur, puis tous les résultats sont fusionnés en une seule liste de livres uniques — un même livre vu sur deux captures qui se chevauchent ne doit donner qu'une seule fiche. Les couvertures partielles (coupées par le bord d'une capture) sont ignorées pour l'import. La liste est aussi comparée à <code>data/books.json</code> (lecture seule) pour repérer ce que tu as déjà. Rien n'est envoyé nulle part, rien n'est écrit dans ta bibliothèque. Les captures et les derniers résultats sont mémorisés localement dans ton navigateur (IndexedDB) pour éviter de les resélectionner à chaque correction — rien de tout ça ne quitte ton Mac ni n'est commité dans le dépôt.</p>
+
+  <div class="github-bar" id="githubBar">
+    <span id="githubStatus">Vérification de la connexion GitHub…</span>
+    <button id="ghChangeBtn" type="button" style="display:none;">Changer</button>
+    <div class="github-form" id="githubForm" style="display:none;">
+      <input id="ghRepoInput" type="text" placeholder="owner/repo" />
+      <input id="ghBranchInput" type="text" placeholder="refonte-v2" value="refonte-v2" />
+      <input id="ghTokenInput" type="password" placeholder="github_pat_…" autocomplete="off" />
+      <button id="ghConnectBtn" type="button">Se connecter</button>
+    </div>
+  </div>
 
   <div class="persist-bar" id="persistBar">
     <button id="reuseCapturesBtn" type="button" style="display:none;"></button>
@@ -137,6 +159,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="js/sync.js"></script>
+<script src="js/kindle-cover-sync.js"></script>
 <script>
 const els = {
   dropzone: document.getElementById("dropzone"),
@@ -165,6 +189,13 @@ const els = {
   diagnosticBlock: document.getElementById("diagnosticBlock"),
   reuseCapturesBtn: document.getElementById("reuseCapturesBtn"),
   replayMatchBtn: document.getElementById("replayMatchBtn"),
+  githubStatus: document.getElementById("githubStatus"),
+  githubForm: document.getElementById("githubForm"),
+  ghChangeBtn: document.getElementById("ghChangeBtn"),
+  ghRepoInput: document.getElementById("ghRepoInput"),
+  ghBranchInput: document.getElementById("ghBranchInput"),
+  ghTokenInput: document.getElementById("ghTokenInput"),
+  ghConnectBtn: document.getElementById("ghConnectBtn"),
 };
 
 let capturedImages = []; // [{ img, name }], dans l'ordre de dépôt
@@ -271,6 +302,59 @@ els.replayMatchBtn.addEventListener("click", async () => {
   els.progress.textContent = "Terminé (matching rejoué depuis le cache).";
 });
 refreshReuseButton();
+
+async function markBatchAsCommitted(fingerprint, commitSha) {
+  try { await idbPut("detections", "lastCommit", { fingerprint, commitSha, committedAt: Date.now() }); } catch {}
+}
+async function getMatchingLastCommit(fingerprint) {
+  try {
+    const saved = await idbGet("detections", "lastCommit");
+    if (saved && saved.fingerprint === fingerprint) return saved;
+  } catch {}
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Connexion GitHub — réutilise MarinaSync (js/sync.js), donc la même config
+// localStorage que l'app réelle (même origine) : si Marina s'est déjà
+// connectée via index.html, aucune ressaisie de token n'est nécessaire ici.
+// ---------------------------------------------------------------------------
+function refreshGithubBar() {
+  const cfg = window.MarinaSync ? MarinaSync.getGitHubConfig() : null;
+  if (cfg && cfg.token) {
+    els.githubStatus.textContent = `Connecté à ${cfg.owner}/${cfg.repo} (branche ${cfg.branch}).`;
+    els.githubForm.style.display = "none";
+    els.ghChangeBtn.style.display = "inline-flex";
+  } else {
+    els.githubStatus.textContent = "Non connecté à GitHub — nécessaire pour écrire réellement (la simulation reste possible sans).";
+    els.githubForm.style.display = "flex";
+    els.ghChangeBtn.style.display = "none";
+  }
+  if (typeof renderRecap === "function" && consolidated.length) renderRecap();
+}
+els.ghChangeBtn.addEventListener("click", () => {
+  els.githubForm.style.display = "flex";
+  els.ghChangeBtn.style.display = "none";
+});
+els.ghConnectBtn.addEventListener("click", async () => {
+  const [owner, repo] = els.ghRepoInput.value.trim().split("/").map(s => s.trim());
+  const branch = els.ghBranchInput.value.trim() || "refonte-v2";
+  const existing = MarinaSync.getGitHubConfig();
+  const token = els.ghTokenInput.value.trim() || (existing && existing.token);
+  if (!owner || !repo || !token) { els.githubStatus.textContent = "Renseigne le dépôt (owner/repo) et un token."; return; }
+  const cfg = { owner, repo, branch, token };
+  els.githubStatus.textContent = "Test de connexion…";
+  try {
+    const result = await MarinaSync.testGitHubConnection(cfg);
+    MarinaSync.saveGitHubConfig(cfg);
+    els.ghTokenInput.value = "";
+    refreshGithubBar();
+    els.githubStatus.textContent = `Connecté ✓ ${result.count} livres trouvés sur ${owner}/${repo} (${branch}).`;
+  } catch (err) {
+    els.githubStatus.textContent = `Échec : ${err.message}`;
+  }
+});
+refreshGithubBar();
 
 // ---------------------------------------------------------------------------
 // Chargement des fichiers (plusieurs, dans l'ordre)
@@ -861,6 +945,8 @@ function ignoredReason(entry) {
 let ignoredDetailOpen = false;
 function renderRecap() {
   const t = computeTally(consolidated);
+  const cfg = window.MarinaSync ? MarinaSync.getGitHubConfig() : null;
+  const connected = !!(cfg && cfg.token);
   const totalRaw = allDetections.length;
   const totalUnique = consolidated.length;
   // Détections brutes absorbées lors de la fusion (doublons entre captures) :
@@ -897,7 +983,11 @@ function renderRecap() {
         </div>
       </li>
     </ul>
-    <button id="validateBtn">Valider (simulation — rien n'est écrit)</button>
+    <div class="write-actions">
+      <button id="validateBtn">${connected ? "Valider et écrire sur GitHub" : "Valider (simulation — connecte GitHub pour écrire réellement)"}</button>
+      ${connected && t.add > 0 ? `<button id="microTestBtn" class="ghost-btn" type="button">Tester avec 1 seul livre</button>` : ""}
+    </div>
+    <div id="writeConfirmArea"></div>
     <p class="recap-note" id="validateResult"></p>`;
 
   document.getElementById("ignoredToggle").addEventListener("click", () => {
@@ -914,13 +1004,111 @@ function renderRecap() {
     void card.offsetWidth; // force le redémarrage de l'animation si déjà jouée
     card.classList.add("flash");
   });
+
   document.getElementById("validateBtn").addEventListener("click", () => {
-    const t2 = computeTally(consolidated);
-    document.getElementById("validateResult").textContent =
-      `Simulation : ${t2.add} nouveau(x) livre(s) ajouté(s), ${t2.addCover} couverture(s) ajoutée(s), ${t2.replaceCover} couverture(s) remplacée(s), ${ignoredList.length} livre(s) unique(s) sans action, ${mergedAway} détection(s) fusionnée(s). Aucune écriture réelle n'a été faite : books.json et le dépôt ne sont pas modifiés à cette étape.`;
+    if (!connected) {
+      const t2 = computeTally(consolidated);
+      document.getElementById("validateResult").textContent =
+        `Simulation : ${t2.add} nouveau(x) livre(s) ajouté(s), ${t2.addCover} couverture(s) ajoutée(s), ${t2.replaceCover} couverture(s) remplacée(s), ${ignoredList.length} livre(s) unique(s) sans action, ${mergedAway} détection(s) fusionnée(s). Aucune écriture réelle n'a été faite : books.json et le dépôt ne sont pas modifiés à cette étape.`;
+      return;
+    }
+    showWriteConfirm(consolidated, false);
   });
+  const microTestBtn = document.getElementById("microTestBtn");
+  if (microTestBtn) {
+    microTestBtn.addEventListener("click", () => showWriteConfirm(consolidated, true));
+  }
 
   renderDiagnostic();
+}
+
+// Affiche le récapitulatif de confirmation avant toute écriture réelle
+// (irréversible en pratique) ; `microTestOnly` restreint le lot au premier
+// livre "add" trouvé, pour un test réel à risque minimal avant le lot complet.
+function showWriteConfirm(list, microTestOnly) {
+  const area = document.getElementById("writeConfirmArea");
+  const resultEl = document.getElementById("validateResult");
+  resultEl.textContent = "";
+
+  const scoped = microTestOnly ? list.filter(e => e.action === "add").slice(0, 1) : list;
+  const mutations = KindleCoverSync.buildMutationsFromConsolidated(scoped, capturedImages);
+  if (!mutations.adds.length && !Object.keys(mutations.edits).length) {
+    area.innerHTML = "";
+    resultEl.textContent = microTestOnly
+      ? "Aucun livre « nouveau » à tester (essaie de cocher au moins un ajout)."
+      : "Rien à écrire : aucune action cochée.";
+    return;
+  }
+
+  const cfg = MarinaSync.getGitHubConfig();
+  const label = microTestOnly
+    ? `Micro-test : 1 nouveau livre, ${mutations.tally.files} fichier(s), 1 commit sur ${cfg.branch}.`
+    : `${mutations.tally.adds} nouveau(x) livre(s), ${mutations.tally.edits} couverture(s) ajoutée(s)/remplacée(s), ${mutations.tally.files} fichier(s) au total, en 1 seul commit sur ${cfg.branch}.`;
+
+  area.innerHTML = `<div class="write-confirm">
+    <p>${label}</p>
+    ${mutations.warnings.length ? `<p style="color:#ff9457;">${mutations.warnings.map(escapeHtml).join("<br>")}</p>` : ""}
+    <div class="btn-row">
+      <button id="confirmWriteBtn">Confirmer l'écriture</button>
+      <button id="cancelWriteBtn" class="ghost-btn" type="button">Annuler</button>
+    </div>
+  </div>`;
+
+  document.getElementById("cancelWriteBtn").addEventListener("click", () => { area.innerHTML = ""; });
+  document.getElementById("confirmWriteBtn").addEventListener("click", () => executeRealCommit(mutations, microTestOnly));
+}
+
+async function executeRealCommit(mutations, microTestOnly) {
+  const area = document.getElementById("writeConfirmArea");
+  const resultEl = document.getElementById("validateResult");
+  const cfg = MarinaSync.getGitHubConfig();
+  const fingerprint = capturesFingerprint(capturedImages);
+
+  if (!microTestOnly) {
+    const already = await getMatchingLastCommit(fingerprint);
+    if (already && !area.dataset.confirmedDespiteDuplicate) {
+      area.dataset.confirmedDespiteDuplicate = "1";
+      area.innerHTML = `<div class="write-confirm">
+        <p>Ce jeu de captures a déjà été écrit : commit <code>${already.commitSha.slice(0, 7)}</code> le ${new Date(already.committedAt).toLocaleString()}.</p>
+        <div class="btn-row">
+          <button id="confirmWriteAnywayBtn">Écrire quand même</button>
+          <button id="cancelWriteBtn2" class="ghost-btn" type="button">Annuler</button>
+        </div>
+      </div>`;
+      document.getElementById("cancelWriteBtn2").addEventListener("click", () => { area.innerHTML = ""; });
+      document.getElementById("confirmWriteAnywayBtn").addEventListener("click", () => executeRealCommit(mutations, microTestOnly));
+      return;
+    }
+  }
+
+  area.innerHTML = `<div class="write-confirm"><p id="writeProgressText">Envoi en cours… 0/${mutations.tally.files}</p></div>`;
+  const progressText = document.getElementById("writeProgressText");
+
+  try {
+    const result = await KindleCoverSync.commitBatchAtomic(cfg, mutations, {
+      concurrency: microTestOnly ? 1 : 4,
+      onProgress: (done, total) => { progressText.textContent = `Envoi en cours… ${done}/${total}`; },
+    });
+    await markBatchAsCommitted(fingerprint, result.commitSha);
+    const warn = result.missingEdits.length
+      ? ` (attention : ${result.missingEdits.length} livre(s) visé(s) par une mise à jour de couverture n'ont plus été retrouvés dans books.json)`
+      : "";
+    area.innerHTML = `<div class="write-confirm">
+      <p>Commit réussi : <a href="https://github.com/${cfg.owner}/${cfg.repo}/commit/${result.commitSha}" target="_blank" rel="noopener">${result.commitSha.slice(0, 7)}</a> — ${result.filesWritten} fichier(s) écrits sur ${cfg.branch}.${warn}</p>
+    </div>`;
+    resultEl.textContent = "";
+  } catch (err) {
+    let msg = err.message || "Erreur inconnue";
+    if (err.status === 401) msg = "Token GitHub invalide ou expiré.";
+    else if (err.status === 403) msg = "Accès refusé (permissions du token, ou limite d'API atteinte).";
+    else if (err.status === 404) msg = "Dépôt, branche ou fichier introuvable.";
+    else if (err.status === 422) msg = "Le dépôt a été modifié entre-temps (conflit). Réessaie.";
+    area.innerHTML = `<div class="write-confirm">
+      <p style="color:#ff9457;">Échec : ${escapeHtml(msg)}</p>
+      <div class="btn-row"><button id="retryWriteBtn">Réessayer</button></div>
+    </div>`;
+    document.getElementById("retryWriteBtn").addEventListener("click", () => executeRealCommit(mutations, microTestOnly));
+  }
 }
 
 // Export purement diagnostique (rien n'est décidé ici) : pour chaque
