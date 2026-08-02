@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Test couvertures — Bibliothèque Marina</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 1.5rem; background: #131315; color: #f2f1ee; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin: 0 0 .3rem; }
+  p.intro { color: #95939a; font-size: .9rem; margin: 0 0 1.2rem; max-width: 65ch; }
+  .bar { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.4rem; }
+  button { font: inherit; cursor: pointer; border: none; border-radius: 9px; padding: .7rem 1.1rem; font-weight: 700; }
+  #runBtn { background: linear-gradient(135deg,#ff5c8a,#ff7a59 55%,#ffb454); color: #171214; }
+  #runBtn:disabled { opacity: .5; cursor: default; }
+  .progress { font-size: .85rem; color: #95939a; }
+  table.summary { border-collapse: collapse; margin-bottom: 1.4rem; font-size: .85rem; }
+  table.summary td { padding: .3rem .8rem .3rem 0; }
+  .badge { display: inline-flex; padding: .15rem .55rem; border-radius: 999px; font-size: .72rem; font-weight: 700; }
+  .badge.confident { background: rgba(63,190,134,.18); color: #3fbe86; }
+  .badge.ambiguous { background: rgba(255,148,87,.2); color: #ff9457; }
+  .badge.none { background: rgba(255,98,89,.18); color: #ff6259; }
+  .badge.pending { background: rgba(255,255,255,.08); color: #95939a; }
+  .row { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(242,241,238,.09); align-items: flex-start; }
+  .row .thumb { width: 64px; height: 96px; flex: none; border-radius: 6px; overflow: hidden; background: #232326; display: flex; align-items: center; justify-content: center; font-size: .65rem; color: #95939a; text-align: center; }
+  .row .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .row .info { flex: 1; min-width: 0; }
+  .row .book-title { font-weight: 700; margin: 0 0 .15rem; }
+  .row .book-meta { font-size: .8rem; color: #95939a; margin: 0 0 .5rem; }
+  .row .result-line { font-size: .82rem; margin: .15rem 0; }
+  .row .source-tag { font-weight: 700; }
+  .row ul.reasons { margin: .3rem 0 0; padding-left: 1.1rem; font-size: .78rem; color: #ff9457; }
+  .row .api-error { font-size: .78rem; color: #ff6259; margin-top: .3rem; }
+  a { color: #ffb454; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Test de correspondance de couvertures</h1>
+  <p class="intro">Page de diagnostic jetable — étape 1 du plan. Interroge Google Books puis, seulement si rien n'est qualifié, Open Library, sur un échantillon de 16 vrais livres représentatifs de ta bibliothèque (romances auto-éditées, séries à tomes, titres plus connus, une pièce de théâtre). Ne modifie rien dans <code>data/books.json</code> — purement informatif.</p>
+
+  <div class="bar">
+    <button id="runBtn" type="button">Lancer le test (16 livres)</button>
+    <span class="progress" id="progressText"></span>
+  </div>
+
+  <table class="summary" id="summaryTable"></table>
+
+  <div id="results"></div>
+</div>
+
+<script src="js/covers.js"></script>
+<script>
+const SAMPLE_BOOKS = [
+  { title: "Off-campus - Tome 05: The legacy", author: "Elle Kennedy", series: "Off-campus", tome: 5 },
+  { title: "Off-campus - Tome 02: The mistake", author: "Elle Kennedy", series: "Off-campus", tome: 2 },
+  { title: "Daydream - Maple Hills Tome 3", author: "Hannah Grace", series: "Maple Hills", tome: 3 },
+  { title: "Icebreaker - Maple Hills Tome 1", author: "Hannah Grace", series: "Maple Hills", tome: 1 },
+  { title: "Marked men - Tome 01", author: "Jay Crownover", series: "Marked Men", tome: 1 },
+  { title: "Vicious", author: "L.J. Shen", series: "All Saints High", tome: 1 },
+  { title: "Impitoyable", author: "Jennifer Sucevic", series: "Claremont Cougars", tome: 1 },
+  { title: "Un PDG à charmer", author: "Layla Hagen", series: "Les Frères Whitley", tome: 5 },
+  { title: "Un Amour Inéluctable (La Famille Bennett)", author: "Layla Hagen", series: "La Famille Bennett", tome: "" },
+  { title: "14 jours la MIENNE: Achetée par le milliardaire (Mon milliardaire t.1)", author: "Anna May", series: "Mon milliardaire", tome: 1 },
+  { title: "Diable de velours (La Bratva Vorobev t.1)", author: "Nicole Fox", series: "La Bratva Vorobev", tome: 1 },
+  { title: "Sur la ligne", author: "Nikki Lawson", series: "Les coeurs du hockey", tome: 1 },
+  { title: "Pour 100 Jours", author: "Lara Adrian", series: "Série 100", tome: 1 },
+  { title: "Le milliardaire inoubliable ~ Tanner", author: "J. S. Scott", series: "L'obsession du milliardaire", tome: 21 },
+  { title: "La Fausse Épouse", author: "Annie J. Rose", series: "", tome: "" },
+  { title: "Pinocchio", author: "Joël Pommerat", series: "", tome: "" },
+];
+
+const els = {
+  runBtn: document.getElementById("runBtn"),
+  progressText: document.getElementById("progressText"),
+  summaryTable: document.getElementById("summaryTable"),
+  results: document.getElementById("results"),
+};
+
+function rowHTML(book, result) {
+  const thumb = result && result.accepted[0]
+    ? `<img src="${result.accepted[0].cover}" alt="" />`
+    : (result ? "aucune image" : "…");
+  const badgeClass = result ? result.status : "pending";
+  const badgeLabel = !result ? "en attente" : result.status === "confident" ? "confiance forte" : result.status === "ambiguous" ? "ambigu" : "introuvable";
+  let resultLines = "";
+  if (result) {
+    if (result.accepted.length) {
+      resultLines += `<p class="result-line">Source retenue : <span class="source-tag">${result.source}</span>${result.accepted.length > 1 ? ` (${result.accepted.length} candidats acceptés)` : ""}</p>`;
+      result.accepted.forEach(c => {
+        resultLines += `<p class="result-line">→ "${c.title}${c.subtitle ? " — " + c.subtitle : ""}" — ${(c.authors || []).join(", ")} ${c.link ? `(<a href="${c.link}" target="_blank" rel="noopener">voir la fiche</a>)` : ""}</p>`;
+      });
+    } else {
+      resultLines += `<p class="result-line">Aucun candidat retenu.</p>`;
+      if (result.rejected.length) {
+        resultLines += `<ul class="reasons">${result.rejected.map(r => `<li>${r.candidate.source} — "${r.candidate.title}" : ${r.reason}</li>`).join("")}</ul>`;
+      }
+    }
+    if (result.errors.length) {
+      result.errors.forEach(e => { resultLines += `<p class="api-error">Erreur ${e.source} : ${e.message}</p>`; });
+    }
+  }
+  return `<div class="row" data-idx="${book._idx}">
+    <div class="thumb">${thumb}</div>
+    <div class="info">
+      <p class="book-title">${book.title}</p>
+      <p class="book-meta">${book.author}${book.series ? " · " + book.series : ""}${book.tome ? " · t." + book.tome : ""} <span class="badge ${badgeClass}">${badgeLabel}</span></p>
+      ${resultLines}
+    </div>
+  </div>`;
+}
+
+function renderAll(results) {
+  els.results.innerHTML = SAMPLE_BOOKS.map((b, i) => rowHTML(b, results[i])).join("");
+}
+function renderSummary(results) {
+  const done = results.filter(Boolean).length;
+  const confident = results.filter(r => r && r.status === "confident").length;
+  const ambiguous = results.filter(r => r && r.status === "ambiguous").length;
+  const none = results.filter(r => r && r.status === "none").length;
+  const bySourceGB = results.filter(r => r && r.source === "Google Books").length;
+  const bySourceOL = results.filter(r => r && r.source === "Open Library").length;
+  els.summaryTable.innerHTML = `
+    <tr><td>Traités</td><td>${done} / ${SAMPLE_BOOKS.length}</td></tr>
+    <tr><td>Confiance forte</td><td>${confident}</td></tr>
+    <tr><td>Ambigus</td><td>${ambiguous}</td></tr>
+    <tr><td>Introuvables</td><td>${none}</td></tr>
+    <tr><td>Trouvés via Google Books</td><td>${bySourceGB}</td></tr>
+    <tr><td>Trouvés via Open Library</td><td>${bySourceOL}</td></tr>
+  `;
+}
+
+SAMPLE_BOOKS.forEach((b, i) => { b._idx = i; });
+renderAll(new Array(SAMPLE_BOOKS.length).fill(null));
+
+els.runBtn.addEventListener("click", async () => {
+  els.runBtn.disabled = true;
+  const results = new Array(SAMPLE_BOOKS.length).fill(null);
+  renderAll(results);
+  for (let i = 0; i < SAMPLE_BOOKS.length; i++) {
+    els.progressText.textContent = `Traitement ${i + 1}/${SAMPLE_BOOKS.length}…`;
+    try {
+      results[i] = await MarinaCovers.findCoverForBook(SAMPLE_BOOKS[i]);
+    } catch (err) {
+      results[i] = { book: SAMPLE_BOOKS[i], status: "none", source: null, accepted: [], rejected: [], errors: [{ source: "inconnu", message: err.message }] };
+    }
+    renderAll(results);
+    renderSummary(results);
+    await new Promise(r => setTimeout(r, 400));
+  }
+  els.progressText.textContent = "Terminé.";
+  els.runBtn.disabled = false;
+});
+</script>
+</body>
+</html>
