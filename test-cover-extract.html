@@ -126,6 +126,7 @@
   <p class="summary" id="consolidatedSummary"></p>
   <div class="preview-list" id="consolidatedList"></div>
   <div class="recap-block" id="recapBlock" style="display:none;"></div>
+  <div class="recap-block" id="diagnosticBlock" style="display:none;"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -154,6 +155,7 @@ const els = {
   consolidatedSummary: document.getElementById("consolidatedSummary"),
   consolidatedList: document.getElementById("consolidatedList"),
   recapBlock: document.getElementById("recapBlock"),
+  diagnosticBlock: document.getElementById("diagnosticBlock"),
 };
 
 let capturedImages = []; // [{ img, name }], dans l'ordre de dépôt
@@ -442,8 +444,10 @@ function matchExisting(entry, existingBooks) {
     const authorExact = !aa || !ba || aa === ba;
     const authorFuzzy = !authorExact && aa.length > 3 && ba.length > 3 && (aa.includes(ba) || ba.includes(aa));
     if (!authorExact && !authorFuzzy) continue;
-    if (titleExact && authorExact) return { book: b, confidence: "certain" };
-    if (!uncertain) uncertain = { book: b, confidence: "uncertain" };
+    // debug : purement informatif (export diagnostic), n'influence aucune décision.
+    const debug = { ca, cb, titleExact, titleFuzzy, aa, ba, authorExact, authorFuzzy };
+    if (titleExact && authorExact) return { book: b, confidence: "certain", debug };
+    if (!uncertain) uncertain = { book: b, confidence: "uncertain", debug };
   }
   return uncertain;
 }
@@ -494,7 +498,7 @@ function mergeAndDedupe(detections, existingBooks) {
       return { ...entry, category: "new", existingMatch: null, action: "add" };
     }
     if (match.confidence === "uncertain") {
-      return { ...entry, category: "uncertain", existingMatch: match.book, action: "none" };
+      return { ...entry, category: "uncertain", existingMatch: match.book, matchDebug: match.debug, action: "none" };
     }
     const category = match.book.cover ? "existing-has-cover" : "existing-no-cover";
     return { ...entry, category, existingMatch: match.book, action: category === "existing-no-cover" ? "add-cover" : "none" };
@@ -709,6 +713,56 @@ function renderRecap() {
     const t2 = computeTally(consolidated);
     document.getElementById("validateResult").textContent =
       `Simulation : ${t2.add} nouveau(x) livre(s) ajouté(s), ${t2.addCover} couverture(s) ajoutée(s), ${t2.replaceCover} couverture(s) remplacée(s), ${ignoredList.length} livre(s) unique(s) sans action, ${mergedAway} détection(s) fusionnée(s). Aucune écriture réelle n'a été faite : books.json et le dépôt ne sont pas modifiés à cette étape.`;
+  });
+
+  renderDiagnostic();
+}
+
+// Export purement diagnostique (rien n'est décidé ici) : pour chaque
+// correspondance incertaine, détaille le titre/auteur OCR, le livre de
+// books.json le plus proche, et pourquoi le match n'est pas "certain" —
+// pour identifier les causes récurrentes (sous-titre, édition, ponctuation,
+// série/tome, OCR, format du nom d'auteur...) avant de faire évoluer les
+// règles de matching.
+function renderDiagnostic() {
+  const uncertainEntries = consolidated.filter(e => e.category === "uncertain" && e.matchDebug);
+  if (!uncertainEntries.length) {
+    els.diagnosticBlock.style.display = "none";
+    els.diagnosticBlock.innerHTML = "";
+    return;
+  }
+  const lines = uncertainEntries.map((entry, i) => {
+    const d = entry.matchDebug;
+    const b = entry.existingMatch;
+    return [
+      `=== Incertain ${i + 1}/${uncertainEntries.length} — capture(s) ${entry.mergedFromCaptures.map(c => "#" + (c + 1)).join(", ")} ===`,
+      `OCR    titre  : "${entry.title}"`,
+      `OCR    auteur : "${entry.author || "(vide)"}"`,
+      `Match  titre  : "${b.title}"`,
+      `Match  auteur : "${b.author || "(vide)"}"`,
+      `Titre normalisé  OCR="${d.ca}"  livre="${d.cb}"  -> exact=${d.titleExact ? "oui" : "non"}, inclusion=${d.titleFuzzy ? "oui" : "non"}`,
+      `Auteur normalisé OCR="${d.aa || "(vide)"}"  livre="${d.ba || "(vide)"}"  -> exact=${d.authorExact ? "oui" : "non"}, inclusion=${d.authorFuzzy ? "oui" : "non"}`,
+      `Tome   OCR="${entry.tome || "—"}"  livre="${b.tome || "—"}"`,
+    ].join("\n");
+  });
+  const dump = `Diagnostic — ${uncertainEntries.length} correspondance(s) incertaine(s) sur ${consolidated.length} livre(s) unique(s)\n\n` + lines.join("\n\n");
+
+  els.diagnosticBlock.style.display = "block";
+  els.diagnosticBlock.innerHTML = `<h2>Diagnostic — correspondances incertaines</h2>
+    <p class="recap-note">Détail brut, pour analyse : rien n'est décidé ici, la logique de matching n'est pas modifiée. Copie ce texte et transmets-le pour qu'on identifie les causes récurrentes avant d'ajuster les règles.</p>
+    <textarea id="diagnosticText" readonly style="width:100%;min-height:220px;background:#101012;color:#c9c8ce;border:1px solid rgba(242,241,238,.16);border-radius:8px;padding:.7rem;font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;">${escapeHtml(dump)}</textarea>
+    <button id="copyDiagnosticBtn" style="margin-top:.6rem;">Copier le diagnostic</button>
+    <span class="recap-note" id="copyDiagnosticStatus" style="margin-left:.6rem;"></span>`;
+
+  document.getElementById("copyDiagnosticBtn").addEventListener("click", async () => {
+    const status = document.getElementById("copyDiagnosticStatus");
+    try {
+      await navigator.clipboard.writeText(dump);
+      status.textContent = "Copié.";
+    } catch {
+      document.getElementById("diagnosticText").select();
+      status.textContent = "Sélectionné — copie manuelle (Cmd+C).";
+    }
   });
 }
 
