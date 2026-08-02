@@ -357,9 +357,16 @@ function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>'"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[ch]));
 }
 function parseOcrText(raw) {
-  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-  if (!lines.length) return { title: "", author: "" };
+  const rawLines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  if (!rawLines.length) return { title: "", author: "" };
   const clean = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  // Une ligne OCR sans aucune lettre (ex. un "|" isol\u00e9 \u2014 artefact de bord de
+  // couverture qui d\u00e9borde dans le recadrage du texte) n'est jamais un vrai
+  // fragment de titre ou d'auteur : on l'ignore avant de reconstituer le
+  // titre, plut\u00f4t que de le laisser polluer le d\u00e9but du titre (ce qui casse
+  // sinon la correspondance par pr\u00e9fixe strict avec books.json).
+  const lines = rawLines.filter(l => /\p{L}/u.test(l));
+  if (!lines.length) return { title: "", author: "" };
   let end = lines.length;
   if (end > 0 && /dans.{5,40}kind/.test(clean(lines[end - 1]))) end -= 1;
   if (end <= 0) return { title: "", author: "" };
