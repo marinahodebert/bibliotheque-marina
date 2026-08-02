@@ -60,6 +60,20 @@
   .recap-list { margin: 0 0 .9rem; padding-left: 1.2rem; font-size: .9rem; line-height: 1.7; }
   .recap-list b { color: #3fbe86; }
   .recap-note { font-size: .85rem; color: #95939a; margin-top: .7rem; max-width: 70ch; }
+  .ignored-toggle { background: none; border: 1px solid rgba(242,241,238,.25); color: #f2f1ee; border-radius: 8px; padding: .35rem .7rem; font: inherit; font-size: .85rem; cursor: pointer; display: inline-flex; align-items: center; gap: .4rem; }
+  .ignored-toggle b { color: #ffb454; }
+  .ignored-toggle .chevron { transition: transform .15s ease; }
+  .ignored-toggle.open .chevron { transform: rotate(180deg); }
+  .ignored-detail { margin-top: .6rem; display: flex; flex-direction: column; gap: .4rem; max-width: 62ch; }
+  .ignored-item { display: flex; align-items: center; gap: .6rem; background: #232326; border: none; border-radius: 8px; padding: .5rem .7rem; cursor: pointer; font: inherit; font-size: .82rem; text-align: left; width: 100%; }
+  .ignored-item:hover { background: #2a2a2e; }
+  .ignored-item img { width: 34px; height: auto; border-radius: 4px; flex: none; background: #0b0b0d; }
+  .ignored-item .ignored-text { display: flex; flex-direction: column; gap: .1rem; min-width: 0; }
+  .ignored-item .ignored-title { color: #f2f1ee; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ignored-item .ignored-reason { color: #95939a; font-size: .78rem; }
+  .preview-card { scroll-margin-top: 1.2rem; }
+  .preview-card.flash { animation: flashHighlight 1.6s ease; }
+  @keyframes flashHighlight { 0%, 100% { box-shadow: none; } 15% { box-shadow: 0 0 0 3px rgba(255,180,84,.85); } }
 </style>
 </head>
 <body>
@@ -625,22 +639,76 @@ function computeTally(list) {
   });
   return t;
 }
+// Raison exacte pour laquelle un livre unique (déjà consolidé, donc distinct
+// des détections brutes fusionnées) ne déclenche aucune action. Retourne
+// null si le livre a bien une action (pas "ignoré").
+function ignoredReason(entry) {
+  if (entry.action !== "none") return null;
+  if (entry.category === "partial") return "Capture partielle — à reprendre dans une autre capture";
+  if (entry.category === "existing-has-cover") return "Déjà présent avec couverture — non modifié";
+  if (entry.category === "uncertain") return "Correspondance incertaine laissée sans action";
+  return "Décoché manuellement";
+}
+let ignoredDetailOpen = false;
 function renderRecap() {
   const t = computeTally(consolidated);
+  const totalRaw = allDetections.length;
+  const totalUnique = consolidated.length;
+  // Détections brutes absorbées lors de la fusion (doublons entre captures) :
+  // ne concerne jamais les livres uniques finaux, donc jamais compté comme
+  // "ignoré" — c'est un phénomène de la fusion, pas une décision sur un livre.
+  const mergedAway = Math.max(0, totalRaw - totalUnique);
+  const ignoredList = consolidated
+    .map((entry, idx) => ({ entry, idx, reason: ignoredReason(entry) }))
+    .filter(x => x.reason);
+
   els.recapBlock.style.display = "block";
   els.recapBlock.innerHTML = `<h2>Récapitulatif avant validation</h2>
     <ul class="recap-list">
       <li><b>${t.add}</b> nouveau(x) livre(s) seront ajoutés</li>
       <li><b>${t.addCover}</b> couverture(s) de livres existants seront ajoutées</li>
       <li><b>${t.replaceCover}</b> couverture(s) seront remplacées</li>
-      <li><b>${t.ignored}</b> élément(s) ignorés</li>
+      <li><b>${mergedAway}</b> détection(s) fusionnée(s) entre captures (déjà regroupées dans les livres uniques ci-dessus, pas des livres ignorés)</li>
+      <li>
+        <button class="ignored-toggle${ignoredDetailOpen ? " open" : ""}" id="ignoredToggle" type="button">
+          <b>${ignoredList.length}</b> livre(s) unique(s) sans action <span class="chevron">▾</span>
+        </button>
+        <div class="ignored-detail" id="ignoredDetail" style="display:${ignoredDetailOpen ? "flex" : "none"};">
+          ${ignoredList.map(({ entry, idx, reason }) => {
+            const img = capturedImages[entry.captureIndex]?.img;
+            const cover = img ? cropToDataUrl(img, entry.x, entry.y, entry.w, entry.h) : "";
+            return `<button class="ignored-item" type="button" data-jump-idx="${idx}">
+              <img src="${cover}" alt="" />
+              <span class="ignored-text">
+                <span class="ignored-title">${escapeHtml(entry.title || "(titre vide)")}</span>
+                <span class="ignored-reason">${escapeHtml(reason)}</span>
+              </span>
+            </button>`;
+          }).join("")}
+        </div>
+      </li>
     </ul>
     <button id="validateBtn">Valider (simulation — rien n'est écrit)</button>
     <p class="recap-note" id="validateResult"></p>`;
+
+  document.getElementById("ignoredToggle").addEventListener("click", () => {
+    ignoredDetailOpen = !ignoredDetailOpen;
+    renderRecap();
+  });
+  document.getElementById("ignoredDetail").addEventListener("click", e => {
+    const btn = e.target.closest(".ignored-item");
+    if (!btn) return;
+    const card = document.getElementById(`book-card-${btn.dataset.jumpIdx}`);
+    if (!card) return;
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.remove("flash");
+    void card.offsetWidth; // force le redémarrage de l'animation si déjà jouée
+    card.classList.add("flash");
+  });
   document.getElementById("validateBtn").addEventListener("click", () => {
     const t2 = computeTally(consolidated);
     document.getElementById("validateResult").textContent =
-      `Simulation : ${t2.add} nouveau(x) livre(s) ajouté(s), ${t2.addCover} couverture(s) ajoutée(s), ${t2.replaceCover} couverture(s) remplacée(s), ${t2.ignored} élément(s) ignoré(s). Aucune écriture réelle n'a été faite : books.json et le dépôt ne sont pas modifiés à cette étape.`;
+      `Simulation : ${t2.add} nouveau(x) livre(s) ajouté(s), ${t2.addCover} couverture(s) ajoutée(s), ${t2.replaceCover} couverture(s) remplacée(s), ${ignoredList.length} livre(s) unique(s) sans action, ${mergedAway} détection(s) fusionnée(s). Aucune écriture réelle n'a été faite : books.json et le dépôt ne sont pas modifiés à cette étape.`;
   });
 }
 
@@ -666,7 +734,7 @@ function renderConsolidatedPreview() {
   els.consolidatedList.innerHTML = consolidated.map((entry, i) => {
     const img = capturedImages[entry.captureIndex]?.img;
     const cover = img ? cropToDataUrl(img, entry.x, entry.y, entry.w, entry.h) : "";
-    return `<div class="preview-card${cardClass(entry)}">
+    return `<div class="preview-card${cardClass(entry)}" id="book-card-${i}">
       <img class="preview-cover" src="${cover}" alt="" />
       <div class="preview-fields">
         ${badgesHtml(entry)}
