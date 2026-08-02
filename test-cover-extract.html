@@ -35,12 +35,18 @@
 <body>
 <div class="wrap">
   <h1>Prototype — détection et découpe de couvertures</h1>
-  <p class="intro">Outil jetable, indépendant de l'application. Dépose une capture de ta bibliothèque Kindle (grille de couvertures) : l'algorithme analyse les zones de contenu (les couvertures) et les zones vides (les espaces entre elles) pour détecter et découper chaque couverture automatiquement — sans OCR, sans reconnaissance de titre pour l'instant, juste la détection visuelle. Rien n'est envoyé nulle part, tout se passe dans ton navigateur.</p>
+  <p class="intro">Outil jetable, indépendant de l'application. Dépose une capture de ta bibliothèque Kindle : l'algorithme analyse les zones de contenu (les couvertures) et les zones vides (les espaces entre elles) pour détecter et découper chaque couverture automatiquement — sans OCR, sans reconnaissance de titre pour l'instant, juste la détection visuelle. Rien n'est envoyé nulle part, tout se passe dans ton navigateur.</p>
 
   <div class="dropzone" id="dropzone">Dépose une image ici, ou clique pour en choisir une</div>
   <input type="file" id="fileInput" accept="image/*" />
 
   <div class="controls" id="controls" style="display:none;">
+    <label>Mise en page
+      <select id="layoutMode" style="background:#232326;color:#f2f1ee;border:1px solid rgba(242,241,238,.16);border-radius:8px;padding:.5rem .6rem;font:inherit;">
+        <option value="list" selected>Liste (une couverture par ligne, + titre/auteur)</option>
+        <option value="grid">Grille (plusieurs colonnes de couvertures)</option>
+      </select>
+    </label>
     <label>Sensibilité du seuil (contenu vs. fond)
       <input type="range" id="threshold" min="2" max="40" value="14" />
       <span class="val" id="thresholdVal">14%</span>
@@ -56,6 +62,10 @@
     <label>Ratio largeur/hauteur min–max
       <input type="range" id="ratioMin" min="30" max="100" value="45" />
       <span class="val" id="ratioVal">0.45 – 1.05</span>
+    </label>
+    <label>Fusionner les lignes proches (px)
+      <input type="range" id="mergeGap" min="0" max="150" value="40" />
+      <span class="val" id="mergeGapVal">40</span>
     </label>
     <div style="display:flex;align-items:flex-end;"><button id="redetectBtn">Redétecter</button></div>
   </div>
@@ -81,7 +91,10 @@ const els = {
   minSizeVal: document.getElementById("minSizeVal"),
   ratioMin: document.getElementById("ratioMin"),
   ratioVal: document.getElementById("ratioVal"),
+  mergeGap: document.getElementById("mergeGap"),
+  mergeGapVal: document.getElementById("mergeGapVal"),
   redetectBtn: document.getElementById("redetectBtn"),
+  layoutMode: document.getElementById("layoutMode"),
 };
 
 let currentImage = null;
@@ -110,18 +123,20 @@ function loadImage(file) {
   img.src = URL.createObjectURL(file);
 }
 
-[els.threshold, els.minGap, els.minSize, els.ratioMin].forEach(input => {
+[els.threshold, els.minGap, els.minSize, els.ratioMin, els.mergeGap].forEach(input => {
   input.addEventListener("input", updateLabels);
 });
 function updateLabels() {
   els.thresholdVal.textContent = els.threshold.value + "%";
   els.minGapVal.textContent = els.minGap.value;
   els.minSizeVal.textContent = els.minSize.value;
+  els.mergeGapVal.textContent = els.mergeGap.value;
   const rMin = els.ratioMin.value / 100;
   els.ratioVal.textContent = rMin.toFixed(2) + " – " + (rMin + 0.6).toFixed(2);
 }
 updateLabels();
 els.redetectBtn.addEventListener("click", runDetection);
+els.layoutMode.addEventListener("change", runDetection);
 
 // ---- détection par profils de projection (analyse de contenu vs fond) ----
 function toGrayscale(imageData) {
@@ -141,13 +156,23 @@ function columnActivity(gray, width, height) {
   }
   return profile;
 }
+// Activité par ligne = le PIC local le plus fort le long de la ligne, pas la
+// moyenne sur toute la largeur. En mode liste, la vignette n'occupe qu'une
+// partie de la largeur (le reste est le texte/le fond) : une moyenne globale
+// dilue ce signal et rend les vraies lignes de contenu indiscernables des
+// espaces entre elles. Le pic local, lui, reste fort là où il y a une image,
+// quelle que soit sa position, sans supposer où elle se trouve.
 function rowActivity(gray, width, height) {
   const profile = new Float32Array(height);
+  const rowGrad = new Float32Array(width);
   for (let y = 0; y < height; y++) {
-    let sum = 0;
     const base = y * width;
-    for (let x = 1; x < width; x++) sum += Math.abs(gray[base + x] - gray[base + x - 1]);
-    profile[y] = sum / width;
+    rowGrad[0] = 0;
+    for (let x = 1; x < width; x++) rowGrad[x] = Math.abs(gray[base + x] - gray[base + x - 1]);
+    const smoothed = smooth(rowGrad, 6);
+    let maxVal = 0;
+    for (let x = 0; x < width; x++) if (smoothed[x] > maxVal) maxVal = smoothed[x];
+    profile[y] = maxVal;
   }
   return profile;
 }
@@ -185,6 +210,82 @@ function findContentBands(profile, thresholdRatio, minGap) {
   if (start !== null) bands.push([start, isBackground.length - 1]);
   return bands.filter(([a, b]) => b - a > 3);
 }
+// Fusionne les bandes proches (petit espace entre elles) en une seule. Sert
+// à recoller une ligne de la liste que le texte du titre (plusieurs lignes,
+// avec de petits interlignes) aurait fragmentée en plusieurs bandes de
+// contenu séparées, sans pour autant fusionner deux livres différents —
+// l'espace entre deux lignes de titre est en général bien plus petit que
+// l'espace entre deux livres.
+function mergeBands(bands, maxMergeGap) {
+  if (!bands.length) return bands;
+  const sorted = [...bands].map(b => [...b]).sort((a, b) => a[0] - b[0]);
+  const merged = [sorted[0]];
+  for (let i = 1; i < sorted.length; i++) {
+    const last = merged[merged.length - 1];
+    const [s, e] = sorted[i];
+    if (s - last[1] <= maxMergeGap) last[1] = Math.max(last[1], e);
+    else merged.push([s, e]);
+  }
+  return merged;
+}
+
+// Version de columnActivity restreinte à une bande de lignes [y0,y1) — sert
+// à analyser une seule ligne de la liste indépendamment des autres, pour y
+// repérer où s'arrête la vignette (dense, photographique) et où commence le
+// texte (fond clair, traits épars).
+function columnActivityInRows(gray, width, y0, y1) {
+  const h = y1 - y0;
+  const profile = new Float32Array(width);
+  for (let x = 0; x < width; x++) {
+    let sum = 0;
+    for (let y = y0 + 1; y < y1; y++) sum += Math.abs(gray[y * width + x] - gray[(y - 1) * width + x]);
+    profile[x] = sum / Math.max(1, h);
+  }
+  return profile;
+}
+
+function detectGrid(gray, width, height, opts) {
+  const colProfile = smooth(columnActivity(gray, width, height), 2);
+  const rowProfile = smooth(rowActivity(gray, width, height), 2);
+  const colBands = findContentBands(colProfile, opts.thresholdRatio, opts.minGap);
+  const rowBands = mergeBands(findContentBands(rowProfile, opts.thresholdRatio, opts.minGap), opts.mergeGap);
+
+  const boxes = [];
+  for (const [ry0, ry1] of rowBands) {
+    for (const [cx0, cx1] of colBands) {
+      const w = cx1 - cx0, h = ry1 - ry0;
+      if (w < opts.minSize || h < opts.minSize) continue;
+      const ratio = w / h;
+      if (ratio < opts.ratioMin || ratio > opts.ratioMax) continue;
+      boxes.push({ x: cx0, y: ry0, w, h });
+    }
+  }
+  return boxes;
+}
+
+// Mode liste : on détecte d'abord chaque ligne (une par livre), puis, à
+// l'intérieur de chaque ligne, on ne garde que la première bande de contenu
+// à partir de la gauche (la vignette) — le texte du titre/auteur qui suit
+// est délibérément ignoré ici, ce sera le rôle de l'OCR plus tard.
+function detectList(gray, width, height, opts) {
+  const rowProfile = smooth(rowActivity(gray, width, height), 2);
+  const rowBands = mergeBands(findContentBands(rowProfile, opts.thresholdRatio, opts.minGap), opts.mergeGap);
+
+  const boxes = [];
+  for (const [ry0, ry1] of rowBands) {
+    if (ry1 - ry0 < opts.minSize) continue;
+    const colProfile = smooth(columnActivityInRows(gray, width, ry0, ry1), 2);
+    const colBands = findContentBands(colProfile, opts.thresholdRatio, opts.minGap);
+    if (!colBands.length) continue;
+    const [cx0, cx1] = colBands[0]; // la vignette est toujours la plus à gauche
+    const w = cx1 - cx0, h = ry1 - ry0;
+    if (w < opts.minSize || h < opts.minSize) continue;
+    const ratio = w / h;
+    if (ratio < opts.ratioMin || ratio > opts.ratioMax) continue;
+    boxes.push({ x: cx0, y: ry0, w, h });
+  }
+  return boxes;
+}
 
 function runDetection() {
   if (!currentImage) return;
@@ -197,27 +298,18 @@ function runDetection() {
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const gray = toGrayscale(imageData);
 
-  const thresholdRatio = els.threshold.value / 100;
-  const minGap = Number(els.minGap.value);
-  const minSize = Number(els.minSize.value);
-  const ratioMin = els.ratioMin.value / 100;
-  const ratioMax = ratioMin + 0.6;
+  const opts = {
+    thresholdRatio: els.threshold.value / 100,
+    minGap: Number(els.minGap.value),
+    minSize: Number(els.minSize.value),
+    ratioMin: els.ratioMin.value / 100,
+    ratioMax: els.ratioMin.value / 100 + 0.6,
+    mergeGap: Number(els.mergeGap.value),
+  };
 
-  const colProfile = smooth(columnActivity(gray, canvas.width, canvas.height), 2);
-  const rowProfile = smooth(rowActivity(gray, canvas.width, canvas.height), 2);
-  const colBands = findContentBands(colProfile, thresholdRatio, minGap);
-  const rowBands = findContentBands(rowProfile, thresholdRatio, minGap);
-
-  const boxes = [];
-  for (const [ry0, ry1] of rowBands) {
-    for (const [cx0, cx1] of colBands) {
-      const w = cx1 - cx0, h = ry1 - ry0;
-      if (w < minSize || h < minSize) continue;
-      const ratio = w / h;
-      if (ratio < ratioMin || ratio > ratioMax) continue;
-      boxes.push({ x: cx0, y: ry0, w, h });
-    }
-  }
+  const boxes = els.layoutMode.value === "list"
+    ? detectList(gray, canvas.width, canvas.height, opts)
+    : detectGrid(gray, canvas.width, canvas.height, opts);
 
   ctx.lineWidth = Math.max(2, canvas.width / 400);
   ctx.strokeStyle = "#ff5c8a";
