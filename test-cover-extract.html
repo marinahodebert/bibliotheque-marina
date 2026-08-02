@@ -1078,7 +1078,33 @@ function showWriteConfirm(list, mode) {
   document.getElementById("confirmWriteBtn").addEventListener("click", () => executeRealCommit(mutations, mode));
 }
 
+// Empêche deux écritures réelles simultanées (ex. double-clic, ou un
+// micro-test lancé pendant qu'un autre est encore en cours) : deux tentatives
+// concurrentes liraient la même branche de départ, et la seconde à finir se
+// verrait refuser la mise à jour (conflit 422) — un simple garde-fou évite
+// cette course, plutôt que de compter sur l'utilisatrice pour ne pas cliquer
+// deux fois pendant que ça tourne.
+let writeInFlight = false;
+function setWriteButtonsDisabled(disabled) {
+  ["validateBtn", "microTestAddBtn", "microTestCoverBtn"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = disabled;
+  });
+}
+
 async function executeRealCommit(mutations, mode) {
+  if (writeInFlight) return;
+  writeInFlight = true;
+  setWriteButtonsDisabled(true);
+  try {
+    await executeRealCommitInner(mutations, mode);
+  } finally {
+    writeInFlight = false;
+    setWriteButtonsDisabled(false);
+  }
+}
+
+async function executeRealCommitInner(mutations, mode) {
   const area = document.getElementById("writeConfirmArea");
   const resultEl = document.getElementById("validateResult");
   const cfg = MarinaSync.getGitHubConfig();
