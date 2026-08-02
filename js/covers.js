@@ -43,6 +43,26 @@ async function searchOpenLibrary(title, author) {
   }));
 }
 
+// Catalogue ebooks Apple Books via l'iTunes Search API — gratuite, sans clé,
+// CORS ouvert à n'importe quelle origine (vérifié : Access-Control-Allow-Origin
+// reflète l'Origin envoyée). country=fr pour privilégier le catalogue France,
+// pertinent vu la part de romances traduites en français.
+async function searchAppleBooks(title, author) {
+  const term = encodeURIComponent(`${title} ${author}`.trim());
+  const url = `https://itunes.apple.com/search?term=${term}&entity=ebook&limit=5&country=fr`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Apple Books ${res.status}`);
+  const data = await res.json();
+  return (data.results || []).map(r => ({
+    title: r.trackName || "",
+    subtitle: "",
+    authors: r.artistName ? [r.artistName] : [],
+    cover: r.artworkUrl100 ? r.artworkUrl100.replace(/100x100/, "600x600") : "",
+    source: "Apple Books",
+    link: r.trackViewUrl || "",
+  }));
+}
+
 function extractTomeNumber(text) {
   const m = String(text || "").match(/\bt(?:ome)?\.?\s*(\d+)\b/i);
   return m ? m[1] : "";
@@ -75,9 +95,10 @@ function scoreCandidate(book, candidate) {
   if (!titlesMatch(book.title, fullCandidateTitle)) {
     return { accepted: false, reason: `titre non correspondant (« ${fullCandidateTitle || "(sans titre)"} »)` };
   }
-  const bookTome = String(book.tome || "");
-  const candidateTome = extractTomeNumber(fullCandidateTitle);
-  if (bookTome && candidateTome && bookTome !== candidateTome) {
+  const bookTome = book.tome ? Number(book.tome) : null;
+  const candidateTomeRaw = extractTomeNumber(fullCandidateTitle);
+  const candidateTome = candidateTomeRaw ? Number(candidateTomeRaw) : null;
+  if (bookTome !== null && candidateTome !== null && bookTome !== candidateTome) {
     return { accepted: false, reason: `tome différent (attendu t.${bookTome}, trouvé t.${candidateTome})` };
   }
   if (!candidate.cover) {
@@ -86,40 +107,38 @@ function scoreCandidate(book, candidate) {
   return { accepted: true, reason: "" };
 }
 
-// Cascade Google Books -> Open Library (ordre demandé). N'interroge Open
-// Library que si Google Books n'a rien renvoyé de qualifié (erreur ou zéro
-// candidat conforme), pour ne pas doubler les appels inutilement.
+// Cascade dans l'ordre fourni. On ne passe à la source suivante que si la
+// précédente n'a renvoyé aucun candidat qualifié (erreur ou zéro candidat
+// conforme), pour ne pas multiplier les appels inutilement.
 async function findCoverForBook(book, options = {}) {
   const errors = [];
-  let source = "Google Books";
-  let scored = [];
+  let source = null;
+  let allScored = [];
+  let accepted = [];
 
-  try {
-    const candidates = await searchGoogleBooks(book.title, book.author, options.googleApiKey);
-    scored = candidates.map(c => ({ candidate: c, ...scoreCandidate(book, c) }));
-  } catch (err) {
-    errors.push({ source: "Google Books", message: err.message });
-  }
+  const sources = [
+    { name: "Google Books", run: () => searchGoogleBooks(book.title, book.author, options.googleApiKey) },
+    { name: "Open Library", run: () => searchOpenLibrary(book.title, book.author) },
+    { name: "Apple Books", run: () => searchAppleBooks(book.title, book.author) },
+  ];
 
-  let accepted = scored.filter(s => s.accepted);
-
-  if (!accepted.length) {
+  for (const s of sources) {
+    if (accepted.length) break;
     try {
-      const olCandidates = await searchOpenLibrary(book.title, book.author);
-      const olScored = olCandidates.map(c => ({ candidate: c, ...scoreCandidate(book, c) }));
-      const olAccepted = olScored.filter(s => s.accepted);
-      if (olAccepted.length) {
-        source = "Open Library";
-        scored = olScored;
-        accepted = olAccepted;
-      } else {
-        scored = scored.concat(olScored);
+      const candidates = await s.run();
+      const scored = candidates.map(c => ({ candidate: c, ...scoreCandidate(book, c) }));
+      allScored = allScored.concat(scored);
+      const thisAccepted = scored.filter(x => x.accepted);
+      if (thisAccepted.length) {
+        source = s.name;
+        accepted = thisAccepted;
       }
     } catch (err) {
-      errors.push({ source: "Open Library", message: err.message });
+      errors.push({ source: s.name, message: err.message });
     }
   }
 
+  const scored = allScored;
   const seenCovers = new Set();
   const uniqueAccepted = accepted.filter(s => {
     if (seenCovers.has(s.candidate.cover)) return false;
@@ -139,4 +158,4 @@ async function findCoverForBook(book, options = {}) {
   };
 }
 
-window.MarinaCovers = { searchGoogleBooks, searchOpenLibrary, scoreCandidate, findCoverForBook, extractTomeNumber };
+window.MarinaCovers = { searchGoogleBooks, searchOpenLibrary, searchAppleBooks, scoreCandidate, findCoverForBook, extractTomeNumber };

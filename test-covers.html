@@ -39,7 +39,7 @@
 <body>
 <div class="wrap">
   <h1>Test de correspondance de couvertures</h1>
-  <p class="intro">Page de diagnostic jetable — étape 1 du plan. Interroge Google Books puis, seulement si rien n'est qualifié, Open Library, sur un échantillon de 16 vrais livres représentatifs de ta bibliothèque (romances auto-éditées, séries à tomes, titres plus connus, une pièce de théâtre). Ne modifie rien dans <code>data/books.json</code> — purement informatif.</p>
+  <p class="intro">Page de diagnostic jetable — étape 1 du plan. Interroge Google Books, puis Open Library, puis Apple Books (iTunes Search), en s'arrêtant dès qu'une source qualifie un candidat, sur un échantillon de 16 vrais livres représentatifs de ta bibliothèque (romances auto-éditées, séries à tomes, titres plus connus, une pièce de théâtre). Ne modifie rien dans <code>data/books.json</code> — purement informatif.</p>
 
   <div class="bar" style="flex-wrap:wrap;">
     <label style="font-size:.82rem;color:#95939a;display:flex;flex-direction:column;gap:.3rem;">
@@ -135,6 +135,7 @@ function renderSummary(results) {
   const none = results.filter(r => r && r.status === "none").length;
   const bySourceGB = results.filter(r => r && r.source === "Google Books").length;
   const bySourceOL = results.filter(r => r && r.source === "Open Library").length;
+  const bySourceAB = results.filter(r => r && r.source === "Apple Books").length;
   els.summaryTable.innerHTML = `
     <tr><td>Traités</td><td>${done} / ${SAMPLE_BOOKS.length}</td></tr>
     <tr><td>Confiance forte</td><td>${confident}</td></tr>
@@ -142,6 +143,7 @@ function renderSummary(results) {
     <tr><td>Introuvables</td><td>${none}</td></tr>
     <tr><td>Trouvés via Google Books</td><td>${bySourceGB}</td></tr>
     <tr><td>Trouvés via Open Library</td><td>${bySourceOL}</td></tr>
+    <tr><td>Trouvés via Apple Books</td><td>${bySourceAB}</td></tr>
   `;
 }
 
