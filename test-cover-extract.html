@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prototype — détection de couvertures dans une capture Kindle</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 1.5rem; background: #131315; color: #f2f1ee; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 1.3rem; margin: 0 0 .3rem; }
+  p.intro { color: #95939a; font-size: .88rem; margin: 0 0 1.3rem; max-width: 72ch; }
+  .dropzone {
+    border: 2px dashed rgba(242,241,238,.22); border-radius: 12px; padding: 2rem; text-align: center;
+    color: #95939a; font-size: .9rem; margin-bottom: 1.2rem; cursor: pointer;
+  }
+  .dropzone.drag { border-color: #ff7a59; color: #f2f1ee; }
+  input[type="file"] { display: none; }
+  .controls { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-bottom: 1.2rem; padding: 1rem 1.2rem; background: #1b1b1e; border-radius: 10px; }
+  .controls label { display: flex; flex-direction: column; gap: .3rem; font-size: .78rem; color: #95939a; min-width: 160px; }
+  .controls input[type="range"] { width: 100%; }
+  .controls .val { color: #ffb454; font-weight: 700; }
+  button { font: inherit; cursor: pointer; border: none; border-radius: 9px; padding: .6rem 1rem; font-weight: 700; background: linear-gradient(135deg,#ff5c8a,#ff7a59 55%,#ffb454); color: #171214; }
+  .canvas-wrap { position: relative; margin-bottom: 1.4rem; max-width: 100%; overflow: auto; background: #0b0b0d; border-radius: 10px; }
+  canvas { display: block; max-width: 100%; height: auto; }
+  .summary { font-size: .9rem; margin-bottom: 1rem; color: #f2f1ee; }
+  .summary b { color: #3fbe86; }
+  .crops { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: .8rem; }
+  .crop-item { background: #1b1b1e; border-radius: 8px; overflow: hidden; border: 1px solid rgba(242,241,238,.1); }
+  .crop-item canvas { width: 100%; display: block; }
+  .crop-item .label { font-size: .65rem; color: #95939a; padding: .3rem .4rem; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Prototype — détection et découpe de couvertures</h1>
+  <p class="intro">Outil jetable, indépendant de l'application. Dépose une capture de ta bibliothèque Kindle (grille de couvertures) : l'algorithme analyse les zones de contenu (les couvertures) et les zones vides (les espaces entre elles) pour détecter et découper chaque couverture automatiquement — sans OCR, sans reconnaissance de titre pour l'instant, juste la détection visuelle. Rien n'est envoyé nulle part, tout se passe dans ton navigateur.</p>
+
+  <div class="dropzone" id="dropzone">Dépose une image ici, ou clique pour en choisir une</div>
+  <input type="file" id="fileInput" accept="image/*" />
+
+  <div class="controls" id="controls" style="display:none;">
+    <label>Sensibilité du seuil (contenu vs. fond)
+      <input type="range" id="threshold" min="2" max="40" value="14" />
+      <span class="val" id="thresholdVal">14%</span>
+    </label>
+    <label>Largeur minimale d'un espace (px)
+      <input type="range" id="minGap" min="2" max="60" value="10" />
+      <span class="val" id="minGapVal">10</span>
+    </label>
+    <label>Taille minimale d'une couverture (px)
+      <input type="range" id="minSize" min="20" max="300" value="60" />
+      <span class="val" id="minSizeVal">60</span>
+    </label>
+    <label>Ratio largeur/hauteur min–max
+      <input type="range" id="ratioMin" min="30" max="100" value="45" />
+      <span class="val" id="ratioVal">0.45 – 1.05</span>
+    </label>
+    <div style="display:flex;align-items:flex-end;"><button id="redetectBtn">Redétecter</button></div>
+  </div>
+
+  <div class="canvas-wrap"><canvas id="overlayCanvas"></canvas></div>
+  <p class="summary" id="summary"></p>
+  <div class="crops" id="crops"></div>
+</div>
+
+<script>
+const els = {
+  dropzone: document.getElementById("dropzone"),
+  fileInput: document.getElementById("fileInput"),
+  controls: document.getElementById("controls"),
+  overlayCanvas: document.getElementById("overlayCanvas"),
+  summary: document.getElementById("summary"),
+  crops: document.getElementById("crops"),
+  threshold: document.getElementById("threshold"),
+  thresholdVal: document.getElementById("thresholdVal"),
+  minGap: document.getElementById("minGap"),
+  minGapVal: document.getElementById("minGapVal"),
+  minSize: document.getElementById("minSize"),
+  minSizeVal: document.getElementById("minSizeVal"),
+  ratioMin: document.getElementById("ratioMin"),
+  ratioVal: document.getElementById("ratioVal"),
+  redetectBtn: document.getElementById("redetectBtn"),
+};
+
+let currentImage = null;
+
+els.dropzone.addEventListener("click", () => els.fileInput.click());
+els.dropzone.addEventListener("dragover", e => { e.preventDefault(); els.dropzone.classList.add("drag"); });
+els.dropzone.addEventListener("dragleave", () => els.dropzone.classList.remove("drag"));
+els.dropzone.addEventListener("drop", e => {
+  e.preventDefault();
+  els.dropzone.classList.remove("drag");
+  const file = e.dataTransfer.files[0];
+  if (file) loadImage(file);
+});
+els.fileInput.addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (file) loadImage(file);
+});
+
+function loadImage(file) {
+  const img = new Image();
+  img.onload = () => {
+    currentImage = img;
+    els.controls.style.display = "flex";
+    runDetection();
+  };
+  img.src = URL.createObjectURL(file);
+}
+
+[els.threshold, els.minGap, els.minSize, els.ratioMin].forEach(input => {
+  input.addEventListener("input", updateLabels);
+});
+function updateLabels() {
+  els.thresholdVal.textContent = els.threshold.value + "%";
+  els.minGapVal.textContent = els.minGap.value;
+  els.minSizeVal.textContent = els.minSize.value;
+  const rMin = els.ratioMin.value / 100;
+  els.ratioVal.textContent = rMin.toFixed(2) + " – " + (rMin + 0.6).toFixed(2);
+}
+updateLabels();
+els.redetectBtn.addEventListener("click", runDetection);
+
+// ---- détection par profils de projection (analyse de contenu vs fond) ----
+function toGrayscale(imageData) {
+  const { data, width, height } = imageData;
+  const gray = new Float32Array(width * height);
+  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+    gray[p] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+  }
+  return gray;
+}
+function columnActivity(gray, width, height) {
+  const profile = new Float32Array(width);
+  for (let x = 0; x < width; x++) {
+    let sum = 0;
+    for (let y = 1; y < height; y++) sum += Math.abs(gray[y * width + x] - gray[(y - 1) * width + x]);
+    profile[x] = sum / height;
+  }
+  return profile;
+}
+function rowActivity(gray, width, height) {
+  const profile = new Float32Array(height);
+  for (let y = 0; y < height; y++) {
+    let sum = 0;
+    const base = y * width;
+    for (let x = 1; x < width; x++) sum += Math.abs(gray[base + x] - gray[base + x - 1]);
+    profile[y] = sum / width;
+  }
+  return profile;
+}
+function smooth(arr, radius) {
+  const out = new Float32Array(arr.length);
+  for (let i = 0; i < arr.length; i++) {
+    let sum = 0, n = 0;
+    for (let k = -radius; k <= radius; k++) {
+      const j = i + k;
+      if (j >= 0 && j < arr.length) { sum += arr[j]; n++; }
+    }
+    out[i] = sum / n;
+  }
+  return out;
+}
+// segmente un profil 1D en bandes "contenu" séparées par des bandes "fond"
+function findContentBands(profile, thresholdRatio, minGap) {
+  const max = Math.max(...profile);
+  const isBackground = profile.map(v => v < max * thresholdRatio);
+  const bands = [];
+  let start = null;
+  let gapRun = 0;
+  for (let i = 0; i < isBackground.length; i++) {
+    if (!isBackground[i]) {
+      if (start === null) start = i;
+      gapRun = 0;
+    } else {
+      gapRun++;
+      if (start !== null && gapRun >= minGap) {
+        bands.push([start, i - gapRun]);
+        start = null;
+      }
+    }
+  }
+  if (start !== null) bands.push([start, isBackground.length - 1]);
+  return bands.filter(([a, b]) => b - a > 3);
+}
+
+function runDetection() {
+  if (!currentImage) return;
+  const img = currentImage;
+  const canvas = els.overlayCanvas;
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const gray = toGrayscale(imageData);
+
+  const thresholdRatio = els.threshold.value / 100;
+  const minGap = Number(els.minGap.value);
+  const minSize = Number(els.minSize.value);
+  const ratioMin = els.ratioMin.value / 100;
+  const ratioMax = ratioMin + 0.6;
+
+  const colProfile = smooth(columnActivity(gray, canvas.width, canvas.height), 2);
+  const rowProfile = smooth(rowActivity(gray, canvas.width, canvas.height), 2);
+  const colBands = findContentBands(colProfile, thresholdRatio, minGap);
+  const rowBands = findContentBands(rowProfile, thresholdRatio, minGap);
+
+  const boxes = [];
+  for (const [ry0, ry1] of rowBands) {
+    for (const [cx0, cx1] of colBands) {
+      const w = cx1 - cx0, h = ry1 - ry0;
+      if (w < minSize || h < minSize) continue;
+      const ratio = w / h;
+      if (ratio < ratioMin || ratio > ratioMax) continue;
+      boxes.push({ x: cx0, y: ry0, w, h });
+    }
+  }
+
+  ctx.lineWidth = Math.max(2, canvas.width / 400);
+  ctx.strokeStyle = "#ff5c8a";
+  ctx.font = `${Math.max(14, canvas.width / 60)}px sans-serif`;
+  ctx.fillStyle = "#ff5c8a";
+  boxes.forEach((b, i) => {
+    ctx.strokeRect(b.x, b.y, b.w, b.h);
+    ctx.fillText(String(i + 1), b.x + 4, b.y + Math.max(16, canvas.width / 50));
+  });
+
+  els.summary.innerHTML = `<b>${boxes.length}</b> zone(s) détectée(s) — image ${canvas.width}×${canvas.height}px.`;
+
+  els.crops.innerHTML = "";
+  boxes.forEach((b, i) => {
+    const cropCanvas = document.createElement("canvas");
+    cropCanvas.width = b.w;
+    cropCanvas.height = b.h;
+    cropCanvas.getContext("2d").drawImage(img, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h);
+    const item = document.createElement("div");
+    item.className = "crop-item";
+    item.appendChild(cropCanvas);
+    const label = document.createElement("div");
+    label.className = "label";
+    label.textContent = `#${i + 1} · ${b.w}×${b.h}`;
+    item.appendChild(label);
+    els.crops.appendChild(item);
+  });
+}
+</script>
+</body>
+</html>
