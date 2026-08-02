@@ -773,18 +773,44 @@ function bindKindleDialogEvents() {
   });
 }
 
-const KINDLE_MARKER = "dans la bibliotheque kindle";
-const KINDLE_NOISE = new Set(["voir plus", "voir sur amazon", "precedent", "suivant", "livres", "kindle", "bibliotheque kindle", "accueil", "boutique kindle"]);
+// Reconnaît la ligne marqueur même quand l'auteur est collé dessus
+// ("Piper Sullivan dans la bibliothèque Kindle"), pas seulement seule.
+const KINDLE_MARKER_RE = /^(.*?)\s*dans\s+la\s+biblioth[eè]que\s+kindle\s*$/i;
+// Libellés de l'interface Kindle (barre de navigation, boutons...) qui peuvent
+// se retrouver collés en fin de texte : jamais un livre à eux seuls.
+const KINDLE_UI_WORDS = new Set([
+  "accueil", "bibliotheque", "ma bibliotheque", "plus", "rechercher", "recherche",
+  "parametres", "reglages", "retour", "boutique kindle", "acheter", "lire maintenant",
+  "menu", "profil", "notifications", "voir plus", "voir sur amazon", "precedent", "suivant",
+]);
+
+// Une ligne "bruit" typique du copier-coller Kindle (fragments de jaquette,
+// libellés d'interface) est courte/tout en majuscules, sans un seul mot en
+// minuscule reconnaissable — un vrai titre ou auteur contient toujours des
+// minuscules en français ("Le gardien...", "Piper Sullivan"...).
+function looksLikeNoiseFragment(line) {
+  if (KINDLE_UI_WORDS.has(clean(line))) return true;
+  const letters = line.replace(/[^\p{L}]/gu, "");
+  if (!letters) return true;
+  return !/\p{Ll}/u.test(letters);
+}
+// Retire un préfixe tout en majuscules collé devant le vrai titre (ex.
+// "PIPER SULLIVAN Curvy Fake Wife..." -> "Curvy Fake Wife...") : ce sont des
+// fragments de jaquette/nom d'autrice répétés par le copier-coller Kindle.
+function stripLeadingCapsNoise(line) {
+  const m = line.match(/^((?:[A-ZÀ-Þ]{2,}[:.'-]?\s+)+)(?=[A-ZÀ-Þ][a-zà-ÿ]|[a-zà-ÿ])/);
+  return m ? line.slice(m[1].length).trim() : line;
+}
 
 function parseKindleText(raw) {
   const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-  const hasMarker = lines.some(l => clean(l) === KINDLE_MARKER);
+  const hasMarker = lines.some(l => KINDLE_MARKER_RE.test(l));
 
   if (!hasMarker) {
-    const usable = lines.filter(l => !KINDLE_NOISE.has(clean(l)) && !/^\d+$/.test(clean(l)));
+    const usable = lines.filter(l => !looksLikeNoiseFragment(l));
     const pairs = [];
     for (let i = 0; i < usable.length; i += 2) {
-      pairs.push({ title: usable[i], author: usable[i + 1] || "", incomplete: !usable[i + 1] });
+      pairs.push({ title: stripLeadingCapsNoise(usable[i]), author: usable[i + 1] || "", incomplete: !usable[i + 1] });
     }
     return pairs;
   }
@@ -792,23 +818,34 @@ function parseKindleText(raw) {
   const records = [];
   let buffer = [];
   for (const line of lines) {
-    const norm = clean(line);
-    if (norm === KINDLE_MARKER) {
-      if (buffer.length) records.push(buffer);
+    const m = line.match(KINDLE_MARKER_RE);
+    if (m) {
+      const inlineAuthor = m[1].trim();
+      let author, titleLines;
+      if (inlineAuthor) {
+        author = inlineAuthor;
+        titleLines = buffer;
+      } else if (buffer.length) {
+        author = buffer[buffer.length - 1];
+        titleLines = buffer.slice(0, -1);
+      } else {
+        author = "";
+        titleLines = [];
+      }
+      if (titleLines.length) {
+        records.push({ title: stripLeadingCapsNoise(titleLines.join(" ")), author, incomplete: !author });
+      }
       buffer = [];
       continue;
     }
-    if (KINDLE_NOISE.has(norm) || /^\d+$/.test(norm)) continue;
-    buffer.push(line);
+    if (!looksLikeNoiseFragment(line)) buffer.push(line);
   }
-  if (buffer.length) records.push(buffer);
+  // Un reliquat en fin de texte qui n'a jamais atteint de marqueur n'est
+  // volontairement PAS transformé en livre : le plus souvent c'est la barre
+  // de navigation de l'app Kindle, pas un livre coupé. Mieux vaut ne rien
+  // créer que créer un faux livre.
 
-  return records.map(lines => {
-    if (lines.length === 1) return { title: lines[0], author: "", incomplete: true };
-    const author = lines[lines.length - 1];
-    const title = lines.slice(0, -1).join(" ");
-    return { title, author, incomplete: false };
-  });
+  return records;
 }
 function extractSeriesTome(title) {
   const m = title.match(/\(([^()]+?)(?:\s+t\.?\s*(\d+)|\s+tome\s*(\d+))?\)\s*$/i);
