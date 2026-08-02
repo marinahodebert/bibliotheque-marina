@@ -1,5 +1,6 @@
 [
   {
+    "id": "un-amour-ineluctable-la-famille-bennett",
     "title": "Un Amour Inéluctable (La Famille Bennett)",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -11,6 +12,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-eternel-la-famille-bennett",
     "title": "Un amour éternel (La Famille Bennett)",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -22,6 +24,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-captivant-la-famille-bennett",
     "title": "Un amour captivant (La Famille Bennett)",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -33,6 +36,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-irresistible-la-famille-bennett",
     "title": "Un Amour Irrésistible (La Famille Bennett)",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -44,6 +48,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-envoutant-la-famille-bennett",
     "title": "Un Amour Envoûtant (La Famille Bennett)",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -55,6 +60,7 @@
     "notes": ""
   },
   {
+    "id": "la-fausse-epouse",
     "title": "La Fausse Épouse",
     "author": "Annie J. Rose",
     "series": "",
@@ -66,6 +72,7 @@
     "notes": ""
   },
   {
+    "id": "pour-te-briser-le-c-ur",
     "title": "Pour te briser le cœur",
     "author": "Emma Quinn",
     "series": "",
@@ -77,6 +84,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -88,6 +96,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-2",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -99,6 +108,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-3",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -110,6 +120,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "en-pleine-action-action-ou-verite-t-1",
     "title": "En pleine action (Action ou Vérité t.1)",
     "author": "Lauren Landish",
     "series": "Action ou Vérité",
@@ -121,6 +132,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-4",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -132,6 +144,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "maintenant-tu-es-a-moi-jeu-interdit-avec-le-milliardaire-histoires-d-amour-de-milliardaires",
     "title": "Maintenant tu es à moi: Jeu interdit avec le milliardaire (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -143,6 +156,7 @@
     "notes": ""
   },
   {
+    "id": "l-appetit-des-jumeaux-deux-milliardaires-pour-april-histoires-d-amour-de-milliardaires",
     "title": "L'appétit des jumeaux : Deux milliardaires pour April (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -154,6 +168,7 @@
     "notes": ""
   },
   {
+    "id": "un-bebe-secret-avec-le-pdg-nuit-torride-avec-consequences-histoires-d-amour-de-milliardaires",
     "title": "Un Bébé secret avec le PDG: Nuit torride avec conséquences (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -165,6 +180,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-de-noel-la-famille-bennett",
     "title": "Un Amour De Noël (La Famille Bennett)",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -176,6 +192,7 @@
     "notes": ""
   },
   {
+    "id": "la-vie-en-vrai",
     "title": "La Vie en vrai",
     "author": "Emma Green",
     "series": "",
@@ -187,6 +204,7 @@
     "notes": ""
   },
   {
+    "id": "professor-love-derriere-les-portes-closes-histoires-d-amour-de-milliardaires",
     "title": "Professor Love: Derrière les portes closes (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -198,6 +216,7 @@
     "notes": ""
   },
   {
+    "id": "amoureuse-de-m-impitoyable-une-seconde-chance-pour-l-amour-histoires-d-amour-de-milliardaires",
     "title": "Amoureuse de M. Impitoyable: Une seconde chance pour l'amour (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -209,6 +228,7 @@
     "notes": ""
   },
   {
+    "id": "aimez-moi-encore-monsieur-le-milliardaire-histoires-d-amour-de-milliardaires",
     "title": "Aimez-moi encore Monsieur le Milliardaire (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -220,6 +240,7 @@
     "notes": ""
   },
   {
+    "id": "amour-infiltre-nounou-pour-un-milliardaire-histoires-d-amour-de-milliardaires",
     "title": "Amour Infiltré: Nounou pour un milliardaire (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -231,6 +252,7 @@
     "notes": ""
   },
   {
+    "id": "la-fausse-femme-du-milliardaire-une-offre-tres-tentante-histoires-d-amour-de-milliardaires",
     "title": "La fausse femme du milliardaire : Une offre très tentante (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -242,6 +264,7 @@
     "notes": ""
   },
   {
+    "id": "surprise-milliardaire-les-consequences-d-une-nuit-histoires-d-amour-de-milliardaires",
     "title": "Surprise milliardaire: Les conséquences d'une nuit (Histoires d'amour de milliardaires)",
     "author": "Anna May",
     "series": "Histoires d'amour de milliardaires",
@@ -253,6 +276,7 @@
     "notes": ""
   },
   {
+    "id": "boot-camp",
     "title": "Boot Camp",
     "author": "Léana Soal",
     "series": "",
@@ -264,6 +288,7 @@
     "notes": ""
   },
   {
+    "id": "docteur-papa-milliardaire-alpha",
     "title": "Docteur Papa (Milliardaire Alpha)",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -275,6 +300,7 @@
     "notes": ""
   },
   {
+    "id": "retour-a-la-maison-milliardaire-alpha",
     "title": "Retour à la maison (Milliardaire Alpha)",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -286,6 +312,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-et-la-barista-milliardaire-alpha",
     "title": "Le milliardaire et la barista (Milliardaire Alpha)",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -297,6 +324,7 @@
     "notes": ""
   },
   {
+    "id": "j-aime-celui-que-je-devrais-detester-milliardaire-alpha",
     "title": "J'aime celui que je devrais détester (Milliardaire Alpha)",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -308,6 +336,7 @@
     "notes": ""
   },
   {
+    "id": "c-est-mon-bebe-mon-milliardaire-t-4",
     "title": "C'est mon bébé (Mon milliardaire t.4)",
     "author": "Anna May",
     "series": "Mon milliardaire",
@@ -319,6 +348,7 @@
     "notes": ""
   },
   {
+    "id": "ne-touchez-pas-le-pdg-amoureuse-du-milliardaire-mon-milliardaire-t-3",
     "title": "Ne touchez pas le PDG: Amoureuse du milliardaire (Mon milliardaire t.3)",
     "author": "Anna May",
     "series": "Mon milliardaire",
@@ -330,6 +360,7 @@
     "notes": ""
   },
   {
+    "id": "mon-ennemi-attirant-un-coup-d-un-soir-avec-des-consequences-mon-milliardaire-t-2",
     "title": "Mon Ennemi Attirant: Un Coup d'un soir avec des conséquences (Mon milliardaire t.2)",
     "author": "Anna May",
     "series": "Mon milliardaire",
@@ -341,6 +372,7 @@
     "notes": ""
   },
   {
+    "id": "14-jours-la-mienne-achetee-par-le-milliardaire-mon-milliardaire-t-1",
     "title": "14 jours la MIENNE: Achetée par le milliardaire (Mon milliardaire t.1)",
     "author": "Anna May",
     "series": "Mon milliardaire",
@@ -352,6 +384,7 @@
     "notes": ""
   },
   {
+    "id": "fou-de-toi-la-famille-connor",
     "title": "Fou De Toi (La Famille Connor)",
     "author": "Layla Hagen",
     "series": "La Famille Connor",
@@ -363,6 +396,7 @@
     "notes": ""
   },
   {
+    "id": "rien-qu-avec-toi-la-famille-connor",
     "title": "Rien Qu'avec Toi (La Famille Connor)",
     "author": "Layla Hagen",
     "series": "La Famille Connor",
@@ -374,6 +408,7 @@
     "notes": ""
   },
   {
+    "id": "ange-de-velours-la-bratva-vorobev-t-2",
     "title": "Ange de velours (La Bratva Vorobev t.2)",
     "author": "Nicole Fox",
     "series": "La Bratva Vorobev",
@@ -385,6 +420,7 @@
     "notes": ""
   },
   {
+    "id": "diable-de-velours-la-bratva-vorobev-t-1",
     "title": "Diable de velours (La Bratva Vorobev t.1)",
     "author": "Nicole Fox",
     "series": "La Bratva Vorobev",
@@ -396,6 +432,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-5",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -407,6 +444,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "le-trone-ravage-la-bratva-solovev-t-2",
     "title": "Le Trône ravagé (La Bratva Solovev t.2)",
     "author": "Nicole Fox",
     "series": "La Bratva Solovev",
@@ -418,6 +456,7 @@
     "notes": ""
   },
   {
+    "id": "la-couronne-ravagee-la-bratva-solovev-t-1",
     "title": "La Couronne Ravagée (La Bratva Solovev t.1)",
     "author": "Nicole Fox",
     "series": "La Bratva Solovev",
@@ -429,6 +468,7 @@
     "notes": ""
   },
   {
+    "id": "sauver-ce-qui-m-appartient-jouer-avec-les-ennuis",
     "title": "Sauver ce qui m'appartient (Jouer avec les ennuis)",
     "author": "Ava Gray",
     "series": "Jouer avec les ennuis",
@@ -440,6 +480,7 @@
     "notes": ""
   },
   {
+    "id": "proteger-ce-qui-m-appartient-jouer-avec-les-ennuis",
     "title": "Protéger ce qui m'appartient (Jouer avec les ennuis)",
     "author": "Ava Gray",
     "series": "Jouer avec les ennuis",
@@ -451,6 +492,7 @@
     "notes": ""
   },
   {
+    "id": "reclamer-ce-qui-m-appartient-jouer-avec-les-ennuis",
     "title": "Réclamer ce qui m'appartient (Jouer avec les ennuis)",
     "author": "Ava Gray",
     "series": "Jouer avec les ennuis",
@@ -462,6 +504,7 @@
     "notes": ""
   },
   {
+    "id": "un-c-ur-pour-bruce-sanders-cicatrices",
     "title": "Un cœur pour Bruce Sanders: Cicatrices",
     "author": "Andrea Adrich",
     "series": "",
@@ -473,6 +516,7 @@
     "notes": ""
   },
   {
+    "id": "chasser-ce-qui-m-appartient-jouer-avec-les-ennuis",
     "title": "Chasser ce qui m'appartient (Jouer avec les ennuis)",
     "author": "Ava Gray",
     "series": "Jouer avec les ennuis",
@@ -484,6 +528,7 @@
     "notes": ""
   },
   {
+    "id": "dis-moi-que-c-est-pour-la-vie-des-histoires-d-amour-irresistibles-t-2",
     "title": "Dis-moi que c'est pour la vie (Des histoires d'amour irrésistibles t.2)",
     "author": "Riley Flowers",
     "series": "Des histoires d'amour irrésistibles",
@@ -495,6 +540,7 @@
     "notes": ""
   },
   {
+    "id": "le-secret-de-mon-medecin-histoires-d-amour-secretes-t-1",
     "title": "Le secret de mon médecin (Histoires d'amour secrètes t.1)",
     "author": "Riley Flowers",
     "series": "Histoires d'amour secrètes",
@@ -506,6 +552,7 @@
     "notes": ""
   },
   {
+    "id": "le-secret-de-mon-pdg-histoires-d-amour-secretes-t-2",
     "title": "Le secret de mon PDG (Histoires d'amour secrètes t.2)",
     "author": "Riley Flowers",
     "series": "Histoires d'amour secrètes",
@@ -517,6 +564,7 @@
     "notes": ""
   },
   {
+    "id": "mon-secret-a-un-million-histoires-d-amour-secretes-t-4",
     "title": "Mon secret à un million $ (Histoires d'amour secrètes t.4)",
     "author": "Riley Flowers",
     "series": "Histoires d'amour secrètes",
@@ -528,6 +576,7 @@
     "notes": ""
   },
   {
+    "id": "le-secret-de-mon-ennemi-histoires-d-amour-secretes-t-3",
     "title": "Le secret de mon ennemi (Histoires d'amour secrètes t.3)",
     "author": "Riley Flowers",
     "series": "Histoires d'amour secrètes",
@@ -539,6 +588,7 @@
     "notes": ""
   },
   {
+    "id": "le-papa-inattendu-le-bebe-du-pdg-milliardaire-mon-ennemi-le-milliardaire-t-2",
     "title": "Le Papa inattendu: Le bébé du PDG milliardaire (Mon ennemi le milliardaire t.2)",
     "author": "Lilli James",
     "series": "Mon ennemi le milliardaire",
@@ -550,6 +600,7 @@
     "notes": ""
   },
   {
+    "id": "impossible-de-t-oublier-des-histoires-d-amour-irresistibles-t-1",
     "title": "Impossible de t'oublier (Des histoires d'amour irrésistibles t.1)",
     "author": "Riley Flowers",
     "series": "Des histoires d'amour irrésistibles",
@@ -561,6 +612,7 @@
     "notes": ""
   },
   {
+    "id": "amour-cache-seduite-par-le-milliardaire-mon-ennemi-le-milliardaire-t-1",
     "title": "Amour caché: Séduite par le milliardaire (Mon ennemi le milliardaire t.1)",
     "author": "Lilli James",
     "series": "Mon ennemi le milliardaire",
@@ -572,6 +624,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-6",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -583,6 +636,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "mon-meilleur-ami",
     "title": "Mon Meilleur Ami",
     "author": "Annie J. Rose",
     "series": "",
@@ -594,6 +648,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-7",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -605,6 +660,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-8",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -616,6 +672,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "faite-pour-toi-la-famille-connor",
     "title": "Faite Pour Toi (La Famille Connor)",
     "author": "Layla Hagen",
     "series": "La Famille Connor",
@@ -627,6 +684,7 @@
     "notes": ""
   },
   {
+    "id": "dechainee-avec-toi-la-famille-connor",
     "title": "Déchaînée Avec Toi (La Famille Connor)",
     "author": "Layla Hagen",
     "series": "La Famille Connor",
@@ -638,6 +696,7 @@
     "notes": ""
   },
   {
+    "id": "et-s-ils-vivaient-heureux-contes-de-fees-a-ma-facon-t-3",
     "title": "Et s'ils vivaient heureux ? (Contes de fées à ma façon t.3)",
     "author": "Lauren Landish",
     "series": "Contes de fées à ma façon",
@@ -649,6 +708,7 @@
     "notes": ""
   },
   {
+    "id": "un-prince-pas-si-charmant-contes-de-fees-a-ma-facon-t-2",
     "title": "Un prince pas si charmant (Contes de fées à ma façon t.2)",
     "author": "Lauren Landish",
     "series": "Contes de fées à ma façon",
@@ -660,6 +720,7 @@
     "notes": ""
   },
   {
+    "id": "la-belle-et-le-boss-contes-de-fees-a-ma-facon-t-1",
     "title": "La Belle et Le Boss (Contes de fées à ma façon t.1)",
     "author": "Lauren Landish",
     "series": "Contes de fées à ma façon",
@@ -671,6 +732,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-9",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -682,6 +744,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-10",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -693,6 +756,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-11",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -704,6 +768,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "bebe-secret-avec-le-meilleur-ami-de-mon-frere-milliardaire-alpha",
     "title": "Bébé secret avec le meilleur ami de mon frère (Milliardaire Alpha)",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -715,6 +780,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-12",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -726,6 +792,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "mon-fiance-chic-en-toc-serie-chic-et-toc-t-2",
     "title": "Mon fiancé chic en toc (Série Chic et Toc t.2)",
     "author": "Lauren Landish",
     "series": "Série Chic et Toc",
@@ -737,6 +804,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-13",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -748,6 +816,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-14",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -759,6 +828,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "une-taille-42-et-du-succes-une-comedie-romantique-positive",
     "title": "Une taille 42...et du succès ! : une comédie romantique positive",
     "author": "Fanny Myjany",
     "series": "",
@@ -770,6 +840,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-15",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -781,6 +852,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-16",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -792,6 +864,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-17",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -803,6 +876,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-18",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -814,6 +888,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-19",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -825,6 +900,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-20",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -836,6 +912,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "tout-pour-toi-la-famille-connor",
     "title": "Tout Pour Toi (La Famille Connor)",
     "author": "Layla Hagen",
     "series": "La Famille Connor",
@@ -847,6 +924,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-21",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -858,6 +936,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "fiance-d-un-jour",
     "title": "Fiancé d'un jour",
     "author": "Lauren Landish",
     "series": "",
@@ -869,6 +948,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-22",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -880,6 +960,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "lune-de-miel-chic-en-toc-serie-chic-et-toc-t-3",
     "title": "Lune de miel chic en toc (Série Chic et Toc t.3)",
     "author": "Lauren Landish",
     "series": "Série Chic et Toc",
@@ -891,6 +972,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-23",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -902,6 +984,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-24",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -913,6 +996,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "mon-mariage-chic-en-toc-serie-chic-et-toc-t-1",
     "title": "Mon mariage chic en toc (Série Chic et Toc t.1)",
     "author": "Lauren Landish",
     "series": "Série Chic et Toc",
@@ -924,6 +1008,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-infini-la-famille-bennett",
     "title": "Un Amour Infini (La Famille Bennett)",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -935,6 +1020,7 @@
     "notes": ""
   },
   {
+    "id": "l-escorte-du-milliardaire-the-escort-collection-t-1",
     "title": "L'escorte du Milliardaire (The Escort Collection t.1)",
     "author": "Leigh James",
     "series": "The Escort Collection",
@@ -946,6 +1032,7 @@
     "notes": ""
   },
   {
+    "id": "onde-de-choc-les-loups-de-washington-t-1",
     "title": "Onde de Choc (Les Loups de Washington t.1)",
     "author": "Karla Sorensen",
     "series": "Les Loups de Washington",
@@ -957,6 +1044,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-25",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -968,6 +1056,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "titre-indisponible-26",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -979,6 +1068,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "rappelle-toi-cette-nuit-la",
     "title": "Rappelle-toi cette nuit-là",
     "author": "Sarah S. Cope",
     "series": "",
@@ -990,6 +1080,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-27",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1001,6 +1092,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "l-autre-frere",
     "title": "L'autre frère",
     "author": "Sarah S. Cope",
     "series": "",
@@ -1012,6 +1104,7 @@
     "notes": ""
   },
   {
+    "id": "ma-liste-de-souhaits-secrete-les-freres-carter-t-4",
     "title": "Ma liste de souhaits secrète (Les frères Carter t.4)",
     "author": "Riley Flowers",
     "series": "Les frères Carter",
@@ -1023,6 +1116,7 @@
     "notes": ""
   },
   {
+    "id": "un-parfait-inconnu-les-freres-carter-t-3",
     "title": "Un parfait inconnu (Les frères Carter t.3)",
     "author": "Riley Flowers",
     "series": "Les frères Carter",
@@ -1034,6 +1128,7 @@
     "notes": ""
   },
   {
+    "id": "la-surprise-de-vegas-les-freres-carter-t-2",
     "title": "La surprise de Vegas (Les frères Carter t.2)",
     "author": "Riley Flowers",
     "series": "Les frères Carter",
@@ -1045,6 +1140,7 @@
     "notes": ""
   },
   {
+    "id": "ma-meilleure-erreur-les-freres-carter-t-1",
     "title": "Ma meilleure erreur (Les frères Carter t.1)",
     "author": "Riley Flowers",
     "series": "Les frères Carter",
@@ -1056,6 +1152,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-28",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1067,6 +1164,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "un-amour-predestine-la-famille-bennett",
     "title": "Un Amour Prédestiné (La Famille Bennett)",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -1078,6 +1176,7 @@
     "notes": ""
   },
   {
+    "id": "boss-et-bad-boy",
     "title": "BOSS et Bad Boy",
     "author": "Khéméia b",
     "series": "",
@@ -1089,6 +1188,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-29",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1100,6 +1200,7 @@
     "notes": "Disparu de la bibliothèque Kindle - titre/auteur non récupérables"
   },
   {
+    "id": "l-ailier-au-c-ur-de-l-attention",
     "title": "L'ailier au cœur de l'attention",
     "author": "Mrs Kristal",
     "series": "Victoria Eagles Hockey Romance",
@@ -1111,6 +1212,7 @@
     "notes": ""
   },
   {
+    "id": "double-trouble-the-perfect-lovestory",
     "title": "Double Trouble: The perfect Lovestory?",
     "author": "Allie Kinsley",
     "series": "",
@@ -1122,6 +1224,7 @@
     "notes": ""
   },
   {
+    "id": "a-nous-deux-coup-de-foudre-a-walker-island",
     "title": "À nous deux : Coup de foudre à Walker Island",
     "author": "Bella Andre",
     "series": "Coup de foudre à Walker Island",
@@ -1133,6 +1236,7 @@
     "notes": ""
   },
   {
+    "id": "friends-to-lovers-avec-la-star-du-hockey",
     "title": "Friends to lovers avec la star du hockey",
     "author": "Gloria Daven",
     "series": "",
@@ -1144,6 +1248,7 @@
     "notes": ""
   },
   {
+    "id": "ardente-tentation-le-capitaine-de-hockey-pere-celibataire",
     "title": "Ardente tentation: Le capitaine de hockey, père célibataire",
     "author": "Gloria Daven",
     "series": "",
@@ -1155,6 +1260,7 @@
     "notes": ""
   },
   {
+    "id": "coup-de-c-ur-pour-le-coach-de-hockey",
     "title": "Coup de cœur pour le coach de hockey",
     "author": "Zara Valentine",
     "series": "",
@@ -1166,6 +1272,7 @@
     "notes": ""
   },
   {
+    "id": "coup-de-pouce",
     "title": "Coup de pouce",
     "author": "Rebecca Jenshak",
     "series": "Wildcat Hockey",
@@ -1177,6 +1284,7 @@
     "notes": ""
   },
   {
+    "id": "au-centre-de-l-attraction",
     "title": "Au centre de l'attraction",
     "author": "Mrs Kristal",
     "series": "Victoria Eagles Hockey Romance",
@@ -1188,6 +1296,7 @@
     "notes": ""
   },
   {
+    "id": "coup-du-sort",
     "title": "Coup du sort",
     "author": "Rebecca Jenshak",
     "series": "Wildcat Hockey",
@@ -1199,6 +1308,7 @@
     "notes": ""
   },
   {
+    "id": "48-kilos-de-trop",
     "title": "48 kilos de trop",
     "author": "Sabine Milani",
     "series": "",
@@ -1210,6 +1320,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-30",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1221,6 +1332,7 @@
     "notes": ""
   },
   {
+    "id": "off-campus-tome-05-the-legacy",
     "title": "Off-campus - Tome 05: The legacy",
     "author": "Elle Kennedy",
     "series": "Off-campus",
@@ -1232,6 +1344,7 @@
     "notes": ""
   },
   {
+    "id": "curvy-et-coeur-a-prendre",
     "title": "Curvy et coeur à prendre",
     "author": "Sabine Milani",
     "series": "",
@@ -1243,6 +1356,7 @@
     "notes": ""
   },
   {
+    "id": "briser-ses-regles",
     "title": "Briser ses règles",
     "author": "Layla Hagen",
     "series": "",
@@ -1254,6 +1368,7 @@
     "notes": ""
   },
   {
+    "id": "off-campus-tome-04-the-goal",
     "title": "Off-campus - Tome 04: The goal",
     "author": "Elle Kennedy",
     "series": "Off-campus",
@@ -1265,6 +1380,7 @@
     "notes": ""
   },
   {
+    "id": "off-campus-tome-03-the-score",
     "title": "Off-campus - Tome 03: The score",
     "author": "Elle Kennedy",
     "series": "Off-campus",
@@ -1276,6 +1392,7 @@
     "notes": ""
   },
   {
+    "id": "off-campus-tome-02-the-mistake",
     "title": "Off-campus - Tome 02: The mistake",
     "author": "Elle Kennedy",
     "series": "Off-campus",
@@ -1287,6 +1404,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-31",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1298,6 +1416,7 @@
     "notes": ""
   },
   {
+    "id": "off-campus-the-deal-saison-1",
     "title": "Off campus The deal Saison 1",
     "author": "Elle Kennedy",
     "series": "Off-campus",
@@ -1309,6 +1428,7 @@
     "notes": ""
   },
   {
+    "id": "le-seul-but-romance-sportive-universitaire",
     "title": "Le seul but: Romance sportive universitaire",
     "author": "Katy Archer",
     "series": "Nolan U : hockey",
@@ -1320,6 +1440,7 @@
     "notes": ""
   },
   {
+    "id": "la-voleuse-de-c-urs-romance-sportive-universitaire",
     "title": "La voleuse de cœurs: Romance sportive universitaire",
     "author": "Katy Archer",
     "series": "Nolan U : hockey",
@@ -1331,6 +1452,7 @@
     "notes": ""
   },
   {
+    "id": "faux-couple-tres-mauvaise-idee",
     "title": "Faux Couple... Très Mauvaise Idée",
     "author": "Lili Valente",
     "series": "",
@@ -1342,6 +1464,7 @@
     "notes": "Romance de hockey - faux couple & différence d'âge (titre coupé sur la capture)"
   },
   {
+    "id": "tentation-irresistible",
     "title": "Tentation irrésistible",
     "author": "Layla Hagen",
     "series": "Les frères Sterling",
@@ -1353,6 +1476,7 @@
     "notes": ""
   },
   {
+    "id": "il-suffit-d-une-fois",
     "title": "Il suffit d'une fois",
     "author": "Jennifer Sucevic",
     "series": "Chicago Railers Hockey",
@@ -1364,6 +1488,7 @@
     "notes": ""
   },
   {
+    "id": "tentation-inavouable-pere-celibataire-milliardaire",
     "title": "Tentation inavouable: Père célibataire milliardaire",
     "author": "Layla Hagen",
     "series": "Les frères Sterling",
@@ -1375,6 +1500,7 @@
     "notes": ""
   },
   {
+    "id": "tentation-interdite-romance-avec-mon-patron-milliardaire",
     "title": "Tentation Interdite: Romance avec mon patron milliardaire",
     "author": "Layla Hagen",
     "series": "Les frères Sterling",
@@ -1386,6 +1512,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-sans-limites-milliardaires-rebelles-8",
     "title": "Un amour sans limites: Milliardaires Rebelles 8",
     "author": "Bella Andre & Jennifer Skully",
     "series": "Milliardaires Rebelles",
@@ -1397,6 +1524,7 @@
     "notes": ""
   },
   {
+    "id": "zone-protegee",
     "title": "Zone Protégée",
     "author": "Nikki Lawson",
     "series": "Les coeurs du hockey",
@@ -1408,6 +1536,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-32",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1419,6 +1548,7 @@
     "notes": ""
   },
   {
+    "id": "le-papa-solo",
     "title": "Le Papa solo",
     "author": "Layla Hagen",
     "series": "Les Frères Leblanc",
@@ -1430,6 +1560,7 @@
     "notes": ""
   },
   {
+    "id": "la-pulpeuse-rivale-du-milliardaire",
     "title": "La pulpeuse rivale du milliardaire",
     "author": "Lizzie Johnson",
     "series": "",
@@ -1441,6 +1572,7 @@
     "notes": "Romance ennemis à amants (titre coupé sur la capture)"
   },
   {
+    "id": "les-darkens-3-mon-boss-est-un-rockeur-mais-pas-que",
     "title": "Les Darkens #3 : Mon boss est un rockeur, mais pas que...",
     "author": "Audrey Rigaut",
     "series": "Les Darkens",
@@ -1452,6 +1584,7 @@
     "notes": ""
   },
   {
+    "id": "les-darkens-2-hotgirl",
     "title": "Les Darkens #2 : HotGirl",
     "author": "Audrey Rigaut",
     "series": "Les Darkens",
@@ -1463,6 +1596,7 @@
     "notes": ""
   },
   {
+    "id": "les-darkens-1-amour-d-enfance",
     "title": "Les Darkens #1 : Amour D'Enfance",
     "author": "Audrey Rigaut",
     "series": "Les Darkens",
@@ -1474,6 +1608,7 @@
     "notes": ""
   },
   {
+    "id": "les-dieux-de-la-glace-2-cameron",
     "title": "Les Dieux de la glace : #2 Cameron",
     "author": "Audrey Rigaut",
     "series": "Les Dieux de la Glace",
@@ -1485,6 +1620,7 @@
     "notes": ""
   },
   {
+    "id": "les-dieux-de-la-glace-3-derek",
     "title": "Les Dieux de la Glace : #3 Derek",
     "author": "Audrey Rigaut",
     "series": "Les Dieux de la Glace",
@@ -1496,6 +1632,7 @@
     "notes": ""
   },
   {
+    "id": "hockey-x-mas-une-deuxieme-chance-a-noel",
     "title": "Hockey X-Mas: Une deuxième chance à Noël",
     "author": "Gloria Daven",
     "series": "",
@@ -1507,6 +1644,7 @@
     "notes": ""
   },
   {
+    "id": "le-rebelle",
     "title": "Le Rebelle",
     "author": "Layla Hagen",
     "series": "Les Frères Leblanc",
@@ -1518,6 +1656,7 @@
     "notes": ""
   },
   {
+    "id": "mauvais-timing-le-bon-santa",
     "title": "Mauvais timing - le bon santa",
     "author": "Riley Flowers",
     "series": "",
@@ -1529,6 +1668,7 @@
     "notes": ""
   },
   {
+    "id": "notre-desir-secret",
     "title": "Notre Désir Secret",
     "author": "Anna May",
     "series": "Les Jeux des Milliardaires",
@@ -1540,6 +1680,7 @@
     "notes": ""
   },
   {
+    "id": "doux-salut",
     "title": "Doux salut",
     "author": "Callie Rose",
     "series": "Jeux impitoyables",
@@ -1551,6 +1692,7 @@
     "notes": ""
   },
   {
+    "id": "trois-patrons-pour-noel",
     "title": "Trois patrons pour Noël",
     "author": "Callie Rose",
     "series": "",
@@ -1562,6 +1704,7 @@
     "notes": ""
   },
   {
+    "id": "two-million-for-love-promesses-scandaleuses",
     "title": "Two Million for Love: Promesses scandaleuses",
     "author": "Anna May",
     "series": "Les Jeux des Milliardaires",
@@ -1573,6 +1716,7 @@
     "notes": ""
   },
   {
+    "id": "micah-les-freres-brash",
     "title": "Micah: Les Frères Brash",
     "author": "Jenna Myles",
     "series": "Les Frères Brash",
@@ -1584,6 +1728,7 @@
     "notes": ""
   },
   {
+    "id": "coloc-avec-mon-boss",
     "title": "Coloc avec mon boss",
     "author": "Erin Graham",
     "series": "",
@@ -1595,6 +1740,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-33",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1606,6 +1752,7 @@
     "notes": ""
   },
   {
+    "id": "embrassee-par-le-tackle",
     "title": "Embrassée par le Tackle",
     "author": "Ava Avery",
     "series": "Touchdown Hearts",
@@ -1617,6 +1764,7 @@
     "notes": "A forbidden love romance"
   },
   {
+    "id": "le-rival",
     "title": "Le Rival",
     "author": "Layla Hagen",
     "series": "Les Frères Leblanc",
@@ -1628,6 +1776,7 @@
     "notes": ""
   },
   {
+    "id": "l-enfant-terrible-de-montreal",
     "title": "L'enfant terrible de Montréal",
     "author": "Mrs Kristal",
     "series": "Montréal Beavers Hockey",
@@ -1639,6 +1788,7 @@
     "notes": ""
   },
   {
+    "id": "mon-faux-rendez-vous-de-noel",
     "title": "Mon faux rendez-vous de Noël",
     "author": "Nikki Lawson",
     "series": "",
@@ -1650,6 +1800,7 @@
     "notes": ""
   },
   {
+    "id": "one-beautiful-mistake",
     "title": "One Beautiful Mistake",
     "author": "Julia Malone",
     "series": "Les Milliardaires de Golden Island",
@@ -1661,6 +1812,7 @@
     "notes": ""
   },
   {
+    "id": "tempting-mr-callahan",
     "title": "Tempting Mr. Callahan",
     "author": "Anna May",
     "series": "Les Jeux des Milliardaires",
@@ -1672,6 +1824,7 @@
     "notes": "Une nuit, une règle, un mensonge"
   },
   {
+    "id": "trop-proche-de-m-weston",
     "title": "Trop proche de M. Weston",
     "author": "Amalia Blum",
     "series": "Cœurs en Feu",
@@ -1683,6 +1836,7 @@
     "notes": "Le frère de ma meilleure amie"
   },
   {
+    "id": "kade-les-freres-brash",
     "title": "Kade: Les Frères Brash",
     "author": "Jenna Myles",
     "series": "Les Frères Brash",
@@ -1694,6 +1848,7 @@
     "notes": ""
   },
   {
+    "id": "le-grincheux",
     "title": "Le Grincheux",
     "author": "Layla Hagen",
     "series": "Les Frères Leblanc",
@@ -1705,6 +1860,7 @@
     "notes": ""
   },
   {
+    "id": "m-weston-l-ennemi-que-j-aime",
     "title": "M. Weston, l'ennemi que j'aime",
     "author": "Amalia Blum",
     "series": "Cœurs en Feu",
@@ -1716,6 +1872,7 @@
     "notes": "Je lui appartiens"
   },
   {
+    "id": "une-visite-inattendue",
     "title": "Une visite inattendue",
     "author": "Kayla Laurels",
     "series": "",
@@ -1727,6 +1884,7 @@
     "notes": "Romance New Adult, adolescents, friends to lovers & enemies to lovers"
   },
   {
+    "id": "the-wingman",
     "title": "The Wingman",
     "author": "Stephanie Archer",
     "series": "",
@@ -1738,6 +1896,7 @@
     "notes": "Une nouvelle hockey romance irrésistible"
   },
   {
+    "id": "the-fake-out",
     "title": "The Fake Out",
     "author": "Stephanie Archer",
     "series": "",
@@ -1749,6 +1908,7 @@
     "notes": "Romance dans l'univers du hockey"
   },
   {
+    "id": "behind-the-net",
     "title": "Behind the Net",
     "author": "Stephanie Archer",
     "series": "",
@@ -1760,6 +1920,7 @@
     "notes": ""
   },
   {
+    "id": "le-charmeur",
     "title": "Le Charmeur",
     "author": "Layla Hagen",
     "series": "Les Frères Leblanc",
@@ -1771,6 +1932,7 @@
     "notes": ""
   },
   {
+    "id": "le-heart-breaker",
     "title": "Le Heart Breaker",
     "author": "Lili Valente",
     "series": "Les Frères Hunter du Pays du Vin",
@@ -1782,6 +1944,7 @@
     "notes": ""
   },
   {
+    "id": "mensonges-lascifs",
     "title": "Mensonges Lascifs",
     "author": "Nicole Fox",
     "series": "La Bratva Akopov",
@@ -1793,6 +1956,7 @@
     "notes": ""
   },
   {
+    "id": "promesses-lascives",
     "title": "Promesses Lascives",
     "author": "Nicole Fox",
     "series": "La Bratva Akopov",
@@ -1804,6 +1968,7 @@
     "notes": ""
   },
   {
+    "id": "joie-bonne-humeur-et-petits-secrets",
     "title": "Joie, bonne humeur et petits secrets",
     "author": "Ava Gray",
     "series": "Les flammes festives",
@@ -1815,6 +1980,7 @@
     "notes": ""
   },
   {
+    "id": "le-miracle-de-noel-de-silver-hills",
     "title": "Le miracle de Noël de Silver Hills",
     "author": "Ava Gray",
     "series": "Les flammes festives",
@@ -1826,6 +1992,7 @@
     "notes": "Romance militaire d'une petite ville"
   },
   {
+    "id": "le-faux-fiance",
     "title": "Le faux fiancé",
     "author": "Riley Flowers",
     "series": "",
@@ -1837,6 +2004,7 @@
     "notes": ""
   },
   {
+    "id": "mon-mariage-surprise",
     "title": "Mon mariage surprise",
     "author": "Riley Flowers",
     "series": "",
@@ -1848,6 +2016,7 @@
     "notes": ""
   },
   {
+    "id": "le-scandale-du-bebe-du-pdg",
     "title": "Le Scandale du Bébé du PDG",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -1859,6 +2028,7 @@
     "notes": ""
   },
   {
+    "id": "that-one-night-entre-passe-et-desir",
     "title": "That One Night: Entre passé et désir",
     "author": "Anna May",
     "series": "Les Jeux des Milliardaires",
@@ -1870,6 +2040,7 @@
     "notes": ""
   },
   {
+    "id": "splendeurs-et-blessures",
     "title": "Splendeurs et blessures",
     "author": "Kelly Myers",
     "series": "Platinum Security",
@@ -1881,6 +2052,7 @@
     "notes": ""
   },
   {
+    "id": "dwayne-joueur-de-football-americain",
     "title": "Dwayne: Joueur de football américain",
     "author": "Anna May",
     "series": "Romans d'amour de Football Américain",
@@ -1892,6 +2064,7 @@
     "notes": ""
   },
   {
+    "id": "jared-quarterback-de-football-americain",
     "title": "Jared: Quarterback de Football Américain",
     "author": "Anna May",
     "series": "Romans d'amour de Football Américain",
@@ -1903,6 +2076,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-34",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1914,6 +2088,7 @@
     "notes": ""
   },
   {
+    "id": "marked-men-tome-06-asa",
     "title": "Marked men - Tome 06: Asa",
     "author": "Jay Crownover",
     "series": "Marked Men",
@@ -1925,6 +2100,7 @@
     "notes": ""
   },
   {
+    "id": "marked-men-tome-05-rowdy",
     "title": "Marked men - Tome 05: Rowdy",
     "author": "Jay Crownover",
     "series": "Marked Men",
@@ -1936,6 +2112,7 @@
     "notes": ""
   },
   {
+    "id": "clash-t4-passion-irresistible",
     "title": "Clash T4 : Passion irrésistible",
     "author": "Jay Crownover",
     "series": "Clash",
@@ -1947,6 +2124,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-35",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1958,6 +2136,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-36",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -1969,6 +2148,7 @@
     "notes": ""
   },
   {
+    "id": "clash-t2-passion-coupable",
     "title": "Clash T2 : Passion coupable",
     "author": "Jay Crownover",
     "series": "Clash",
@@ -1980,6 +2160,7 @@
     "notes": ""
   },
   {
+    "id": "marked-men-tome-04-nash",
     "title": "Marked men - Tome 04: Nash",
     "author": "Jay Crownover",
     "series": "Marked Men",
@@ -1991,6 +2172,7 @@
     "notes": ""
   },
   {
+    "id": "le-seducteur",
     "title": "Le Séducteur",
     "author": "Layla Hagen",
     "series": "Les Frères Leblanc",
@@ -2002,6 +2184,7 @@
     "notes": ""
   },
   {
+    "id": "marked-men-tome-03-rome",
     "title": "Marked men - Tome 03: Rome",
     "author": "Jay Crownover",
     "series": "Marked Men",
@@ -2013,6 +2196,7 @@
     "notes": ""
   },
   {
+    "id": "marked-men-tome-02-jet",
     "title": "Marked men - Tome 02: Jet",
     "author": "Jay Crownover",
     "series": "Marked Men",
@@ -2024,6 +2208,7 @@
     "notes": ""
   },
   {
+    "id": "marked-men-tome-01",
     "title": "Marked men - Tome 01",
     "author": "Jay Crownover",
     "series": "Marked Men",
@@ -2035,6 +2220,7 @@
     "notes": ""
   },
   {
+    "id": "mon-faux-mariage-presque-parfait",
     "title": "Mon faux mariage presque parfait",
     "author": "Estelle Every",
     "series": "",
@@ -2046,6 +2232,7 @@
     "notes": "Comédie romantique en Écosse (série coupée sur la capture)"
   },
   {
+    "id": "sublime-ennemi",
     "title": "Sublime Ennemi",
     "author": "Julia Malone",
     "series": "Le Club des Milliardaires",
@@ -2057,6 +2244,7 @@
     "notes": ""
   },
   {
+    "id": "prof-sexy-interdit",
     "title": "Prof Sexy, Interdit",
     "author": "Lili Valente",
     "series": "Les Frères McGuire",
@@ -2068,6 +2256,7 @@
     "notes": "Titre/série coupés sur la capture"
   },
   {
+    "id": "tente-ta-chance",
     "title": "Tente ta chance",
     "author": "Nikki Lawson",
     "series": "Les coeurs du hockey",
@@ -2079,6 +2268,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-pour-toujours",
     "title": "Un PDG pour toujours",
     "author": "Layla Hagen",
     "series": "Les Frères Whitley",
@@ -2090,6 +2280,7 @@
     "notes": ""
   },
   {
+    "id": "mister-mistake-miss-right",
     "title": "Mister Mistake & Miss Right",
     "author": "Anna May",
     "series": "Les Jeux des Milliardaires",
@@ -2101,6 +2292,7 @@
     "notes": ""
   },
   {
+    "id": "le-contrat-bebe",
     "title": "Le contrat bébé",
     "author": "Crystal Kaswell",
     "series": "Cœurs tatoués",
@@ -2112,6 +2304,7 @@
     "notes": ""
   },
   {
+    "id": "deteste-moi-si-tu-peux",
     "title": "Déteste-moi si tu peux",
     "author": "Rosa Lucas",
     "series": "Gentlemen milliardaires",
@@ -2123,6 +2316,7 @@
     "notes": ""
   },
   {
+    "id": "pas-touche",
     "title": "Pas touche",
     "author": "Olivia Hayle",
     "series": "",
@@ -2134,6 +2328,7 @@
     "notes": ""
   },
   {
+    "id": "un-bebe-surprise-pour-le-patron",
     "title": "Un Bébé Surprise pour le Patron",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -2145,6 +2340,7 @@
     "notes": ""
   },
   {
+    "id": "daydream-maple-hills-tome-3",
     "title": "Daydream - Maple Hills Tome 3",
     "author": "Hannah Grace",
     "series": "Maple Hills",
@@ -2156,6 +2352,7 @@
     "notes": ""
   },
   {
+    "id": "la-reine-d-hawthorne-prep",
     "title": "La Reine d'Hawthorne Prep",
     "author": "Jennifer Sucevic",
     "series": "",
@@ -2167,6 +2364,7 @@
     "notes": ""
   },
   {
+    "id": "jeu-sans-regles",
     "title": "Jeu sans règles",
     "author": "Riley Flowers",
     "series": "Obsession interdite",
@@ -2178,6 +2376,7 @@
     "notes": ""
   },
   {
+    "id": "puck-sweat-love-edition-francaise",
     "title": "Puck Sweat Love: Édition Française",
     "author": "Lili Valente",
     "series": "Les Mauvais Garçons du Hockey",
@@ -2189,6 +2388,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-inoubliable-tanner",
     "title": "Le milliardaire inoubliable ~ Tanner",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -2200,6 +2400,7 @@
     "notes": ""
   },
   {
+    "id": "impitoyable",
     "title": "Impitoyable",
     "author": "Jennifer Sucevic",
     "series": "Claremont Cougars",
@@ -2211,6 +2412,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-a-aimer",
     "title": "Un PDG à aimer",
     "author": "Layla Hagen",
     "series": "Les Frères Whitley",
@@ -2222,6 +2424,7 @@
     "notes": ""
   },
   {
+    "id": "tentee-par-le-wide-receiver",
     "title": "Tentée par le Wide Receiver",
     "author": "Ava Avery",
     "series": "Touchdown Hearts",
@@ -2233,6 +2436,7 @@
     "notes": ""
   },
   {
+    "id": "mari-par-hasard",
     "title": "Mari par hasard",
     "author": "Crystal Kaswell",
     "series": "Cœurs tatoués",
@@ -2244,6 +2448,7 @@
     "notes": ""
   },
   {
+    "id": "pinocchio",
     "title": "Pinocchio",
     "author": "Joël Pommerat",
     "series": "",
@@ -2255,6 +2460,7 @@
     "notes": "Pièce de théâtre (Heyoka jeunesse)"
   },
   {
+    "id": "defense-de-ligne",
     "title": "Défense de ligne",
     "author": "Cadence Keys",
     "series": "Football des Los Angeles Wolves",
@@ -2266,6 +2472,7 @@
     "notes": ""
   },
   {
+    "id": "mensonges-et-chaos",
     "title": "Mensonges et chaos",
     "author": "Cadence Keys",
     "series": "Football des Los Angeles Wolves",
@@ -2277,6 +2484,7 @@
     "notes": ""
   },
   {
+    "id": "defendre-le-terrain",
     "title": "Défendre le terrain",
     "author": "Cadence Keys",
     "series": "Football des Los Angeles Wolves",
@@ -2288,6 +2496,7 @@
     "notes": ""
   },
   {
+    "id": "une-chose-a-perdre",
     "title": "Une chose à perdre",
     "author": "Crystal Kaswell",
     "series": "Cœurs tatoués",
@@ -2299,6 +2508,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-au-cordeau",
     "title": "Un amour au cordeau",
     "author": "Cadence Keys",
     "series": "Football des Los Angeles Wolves",
@@ -2310,6 +2520,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-a-apprivoiser",
     "title": "Un PDG à apprivoiser",
     "author": "Layla Hagen",
     "series": "Les Frères Whitley",
@@ -2321,6 +2532,7 @@
     "notes": ""
   },
   {
+    "id": "contre-toute-attente",
     "title": "Contre toute attente",
     "author": "Nikki Lawson",
     "series": "Les coeurs du hockey",
@@ -2332,6 +2544,7 @@
     "notes": ""
   },
   {
+    "id": "dans-le-jeu",
     "title": "Dans le jeu",
     "author": "Nikki Lawson",
     "series": "Les coeurs du hockey",
@@ -2343,6 +2556,7 @@
     "notes": ""
   },
   {
+    "id": "briser-les-regles",
     "title": "Briser les règles",
     "author": "Nikki Lawson",
     "series": "Les coeurs du hockey",
@@ -2354,6 +2568,7 @@
     "notes": ""
   },
   {
+    "id": "sur-la-ligne",
     "title": "Sur la ligne",
     "author": "Nikki Lawson",
     "series": "Les coeurs du hockey",
@@ -2365,6 +2580,7 @@
     "notes": ""
   },
   {
+    "id": "puck-buddies-edition-francaise",
     "title": "Puck Buddies: Édition Française",
     "author": "Lili Valente",
     "series": "Les Mauvais Garçons du Hockey",
@@ -2376,6 +2592,7 @@
     "notes": ""
   },
   {
+    "id": "pucked-up-love-edition-francaise",
     "title": "Pucked Up Love: Édition Française",
     "author": "Lili Valente",
     "series": "Les Mauvais Garçons du Hockey",
@@ -2387,6 +2604,7 @@
     "notes": ""
   },
   {
+    "id": "puck-me-baby-edition-francaise",
     "title": "Puck me Baby: Édition Française",
     "author": "Lili Valente",
     "series": "Les Mauvais Garçons du Hockey",
@@ -2398,6 +2616,7 @@
     "notes": ""
   },
   {
+    "id": "puck-aholic-edition-francaise",
     "title": "Puck Aholic: Édition Française",
     "author": "Lili Valente",
     "series": "Les Mauvais Garçons du Hockey",
@@ -2409,6 +2628,7 @@
     "notes": ""
   },
   {
+    "id": "sexy-motherpucker-edition-francaise",
     "title": "Sexy Motherpucker: Édition Française",
     "author": "Lili Valente",
     "series": "Les Mauvais Garçons du Hockey",
@@ -2420,6 +2640,7 @@
     "notes": ""
   },
   {
+    "id": "hot-as-puck-edition-francaise",
     "title": "Hot as Puck: Édition Française",
     "author": "Lili Valente",
     "series": "Les Mauvais Garçons du Hockey",
@@ -2431,6 +2652,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-37",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -2442,6 +2664,7 @@
     "notes": ""
   },
   {
+    "id": "pour-100-raisons",
     "title": "Pour 100 Raisons",
     "author": "Lara Adrian",
     "series": "Série 100",
@@ -2453,6 +2676,7 @@
     "notes": ""
   },
   {
+    "id": "pour-100-nuits",
     "title": "Pour 100 Nuits",
     "author": "Lara Adrian",
     "series": "Série 100",
@@ -2464,6 +2688,7 @@
     "notes": ""
   },
   {
+    "id": "pour-100-jours",
     "title": "Pour 100 Jours",
     "author": "Lara Adrian",
     "series": "Série 100",
@@ -2475,6 +2700,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-a-charmer",
     "title": "Un PDG à charmer",
     "author": "Layla Hagen",
     "series": "Les Frères Whitley",
@@ -2486,6 +2712,7 @@
     "notes": ""
   },
   {
+    "id": "beau-riche-et-ronchon",
     "title": "Beau, riche et ronchon",
     "author": "Olivia Hayle",
     "series": "",
@@ -2497,6 +2724,7 @@
     "notes": ""
   },
   {
+    "id": "aime-moi-deteste-moi",
     "title": "Aime-moi, déteste-moi",
     "author": "Jennifer Sucevic",
     "series": "",
@@ -2508,6 +2736,7 @@
     "notes": ""
   },
   {
+    "id": "enfreindre-les-regles",
     "title": "Enfreindre les règles",
     "author": "Crystal Kaswell",
     "series": "Cœurs tatoués",
@@ -2519,6 +2748,7 @@
     "notes": ""
   },
   {
+    "id": "meme-pas-en-reve",
     "title": "Même pas en rêve",
     "author": "Jennifer Sucevic",
     "series": "",
@@ -2530,6 +2760,7 @@
     "notes": ""
   },
   {
+    "id": "la-legende-du-campus",
     "title": "La Légende du campus",
     "author": "Jennifer Sucevic",
     "series": "Série Campus",
@@ -2541,6 +2772,7 @@
     "notes": ""
   },
   {
+    "id": "l-idole-du-campus",
     "title": "L'Idole du campus",
     "author": "Jennifer Sucevic",
     "series": "Série Campus",
@@ -2552,6 +2784,7 @@
     "notes": ""
   },
   {
+    "id": "comme-jamais",
     "title": "Comme jamais",
     "author": "Jennifer Sucevic",
     "series": "Barnett Bulldogs",
@@ -2563,6 +2796,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-a-seduire",
     "title": "Un PDG à séduire",
     "author": "Layla Hagen",
     "series": "Les Frères Whitley",
@@ -2574,6 +2808,7 @@
     "notes": ""
   },
   {
+    "id": "epousez-moi-m-blackwell",
     "title": "Épousez-moi, M. Blackwell !",
     "author": "Amalia Blum",
     "series": "Cœurs en Feu",
@@ -2585,6 +2820,7 @@
     "notes": ""
   },
   {
+    "id": "entre-deux-feux",
     "title": "Entre deux feux",
     "author": "Lydia Hall",
     "series": "Secrets inouïs de bureau",
@@ -2596,6 +2832,7 @@
     "notes": ""
   },
   {
+    "id": "mon-papa-interdit",
     "title": "Mon papa interdit",
     "author": "Kelly Myers",
     "series": "Papa sait mieux",
@@ -2607,6 +2844,7 @@
     "notes": ""
   },
   {
+    "id": "un-seul-faux-pas",
     "title": "Un seul faux pas",
     "author": "Olivia Hayle",
     "series": "Connovan Chroniques",
@@ -2618,6 +2856,7 @@
     "notes": ""
   },
   {
+    "id": "ma-surprise-secrete",
     "title": "Ma surprise secrète",
     "author": "Riley Flowers",
     "series": "",
@@ -2629,6 +2868,7 @@
     "notes": ""
   },
   {
+    "id": "te-hair-t-aimer",
     "title": "Te haïr, t'aimer",
     "author": "Crystal Kaswell",
     "series": "Cœurs tatoués",
@@ -2640,6 +2880,7 @@
     "notes": ""
   },
   {
+    "id": "desir-secret-du-millionnaire-grincheux",
     "title": "Désir secret du millionnaire grincheux",
     "author": "Ava Avery",
     "series": "Les beaux milliardaires",
@@ -2651,6 +2892,7 @@
     "notes": "Série coupée sur la capture"
   },
   {
+    "id": "dans-les-bras-du-pdg-irresistible",
     "title": "Dans les bras du PDG irrésistible",
     "author": "Ava Avery",
     "series": "Les beaux milliardaires",
@@ -2662,6 +2904,7 @@
     "notes": "Série coupée sur la capture"
   },
   {
+    "id": "objectif-rupture",
     "title": "Objectif : Rupture",
     "author": "Jennifer Sucevic",
     "series": "",
@@ -2673,6 +2916,7 @@
     "notes": ""
   },
   {
+    "id": "un-riche-grincheux",
     "title": "Un Riche Grincheux",
     "author": "Anna May",
     "series": "Les Jeux des Milliardaires",
@@ -2684,6 +2928,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-impitoyable",
     "title": "Un PDG Impitoyable",
     "author": "Anna May",
     "series": "D'ennemis à Amoureux",
@@ -2695,6 +2940,7 @@
     "notes": ""
   },
   {
+    "id": "mise-en-scene",
     "title": "Mise en Scene",
     "author": "Karla Sorensen",
     "series": "Les Loups de Washington",
@@ -2706,6 +2952,7 @@
     "notes": ""
   },
   {
+    "id": "retour-de-flamme",
     "title": "Retour de Flamme",
     "author": "Karla Sorensen",
     "series": "Les Loups de Washington",
@@ -2717,6 +2964,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-indomptable",
     "title": "Un Amour Indomptable",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -2728,6 +2976,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-desirable",
     "title": "Un Amour Désirable",
     "author": "Layla Hagen",
     "series": "La Famille Bennett",
@@ -2739,6 +2988,7 @@
     "notes": ""
   },
   {
+    "id": "kate-l-inaccessible",
     "title": "Kate l'inaccessible",
     "author": "Ruth Cardello",
     "series": "",
@@ -2750,6 +3000,7 @@
     "notes": ""
   },
   {
+    "id": "james-le-pdg-sexy-de-noel",
     "title": "James: Le PDG Sexy de Noël",
     "author": "Anna May",
     "series": "Cœurs glacés",
@@ -2761,6 +3012,7 @@
     "notes": ""
   },
   {
+    "id": "dean-faux-fiance-de-noel-sexy",
     "title": "Dean: Faux Fiancé de Noël Sexy",
     "author": "Anna May",
     "series": "Cœurs glacés",
@@ -2772,6 +3024,7 @@
     "notes": ""
   },
   {
+    "id": "pierce-pere-noel-sexy",
     "title": "Pierce: Père Noël Sexy",
     "author": "Anna May",
     "series": "Cœurs glacés",
@@ -2783,6 +3036,7 @@
     "notes": ""
   },
   {
+    "id": "hunter-une-offre-coupable",
     "title": "Hunter: Une offre coupable",
     "author": "Aurora Shine",
     "series": "Taylor Brothers",
@@ -2794,6 +3048,7 @@
     "notes": ""
   },
   {
+    "id": "redoutables-baisers-la-famille-sullivan-maine",
     "title": "Redoutables baisers: La Famille Sullivan, Maine",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Maine",
@@ -2805,6 +3060,7 @@
     "notes": ""
   },
   {
+    "id": "une-etreinte-eternelle",
     "title": "Une étreinte éternelle",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -2816,6 +3072,7 @@
     "notes": ""
   },
   {
+    "id": "trop-beau-pour-etre-vrai",
     "title": "Trop beau pour être vrai",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de New York",
@@ -2827,6 +3084,7 @@
     "notes": ""
   },
   {
+    "id": "sauvee-par-m-right-weston-burke",
     "title": "Sauvée par M. Right: Weston Burke",
     "author": "Aurora Shine",
     "series": "Les bons docteurs",
@@ -2838,6 +3096,7 @@
     "notes": ""
   },
   {
+    "id": "enceinte-du-milliardaire-un-amour-inattendu",
     "title": "Enceinte du Milliardaire: Un Amour inattendu",
     "author": "Aurora Shine",
     "series": "Les bons docteurs",
@@ -2849,6 +3108,7 @@
     "notes": ""
   },
   {
+    "id": "jeu-de-role-avec-mon-ex",
     "title": "Jeu de rôle avec mon ex",
     "author": "Anna May",
     "series": "Vrai ou Faux",
@@ -2860,6 +3120,7 @@
     "notes": ""
   },
   {
+    "id": "faux-mariage-a-vegas",
     "title": "Faux mariage à Vegas",
     "author": "Anna May",
     "series": "Vrai ou Faux",
@@ -2871,6 +3132,7 @@
     "notes": ""
   },
   {
+    "id": "mon-medecin-sexy-une-offre-immorale-du-milliardaire",
     "title": "Mon médecin sexy: Une offre immorale du milliardaire",
     "author": "Aurora Shine",
     "series": "Les bons docteurs",
@@ -2882,6 +3144,7 @@
     "notes": ""
   },
   {
+    "id": "colton-un-desir-insatiable",
     "title": "Colton: Un désir insatiable",
     "author": "Anna May",
     "series": "Taylor Brothers",
@@ -2893,6 +3156,7 @@
     "notes": ""
   },
   {
+    "id": "une-cheffe-pour-le-milliardaire",
     "title": "Une Cheffe pour le Milliardaire",
     "author": "Julia Malone",
     "series": "Insupportables Milliardaires",
@@ -2904,6 +3168,7 @@
     "notes": ""
   },
   {
+    "id": "une-envie-de-fantaisie-la-famille-sullivan-maine",
     "title": "Une envie de fantaisie: La Famille Sullivan, Maine",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Maine",
@@ -2915,6 +3180,7 @@
     "notes": ""
   },
   {
+    "id": "monsieur-detestable",
     "title": "Monsieur Détestable",
     "author": "Leslie North",
     "series": "",
@@ -2926,6 +3192,7 @@
     "notes": ""
   },
   {
+    "id": "le-contrat-secret",
     "title": "Le contrat secret",
     "author": "Riley Flowers",
     "series": "",
@@ -2937,6 +3204,7 @@
     "notes": ""
   },
   {
+    "id": "une-promesse-eternelle",
     "title": "Une promesse éternelle",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -2948,6 +3216,7 @@
     "notes": ""
   },
   {
+    "id": "mon-faux-epoux-le-milliardaire-ryan-van-dael",
     "title": "Mon Faux Epoux: Le milliardaire Ryan Van Dael",
     "author": "Anna May",
     "series": "Millionnaires de New York",
@@ -2959,6 +3228,7 @@
     "notes": ""
   },
   {
+    "id": "la-surprise-du-chef",
     "title": "La Surprise du chef",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de New York",
@@ -2970,6 +3240,7 @@
     "notes": ""
   },
   {
+    "id": "obsede-pour-une-reine",
     "title": "Obsédé pour une reine",
     "author": "Lauren Landish",
     "series": "Obsession",
@@ -2981,6 +3252,7 @@
     "notes": ""
   },
   {
+    "id": "obsede-par-son-ange",
     "title": "Obsédé par son ange",
     "author": "Lauren Landish",
     "series": "Obsession",
@@ -2992,6 +3264,7 @@
     "notes": ""
   },
   {
+    "id": "obsedee-par-la-scene",
     "title": "Obsédée par la scène",
     "author": "Lauren Landish",
     "series": "Obsession",
@@ -3003,6 +3276,7 @@
     "notes": ""
   },
   {
+    "id": "obsedee-par-une-voix",
     "title": "Obsédée par une voix",
     "author": "Lauren Landish",
     "series": "Obsession",
@@ -3014,6 +3288,7 @@
     "notes": ""
   },
   {
+    "id": "nos-c-urs-meles-la-famille-sullivan-maine",
     "title": "Nos cœurs mêlés: La Famille Sullivan, Maine",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Maine",
@@ -3025,6 +3300,7 @@
     "notes": ""
   },
   {
+    "id": "un-celibataire-provocateur",
     "title": "Un Célibataire Provocateur",
     "author": "Layla Hagen",
     "series": "Des Célibataires Irrésistibles",
@@ -3036,6 +3312,7 @@
     "notes": ""
   },
   {
+    "id": "un-si-grand-secret",
     "title": "Un Si Grand Secret",
     "author": "Annie J. Rose",
     "series": "",
@@ -3047,6 +3324,7 @@
     "notes": ""
   },
   {
+    "id": "les-regles-que-nous-brisons",
     "title": "Les règles que nous brisons",
     "author": "Ava Gray",
     "series": "Les milliardaires Beckett",
@@ -3058,6 +3336,7 @@
     "notes": ""
   },
   {
+    "id": "l-ennemie-du-milliardaire",
     "title": "L'ennemie du Milliardaire",
     "author": "Julia Malone",
     "series": "Insupportables Milliardaires",
@@ -3069,6 +3348,7 @@
     "notes": ""
   },
   {
+    "id": "il-ne-te-merite-pas",
     "title": "Il ne te mérite pas",
     "author": "Emma Quinn",
     "series": "",
@@ -3080,6 +3360,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-38",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -3091,6 +3372,7 @@
     "notes": ""
   },
   {
+    "id": "c-urs-brises-amour-fatal",
     "title": "Cœurs brisés: Amour Fatal",
     "author": "Lilli James",
     "series": "Romance de Milliardaire en Ville",
@@ -3102,6 +3384,7 @@
     "notes": ""
   },
   {
+    "id": "docteur-a-domicile",
     "title": "Docteur à Domicile",
     "author": "Emma Quinn",
     "series": "",
@@ -3113,6 +3396,7 @@
     "notes": ""
   },
   {
+    "id": "quand-nous-nous-reverrons",
     "title": "Quand nous nous reverrons",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -3124,6 +3408,7 @@
     "notes": ""
   },
   {
+    "id": "crush-interdit",
     "title": "Crush Interdit",
     "author": "Elena May",
     "series": "",
@@ -3135,6 +3420,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-plus-fort-encore",
     "title": "Un amour plus fort encore",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3146,6 +3432,7 @@
     "notes": ""
   },
   {
+    "id": "un-audacieux-celibataire",
     "title": "Un audacieux célibataire",
     "author": "Layla Hagen",
     "series": "Des Célibataires Irrésistibles",
@@ -3157,6 +3444,7 @@
     "notes": ""
   },
   {
+    "id": "sulfurous",
     "title": "Sulfurous",
     "author": "L.J. Shen",
     "series": "",
@@ -3168,6 +3456,7 @@
     "notes": ""
   },
   {
+    "id": "scandalous",
     "title": "Scandalous",
     "author": "L.J. Shen",
     "series": "Sinners",
@@ -3179,6 +3468,7 @@
     "notes": ""
   },
   {
+    "id": "devious",
     "title": "Devious",
     "author": "L.J. Shen",
     "series": "Sinners",
@@ -3190,6 +3480,7 @@
     "notes": ""
   },
   {
+    "id": "player-version-francaise-seconde-chance",
     "title": "Player (version française): seconde chance",
     "author": "Estelle Every",
     "series": "OMU campus",
@@ -3201,6 +3492,7 @@
     "notes": ""
   },
   {
+    "id": "player-version-francaise",
     "title": "Player (version française)",
     "author": "Estelle Every",
     "series": "OMU campus",
@@ -3212,6 +3504,7 @@
     "notes": ""
   },
   {
+    "id": "mon-riche-ex",
     "title": "Mon riche ex",
     "author": "Anna May",
     "series": "Millionnaires de New York",
@@ -3223,6 +3516,7 @@
     "notes": ""
   },
   {
+    "id": "un-avocat-sexy",
     "title": "Un Avocat Sexy",
     "author": "Aurora Shine",
     "series": "Histoires de milliardaire sexy",
@@ -3234,6 +3528,7 @@
     "notes": ""
   },
   {
+    "id": "des-jumeaux-pour-le-play-boy",
     "title": "Des jumeaux pour le play-boy",
     "author": "Ava Gray",
     "series": "Les milliardaires Beckett",
@@ -3245,6 +3540,7 @@
     "notes": ""
   },
   {
+    "id": "vicious",
     "title": "Vicious",
     "author": "L.J. Shen",
     "series": "All Saints High",
@@ -3256,6 +3552,7 @@
     "notes": ""
   },
   {
+    "id": "un-prix-a-payer",
     "title": "Un prix à payer",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de New York",
@@ -3267,6 +3564,7 @@
     "notes": ""
   },
   {
+    "id": "le-coup-de-grace",
     "title": "Le Coup de grâce",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de New York",
@@ -3278,6 +3576,7 @@
     "notes": ""
   },
   {
+    "id": "the-hunter",
     "title": "The Hunter",
     "author": "L.J. Shen",
     "series": "",
@@ -3289,6 +3588,7 @@
     "notes": ""
   },
   {
+    "id": "comme-on-se-retrouve",
     "title": "Comme on se retrouve",
     "author": "Sarah S. Cope",
     "series": "",
@@ -3300,6 +3600,7 @@
     "notes": ""
   },
   {
+    "id": "si-l-amour-est-un-art",
     "title": "Si l'amour est un art",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, New York",
@@ -3311,6 +3612,7 @@
     "notes": ""
   },
   {
+    "id": "du-miel-sous-la-lune",
     "title": "Du miel sous la lune",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3322,6 +3624,7 @@
     "notes": ""
   },
   {
+    "id": "retour-de-flamme-2",
     "title": "Retour de flamme",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, New York",
@@ -3333,6 +3636,7 @@
     "notes": ""
   },
   {
+    "id": "comme-de-l-amour-dans-l-air",
     "title": "Comme de l'amour dans l'air",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, New York",
@@ -3344,6 +3648,7 @@
     "notes": ""
   },
   {
+    "id": "au-fil-de-l-eau",
     "title": "Au fil de l'eau",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, New York",
@@ -3355,6 +3660,7 @@
     "notes": ""
   },
   {
+    "id": "pour-un-corps-a-c-ur",
     "title": "Pour un corps à cœur",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, New York",
@@ -3366,6 +3672,7 @@
     "notes": ""
   },
   {
+    "id": "c-est-pour-de-vrai-patron",
     "title": "C'est pour de vrai, Patron !",
     "author": "Lilli James",
     "series": "Romance de Milliardaire en Ville",
@@ -3377,6 +3684,7 @@
     "notes": ""
   },
   {
+    "id": "un-celebre-celibataire",
     "title": "Un célèbre célibataire",
     "author": "Layla Hagen",
     "series": "Des Célibataires Irrésistibles",
@@ -3388,6 +3696,7 @@
     "notes": ""
   },
   {
+    "id": "la-surprise-inattendue-du-patron",
     "title": "La surprise inattendue du patron",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -3399,6 +3708,7 @@
     "notes": ""
   },
   {
+    "id": "liaison-au-bureau",
     "title": "Liaison au bureau",
     "author": "Lydia Hall",
     "series": "Secrets inouïs de bureau",
@@ -3410,6 +3720,7 @@
     "notes": ""
   },
   {
+    "id": "monsieur-grincheux",
     "title": "Monsieur Grincheux",
     "author": "Leslie North",
     "series": "",
@@ -3421,6 +3732,7 @@
     "notes": ""
   },
   {
+    "id": "si-seulement-toi-et-moi",
     "title": "Si seulement, toi et moi",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3432,6 +3744,7 @@
     "notes": ""
   },
   {
+    "id": "eternel-comme-l-amour",
     "title": "Éternel comme l'amour",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3443,6 +3756,7 @@
     "notes": ""
   },
   {
+    "id": "pour-un-moment-secret",
     "title": "Pour un moment secret",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3454,6 +3768,7 @@
     "notes": ""
   },
   {
+    "id": "flirt-au-bureau",
     "title": "Flirt au bureau",
     "author": "Kelly Myers",
     "series": "Amour interdit",
@@ -3465,6 +3780,7 @@
     "notes": ""
   },
   {
+    "id": "la-ou-tout-a-commence",
     "title": "Là où tout a commencé",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3476,6 +3792,7 @@
     "notes": ""
   },
   {
+    "id": "d-amour-et-d-eau-fraiche",
     "title": "D'amour et d'eau fraîche",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3487,6 +3804,7 @@
     "notes": ""
   },
   {
+    "id": "amour-en-coulisses",
     "title": "Amour en coulisses",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3498,6 +3816,7 @@
     "notes": ""
   },
   {
+    "id": "a-la-vie-a-l-amour",
     "title": "À la vie, à l'amour",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3509,6 +3828,7 @@
     "notes": ""
   },
   {
+    "id": "par-les-yeux-de-l-amour",
     "title": "Par les yeux de l'amour",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3520,6 +3840,7 @@
     "notes": ""
   },
   {
+    "id": "nos-v-ux-d-eternite",
     "title": "Nos vœux d'éternité",
     "author": "Bella Andre",
     "series": "La Famille Sullivan",
@@ -3531,6 +3852,7 @@
     "notes": ""
   },
   {
+    "id": "j-ai-tant-besoin-de-toi",
     "title": "J'ai tant besoin de toi",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Seattle",
@@ -3542,6 +3864,7 @@
     "notes": ""
   },
   {
+    "id": "et-que-vogue-l-amour",
     "title": "Et que vogue l'amour",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Seattle",
@@ -3553,6 +3876,7 @@
     "notes": ""
   },
   {
+    "id": "ne-jamais-dire-jamais",
     "title": "Ne jamais dire jamais",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Seattle",
@@ -3564,6 +3888,7 @@
     "notes": ""
   },
   {
+    "id": "sous-les-feux-de-la-rampe",
     "title": "Sous les feux de la rampe",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Seattle",
@@ -3575,6 +3900,7 @@
     "notes": ""
   },
   {
+    "id": "la-chance-d-une-vie",
     "title": "La Chance d'une vie",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Seattle",
@@ -3586,6 +3912,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-a-l-epreuve",
     "title": "Un amour à l'épreuve",
     "author": "Bella Andre",
     "series": "Milliardaires Rebelles",
@@ -3597,6 +3924,7 @@
     "notes": ""
   },
   {
+    "id": "l-amour-a-tout-jamais",
     "title": "L'amour à tout jamais",
     "author": "Bella Andre",
     "series": "Milliardaires Rebelles",
@@ -3608,6 +3936,7 @@
     "notes": ""
   },
   {
+    "id": "l-amour-a-tout-prix",
     "title": "L'amour à tout prix",
     "author": "Bella Andre",
     "series": "Milliardaires Rebelles",
@@ -3619,6 +3948,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-sans-compromis",
     "title": "Un amour sans compromis",
     "author": "Bella Andre",
     "series": "Milliardaires Rebelles",
@@ -3630,6 +3960,7 @@
     "notes": ""
   },
   {
+    "id": "un-amour-sans-reserve",
     "title": "Un amour sans réserve",
     "author": "Bella Andre",
     "series": "Milliardaires Rebelles",
@@ -3641,6 +3972,7 @@
     "notes": ""
   },
   {
+    "id": "l-amour-a-bout-de-bras",
     "title": "L'amour à bout de bras",
     "author": "Bella Andre",
     "series": "Milliardaires Rebelles",
@@ -3652,6 +3984,7 @@
     "notes": ""
   },
   {
+    "id": "l-amour-a-bout-de-souffle",
     "title": "L'amour à bout de souffle",
     "author": "Bella Andre",
     "series": "Milliardaires Rebelles",
@@ -3663,6 +3996,7 @@
     "notes": ""
   },
   {
+    "id": "scelles-par-un-baiser",
     "title": "Scellés par un baiser",
     "author": "Ava Gray",
     "series": "Les milliardaires Beckett",
@@ -3674,6 +4008,7 @@
     "notes": ""
   },
   {
+    "id": "un-fascinant-celibataire",
     "title": "Un Fascinant Célibataire",
     "author": "Layla Hagen",
     "series": "Des Célibataires Irrésistibles",
@@ -3685,6 +4020,7 @@
     "notes": ""
   },
   {
+    "id": "un-irresistible-celibataire",
     "title": "Un Irrésistible Célibataire",
     "author": "Layla Hagen",
     "series": "Des Célibataires Irrésistibles",
@@ -3696,6 +4032,7 @@
     "notes": ""
   },
   {
+    "id": "de-l-amour-a-la-haine",
     "title": "De l'amour à la haine",
     "author": "Ava Gray",
     "series": "Les milliardaires Beckett",
@@ -3707,6 +4044,7 @@
     "notes": ""
   },
   {
+    "id": "juste-une-autre-chance",
     "title": "Juste une autre chance",
     "author": "Ava Gray",
     "series": "Les milliardaires Beckett",
@@ -3718,6 +4056,7 @@
     "notes": ""
   },
   {
+    "id": "high-lover",
     "title": "High Lover",
     "author": "Rose Mia",
     "series": "",
@@ -3729,6 +4068,7 @@
     "notes": ""
   },
   {
+    "id": "bebe-surprise",
     "title": "Bébé surprise",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -3740,6 +4080,7 @@
     "notes": ""
   },
   {
+    "id": "fashion-faux-pas",
     "title": "Fashion faux pas",
     "author": "Lauren Landish",
     "series": "",
@@ -3751,6 +4092,7 @@
     "notes": ""
   },
   {
+    "id": "l-ex-de-ma-meilleure-amie",
     "title": "L'ex de ma meilleure amie",
     "author": "Kelly Myers",
     "series": "Amour interdit",
@@ -3762,6 +4104,7 @@
     "notes": ""
   },
   {
+    "id": "le-voisin-d-en-face",
     "title": "Le voisin d'en face",
     "author": "Kelly Myers",
     "series": "Amour interdit",
@@ -3773,6 +4116,7 @@
     "notes": ""
   },
   {
+    "id": "une-fausse-fiancee-pour-noel",
     "title": "Une fausse fiancée pour Noël",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -3784,6 +4128,7 @@
     "notes": ""
   },
   {
+    "id": "le-bon-choix",
     "title": "Le bon choix",
     "author": "Ava Gray",
     "series": "Choix difficiles",
@@ -3795,6 +4140,7 @@
     "notes": ""
   },
   {
+    "id": "le-mauvais-choix",
     "title": "Le mauvais choix",
     "author": "Ava Gray",
     "series": "Choix difficiles",
@@ -3806,6 +4152,7 @@
     "notes": ""
   },
   {
+    "id": "proposition-pour-la-saint-valentin",
     "title": "Proposition pour la Saint-Valentin",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -3817,6 +4164,7 @@
     "notes": ""
   },
   {
+    "id": "chaos-sentimental",
     "title": "Chaos sentimental",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -3828,6 +4176,7 @@
     "notes": ""
   },
   {
+    "id": "juste-faire-semblant",
     "title": "Juste faire semblant",
     "author": "Ava Gray",
     "series": "",
@@ -3839,6 +4188,7 @@
     "notes": ""
   },
   {
+    "id": "le-moment-de-verite",
     "title": "Le Moment de vérité",
     "author": "Lauren Landish",
     "series": "Action ou Vérité",
@@ -3850,6 +4200,7 @@
     "notes": ""
   },
   {
+    "id": "je-me-battrai-pour-toi",
     "title": "Je me battrai pour toi",
     "author": "Sarah S. Cope",
     "series": "",
@@ -3861,6 +4212,7 @@
     "notes": ""
   },
   {
+    "id": "assistante-tres-personnelle",
     "title": "Assistante (très) Personnelle",
     "author": "Emma Quinn",
     "series": "",
@@ -3872,6 +4224,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-39",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -3883,6 +4236,7 @@
     "notes": ""
   },
   {
+    "id": "le-boss-de-mon-ex",
     "title": "Le Boss de mon Ex",
     "author": "Sarah S. Cope",
     "series": "",
@@ -3894,6 +4248,7 @@
     "notes": ""
   },
   {
+    "id": "encore-toi",
     "title": "Encore Toi !",
     "author": "Rosie Bright",
     "series": "Noël avec un Milliardaire",
@@ -3905,6 +4260,7 @@
     "notes": ""
   },
   {
+    "id": "un-seduisant-celibataire",
     "title": "Un Séduisant Célibataire",
     "author": "Layla Hagen",
     "series": "Des Célibataires Irrésistibles",
@@ -3916,6 +4272,7 @@
     "notes": ""
   },
   {
+    "id": "un-celibataire-envoutant",
     "title": "Un Célibataire Envoûtant",
     "author": "Layla Hagen",
     "series": "Des Célibataires Irrésistibles",
@@ -3927,6 +4284,7 @@
     "notes": ""
   },
   {
+    "id": "un-charmant-celibataire",
     "title": "Un Charmant Célibataire",
     "author": "Layla Hagen",
     "series": "Des Célibataires Irrésistibles",
@@ -3938,6 +4296,7 @@
     "notes": ""
   },
   {
+    "id": "a-jamais-avec-toi",
     "title": "À jamais avec toi",
     "author": "Layla Hagen",
     "series": "La Famille Connor",
@@ -3949,6 +4308,7 @@
     "notes": ""
   },
   {
+    "id": "le-joueur-seduite-par-le-milliardaire",
     "title": "Le joueur: Séduite par le milliardaire",
     "author": "Lilli James",
     "series": "Mon ennemi le milliardaire",
@@ -3960,6 +4320,7 @@
     "notes": ""
   },
   {
+    "id": "stupide-deal",
     "title": "Stupide Deal",
     "author": "Emma Landas",
     "series": "",
@@ -3971,6 +4332,7 @@
     "notes": ""
   },
   {
+    "id": "fausse-fiancee-vendue-au-milliardaire",
     "title": "Fausse fiancée: Vendue au milliardaire",
     "author": "Lilli James",
     "series": "Mon ennemi le milliardaire",
@@ -3982,6 +4344,7 @@
     "notes": ""
   },
   {
+    "id": "pas-deux-fois",
     "title": "Pas deux fois",
     "author": "Becca Steele",
     "series": "",
@@ -3993,6 +4356,7 @@
     "notes": ""
   },
   {
+    "id": "faux-semblants-torrides",
     "title": "Faux-semblants torrides",
     "author": "Lilli James",
     "series": "Mon ennemi le milliardaire",
@@ -4004,6 +4368,7 @@
     "notes": ""
   },
   {
+    "id": "un-papa-sexy",
     "title": "Un papa sexy",
     "author": "Lilli James",
     "series": "Romance de Milliardaire en Ville",
@@ -4015,6 +4380,7 @@
     "notes": ""
   },
   {
+    "id": "love-surprise-retrouvailles-inattendues",
     "title": "Love Surprise: Retrouvailles inattendues",
     "author": "Lilli James",
     "series": "Mon ennemi le milliardaire",
@@ -4026,6 +4392,7 @@
     "notes": ""
   },
   {
+    "id": "coeurs-en-collision",
     "title": "Coeurs en collision",
     "author": "Ava Avery",
     "series": "",
@@ -4037,6 +4404,7 @@
     "notes": ""
   },
   {
+    "id": "tout-ou-rien",
     "title": "Tout ou rien",
     "author": "Jennifer Sucevic",
     "series": "Tout et Maintenant",
@@ -4048,6 +4416,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-a-tomber",
     "title": "Un PDG à tomber",
     "author": "Layla Hagen",
     "series": "Les Frères Whitley",
@@ -4059,6 +4428,7 @@
     "notes": ""
   },
   {
+    "id": "maintenant-ou-jamais",
     "title": "Maintenant ou jamais",
     "author": "Jennifer Sucevic",
     "series": "Tout et Maintenant",
@@ -4070,6 +4440,7 @@
     "notes": ""
   },
   {
+    "id": "comme-un-detail",
     "title": "Comme un détail",
     "author": "Jennifer Sucevic",
     "series": "Barnett Bulldogs",
@@ -4081,6 +4452,7 @@
     "notes": ""
   },
   {
+    "id": "l-attraction-du-magnat-impitoyable",
     "title": "L'attraction du magnat impitoyable",
     "author": "Ava Avery",
     "series": "Les beaux milliardaires de New York",
@@ -4092,6 +4464,7 @@
     "notes": ""
   },
   {
+    "id": "oui-papa-je-suis-prete",
     "title": "Oui papa, je suis prête",
     "author": "Kelly Myers",
     "series": "Papa sait mieux",
@@ -4103,6 +4476,7 @@
     "notes": ""
   },
   {
+    "id": "comme-un-roi",
     "title": "Comme un roi",
     "author": "Jennifer Sucevic",
     "series": "Barnett Bulldogs",
@@ -4114,6 +4488,7 @@
     "notes": ""
   },
   {
+    "id": "le-pire-dans-tout-ca",
     "title": "Le Pire dans tout ça",
     "author": "Jennifer Sucevic",
     "series": "Western Wildcats - Hockey",
@@ -4125,6 +4500,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-40",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -4136,6 +4512,7 @@
     "notes": ""
   },
   {
+    "id": "mon-bien-le-plus-precieux",
     "title": "Mon bien le plus précieux",
     "author": "Jennifer Sucevic",
     "series": "Western Wildcats - Hockey",
@@ -4147,6 +4524,7 @@
     "notes": ""
   },
   {
+    "id": "ma-liste-de-regles",
     "title": "Ma liste de règles",
     "author": "Jennifer Sucevic",
     "series": "Western Wildcats - Hockey",
@@ -4158,6 +4536,7 @@
     "notes": ""
   },
   {
+    "id": "ma-liste-d-envies",
     "title": "Ma liste d'envies",
     "author": "Jennifer Sucevic",
     "series": "Western Wildcats - Hockey",
@@ -4169,6 +4548,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-41",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -4180,6 +4560,7 @@
     "notes": ""
   },
   {
+    "id": "une-erreur-parfaite",
     "title": "Une erreur parfaite",
     "author": "Olivia Hayle",
     "series": "Connovan Chroniques",
@@ -4191,6 +4572,7 @@
     "notes": ""
   },
   {
+    "id": "un-cadeau-inattendu-pour-papa",
     "title": "Un cadeau inattendu pour papa",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -4202,6 +4584,7 @@
     "notes": ""
   },
   {
+    "id": "un-player-pour-noel",
     "title": "Un Player pour Noël",
     "author": "Estelle Every",
     "series": "",
@@ -4213,6 +4596,7 @@
     "notes": ""
   },
   {
+    "id": "sublime-interdit",
     "title": "Sublime Interdit",
     "author": "Julia Malone",
     "series": "Le Club des Milliardaires",
@@ -4224,6 +4608,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-a-embrasser",
     "title": "Un PDG à embrasser",
     "author": "Layla Hagen",
     "series": "Les Frères Whitley",
@@ -4235,6 +4620,7 @@
     "notes": ""
   },
   {
+    "id": "le-raleur",
     "title": "Le Râleur",
     "author": "Leslie North",
     "series": "",
@@ -4246,6 +4632,7 @@
     "notes": "Romance grumpy/sunshine avec un patron tyran milliardaire"
   },
   {
+    "id": "un-accord-avec-mon-pdg",
     "title": "Un accord avec mon PDG",
     "author": "Rebecca Baker",
     "series": "Tu es à moi",
@@ -4257,6 +4644,7 @@
     "notes": ""
   },
   {
+    "id": "meilleurs-ennemis-pour-la-vie",
     "title": "Meilleurs ennemis pour la vie",
     "author": "Olivia Hayle",
     "series": "Connovan Chroniques",
@@ -4268,6 +4656,7 @@
     "notes": ""
   },
   {
+    "id": "mon-pdg-et-boss",
     "title": "Mon PDG et Boss",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -4279,6 +4668,7 @@
     "notes": ""
   },
   {
+    "id": "et-si-tu-m-appartenais",
     "title": "Et si tu m'appartenais",
     "author": "Crystal Kaswell",
     "series": "Cœurs tatoués",
@@ -4290,6 +4680,7 @@
     "notes": ""
   },
   {
+    "id": "coup-d-un-soir",
     "title": "Coup d'un soir",
     "author": "Crystal Kaswell",
     "series": "Cœurs tatoués",
@@ -4301,6 +4692,7 @@
     "notes": ""
   },
   {
+    "id": "ne-me-mentez-pas-monsieur-carter",
     "title": "Ne me mentez pas Monsieur Carter",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -4312,6 +4704,7 @@
     "notes": ""
   },
   {
+    "id": "incomprise",
     "title": "Incomprise",
     "author": "Kelly Myers",
     "series": "Amour interdit",
@@ -4323,6 +4716,7 @@
     "notes": ""
   },
   {
+    "id": "un-pdg-a-caser",
     "title": "Un PDG à caser",
     "author": "Layla Hagen",
     "series": "Les Frères Whitley",
@@ -4334,6 +4728,7 @@
     "notes": ""
   },
   {
+    "id": "blindside-saint",
     "title": "Blindside Saint",
     "author": "Mariah Wolfe",
     "series": "Seattle Wave Hockey",
@@ -4345,6 +4740,7 @@
     "notes": ""
   },
   {
+    "id": "blindside-sinner",
     "title": "Blindside Sinner",
     "author": "Mariah Wolfe",
     "series": "Seattle Wave Hockey",
@@ -4356,6 +4752,7 @@
     "notes": ""
   },
   {
+    "id": "l-ange-hors-jeu",
     "title": "L'Ange hors jeu",
     "author": "Mariah Wolfe",
     "series": "Phoenix Angels Hockey",
@@ -4367,6 +4764,7 @@
     "notes": ""
   },
   {
+    "id": "le-demon-hors-jeu",
     "title": "Le Démon hors jeu",
     "author": "Mariah Wolfe",
     "series": "Phoenix Angels Hockey",
@@ -4378,6 +4776,7 @@
     "notes": ""
   },
   {
+    "id": "la-ligne-bleue-de-l-amour",
     "title": "La Ligne bleue de l'amour",
     "author": "Mariah Wolfe",
     "series": "Les Bulls de Dallas",
@@ -4389,6 +4788,7 @@
     "notes": ""
   },
   {
+    "id": "la-ligne-bleue-du-desir",
     "title": "La Ligne bleue du désir",
     "author": "Mariah Wolfe",
     "series": "Les Bulls de Dallas",
@@ -4400,6 +4800,7 @@
     "notes": ""
   },
   {
+    "id": "au-dela-de-la-ligne-rouge",
     "title": "Au-delà de la ligne rouge",
     "author": "Mariah Wolfe",
     "series": "Los Angeles Firebirds Hockey",
@@ -4411,6 +4812,7 @@
     "notes": ""
   },
   {
+    "id": "proches-de-la-ligne-rouge",
     "title": "Proches de la ligne rouge",
     "author": "Mariah Wolfe",
     "series": "Los Angeles Firebirds Hockey",
@@ -4422,6 +4824,7 @@
     "notes": ""
   },
   {
+    "id": "une-devotion-eternelle",
     "title": "Une dévotion éternelle",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -4433,6 +4836,7 @@
     "notes": ""
   },
   {
+    "id": "une-devotion-eternelle-2",
     "title": "Une dévotion éternelle",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -4444,6 +4848,7 @@
     "notes": "Doublon présent 2x dans la bibliothèque Kindle"
   },
   {
+    "id": "mon-riche-amoureux",
     "title": "Mon Riche Amoureux",
     "author": "Anna May",
     "series": "Millionnaires de New York",
@@ -4455,6 +4860,7 @@
     "notes": "Coup de foudre pour Monsieur Insupportable"
   },
   {
+    "id": "le-milliardaire-celibataire-zeke",
     "title": "Le milliardaire célibataire ~ Zeke",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4466,6 +4872,7 @@
     "notes": ""
   },
   {
+    "id": "les-secrets-du-milliardaire",
     "title": "Les Secrets du milliardaire",
     "author": "J. S. Scott",
     "series": "Les Sinclair",
@@ -4477,6 +4884,7 @@
     "notes": ""
   },
   {
+    "id": "juste-un-millionnaire",
     "title": "Juste un millionnaire",
     "author": "J. S. Scott",
     "series": "Les Sinclair",
@@ -4488,6 +4896,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-gagne-toujours",
     "title": "Le milliardaire gagne toujours",
     "author": "J. S. Scott",
     "series": "Les Sinclair",
@@ -4499,6 +4908,7 @@
     "notes": ""
   },
   {
+    "id": "l-appel-du-milliardaire",
     "title": "L'Appel du milliardaire",
     "author": "J. S. Scott",
     "series": "Les Sinclair",
@@ -4510,6 +4920,7 @@
     "notes": ""
   },
   {
+    "id": "la-caresse-du-milliardaire",
     "title": "La Caresse du milliardaire",
     "author": "J. S. Scott",
     "series": "Les Sinclair",
@@ -4521,6 +4932,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-defendu",
     "title": "Le Milliardaire défendu",
     "author": "J. S. Scott",
     "series": "Les Sinclair",
@@ -4532,6 +4944,7 @@
     "notes": ""
   },
   {
+    "id": "un-milliardaire-pas-comme-les-autres",
     "title": "Un milliardaire pas comme les autres",
     "author": "J. S. Scott",
     "series": "Les Sinclair",
@@ -4543,6 +4956,7 @@
     "notes": ""
   },
   {
+    "id": "pris-de-court",
     "title": "Pris de court",
     "author": "J. S. Scott",
     "series": "Milliardaires malgré eux",
@@ -4554,6 +4968,7 @@
     "notes": ""
   },
   {
+    "id": "pris-au-depourvu",
     "title": "Pris au dépourvu",
     "author": "J. S. Scott",
     "series": "Milliardaires malgré eux",
@@ -4565,6 +4980,7 @@
     "notes": ""
   },
   {
+    "id": "pris-au-piege",
     "title": "Pris au piège",
     "author": "J. S. Scott",
     "series": "Milliardaires malgré eux",
@@ -4576,6 +4992,7 @@
     "notes": ""
   },
   {
+    "id": "seducteur-insupportable",
     "title": "Séducteur insupportable",
     "author": "Ava Avery",
     "series": "L'équipe Titan Racing",
@@ -4587,6 +5004,7 @@
     "notes": ""
   },
   {
+    "id": "bebe-surprise-avec-l-ennemi",
     "title": "Bébé surprise avec l'ennemi",
     "author": "Ava Avery",
     "series": "L'équipe Titan Racing",
@@ -4598,6 +5016,7 @@
     "notes": ""
   },
   {
+    "id": "baisers-secrets-avec-l-ennemi",
     "title": "Baisers secrets avec l'ennemi",
     "author": "Ava Avery",
     "series": "L'équipe Titan Racing",
@@ -4609,6 +5028,7 @@
     "notes": ""
   },
   {
+    "id": "mariee-au-milliardaire",
     "title": "Mariée au milliardaire",
     "author": "Ava Avery",
     "series": "L'équipe Titan Racing",
@@ -4620,6 +5040,7 @@
     "notes": ""
   },
   {
+    "id": "mon-papa-secret",
     "title": "Mon Papa Secret",
     "author": "Kelly Myers",
     "series": "Papa sait mieux",
@@ -4631,6 +5052,7 @@
     "notes": ""
   },
   {
+    "id": "lune-de-miel-en-solitaire",
     "title": "Lune de miel en solitaire",
     "author": "Olivia Hayle",
     "series": "",
@@ -4642,6 +5064,7 @@
     "notes": ""
   },
   {
+    "id": "sauve-moi-pdg",
     "title": "Sauve-moi, PDG",
     "author": "Rebecca Baker",
     "series": "Tu es à moi",
@@ -4653,6 +5076,7 @@
     "notes": ""
   },
   {
+    "id": "joue-avec-moi-m-sturbridge",
     "title": "Joue avec moi, M. Sturbridge",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -4664,6 +5088,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-42",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -4675,6 +5100,7 @@
     "notes": ""
   },
   {
+    "id": "sombres-secrets",
     "title": "Sombres secrets",
     "author": "Kelly Myers",
     "series": "Platinum Security",
@@ -4686,6 +5112,7 @@
     "notes": ""
   },
   {
+    "id": "sombres-peches",
     "title": "Sombres péchés",
     "author": "Kelly Myers",
     "series": "Platinum Security",
@@ -4697,6 +5124,7 @@
     "notes": ""
   },
   {
+    "id": "soudain-mariee-a-un-milliardaire",
     "title": "Soudain mariée à un milliardaire",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -4708,6 +5136,7 @@
     "notes": ""
   },
   {
+    "id": "prise-par-le-commandant",
     "title": "Prise par le commandant",
     "author": "Ava Gray",
     "series": "",
@@ -4719,6 +5148,7 @@
     "notes": ""
   },
   {
+    "id": "mon-richissime-fiance",
     "title": "Mon richissime fiancé",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de Seattle",
@@ -4730,6 +5160,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-inexplique-kaleb",
     "title": "Le milliardaire inexpliqué ~ Kaleb",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4741,6 +5172,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-intouchable-wyatt",
     "title": "Le milliardaire intouchable ~ Wyatt",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4752,6 +5184,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-delaisse-chase",
     "title": "Le milliardaire délaissé ~ Chase",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4763,6 +5196,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-inapercu-cooper",
     "title": "Le milliardaire inaperçu ~ Cooper",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4774,6 +5208,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-inattendu-jax",
     "title": "Le milliardaire inattendu ~ Jax",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4785,6 +5220,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-inaccessible-mason",
     "title": "Le milliardaire inaccessible ~ Mason",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4796,6 +5232,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-incognito-hudson",
     "title": "Le milliardaire incognito ~ Hudson",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4807,6 +5244,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-inconteste-carter",
     "title": "Le milliardaire incontesté ~ Carter",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4818,6 +5256,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-mal-aime-jett",
     "title": "Le milliardaire mal-aimé ~ Jett",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4829,6 +5268,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-se-revele-marcus",
     "title": "Le milliardaire se révèle ~ Marcus",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4840,6 +5280,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-intrepide-zane",
     "title": "Le milliardaire intrépide ~ Zane",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4851,6 +5292,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-indomptable-tate",
     "title": "Le milliardaire indomptable ~ Tate",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4862,6 +5304,7 @@
     "notes": ""
   },
   {
+    "id": "le-milliardaire-demasque-jason",
     "title": "Le milliardaire démasqué ~ Jason",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4873,6 +5316,7 @@
     "notes": ""
   },
   {
+    "id": "le-jeu-du-milliardaire-kade",
     "title": "Le jeu du milliardaire ~ Kade",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4884,6 +5328,7 @@
     "notes": ""
   },
   {
+    "id": "le-salut-du-milliardaire-max",
     "title": "Le salut du milliardaire ~ Max",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4895,6 +5340,7 @@
     "notes": ""
   },
   {
+    "id": "le-c-ur-du-milliardaire-sam",
     "title": "Le cœur du milliardaire ~ Sam",
     "author": "J. S. Scott",
     "series": "L'obsession du milliardaire",
@@ -4906,6 +5352,7 @@
     "notes": ""
   },
   {
+    "id": "dis-moi-que-c-est-pour-toujours",
     "title": "Dis-moi que c'est pour toujours",
     "author": "J. S. Scott",
     "series": "Les Milliardaires britanniques",
@@ -4917,6 +5364,7 @@
     "notes": ""
   },
   {
+    "id": "dis-moi-que-je-t-appartiens",
     "title": "Dis-moi que je t'appartiens",
     "author": "J. S. Scott",
     "series": "Les Milliardaires britanniques",
@@ -4928,6 +5376,7 @@
     "notes": ""
   },
   {
+    "id": "dis-moi-que-tu-m-appartiens",
     "title": "Dis-moi que tu m'appartiens",
     "author": "J. S. Scott",
     "series": "Les Milliardaires britanniques",
@@ -4939,6 +5388,7 @@
     "notes": ""
   },
   {
+    "id": "deux-fois-dupe",
     "title": "Deux fois dupe",
     "author": "Kelly Myers",
     "series": "Amour interdit",
@@ -4950,6 +5400,7 @@
     "notes": ""
   },
   {
+    "id": "richesses-obscures",
     "title": "Richesses obscures",
     "author": "Kelly Myers",
     "series": "Platinum Security",
@@ -4961,6 +5412,7 @@
     "notes": ""
   },
   {
+    "id": "baisers-tenebreux",
     "title": "Baisers ténébreux",
     "author": "Kelly Myers",
     "series": "Platinum Security",
@@ -4972,6 +5424,7 @@
     "notes": ""
   },
   {
+    "id": "k-o-tome-1",
     "title": "K.-O. Tome 1",
     "author": "Adriana Kritter",
     "series": "K.-O.",
@@ -4983,6 +5436,7 @@
     "notes": ""
   },
   {
+    "id": "mere-porteuse-pour-le-milliardaire",
     "title": "Mère Porteuse pour le Milliardaire",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -4994,6 +5448,7 @@
     "notes": ""
   },
   {
+    "id": "k-o-tome-6",
     "title": "K.-O. Tome 6",
     "author": "Adriana Kritter",
     "series": "K.-O.",
@@ -5005,6 +5460,7 @@
     "notes": ""
   },
   {
+    "id": "k-o-tome-5",
     "title": "K.-O. Tome 5",
     "author": "Adriana Kritter",
     "series": "K.-O.",
@@ -5016,6 +5472,7 @@
     "notes": ""
   },
   {
+    "id": "k-o-tome-2",
     "title": "K.-O. Tome 2",
     "author": "Adriana Kritter",
     "series": "K.-O.",
@@ -5027,6 +5484,7 @@
     "notes": ""
   },
   {
+    "id": "une-tentation-eternelle",
     "title": "Une tentation éternelle",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -5038,6 +5496,7 @@
     "notes": ""
   },
   {
+    "id": "sublime-heritier",
     "title": "Sublime Héritier",
     "author": "Julia Malone",
     "series": "Le Club des Milliardaires",
@@ -5049,6 +5508,7 @@
     "notes": ""
   },
   {
+    "id": "un-mariage-sur-la-plage",
     "title": "Un Mariage sur la Plage",
     "author": "Bella Andre",
     "series": "Les Mariés de Malibu",
@@ -5060,6 +5520,7 @@
     "notes": ""
   },
   {
+    "id": "aime-moi-monsieur-le-milliardaire",
     "title": "Aime-Moi, Monsieur le Milliardaire !",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -5071,6 +5532,7 @@
     "notes": ""
   },
   {
+    "id": "joue-ma-femme",
     "title": "Joue ma femme",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -5082,6 +5544,7 @@
     "notes": ""
   },
   {
+    "id": "my-christmas-bodyguard",
     "title": "My Christmas Bodyguard",
     "author": "Estelle Every",
     "series": "",
@@ -5093,6 +5556,7 @@
     "notes": ""
   },
   {
+    "id": "gabriel-version-francaise-love-her-game",
     "title": "Gabriel (version française): love (her) game",
     "author": "Estelle Every",
     "series": "Angel",
@@ -5104,6 +5568,7 @@
     "notes": ""
   },
   {
+    "id": "une-flamme-eternelle",
     "title": "Une flamme éternelle",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -5115,6 +5580,7 @@
     "notes": ""
   },
   {
+    "id": "wildfire-maple-hills-tome-2",
     "title": "Wildfire - Maple Hills Tome 2",
     "author": "Hannah Grace",
     "series": "Maple Hills",
@@ -5126,6 +5592,7 @@
     "notes": ""
   },
   {
+    "id": "icebreaker-maple-hills-tome-1",
     "title": "Icebreaker - Maple Hills Tome 1",
     "author": "Hannah Grace",
     "series": "Maple Hills",
@@ -5137,6 +5604,7 @@
     "notes": ""
   },
   {
+    "id": "coloc-sauvage",
     "title": "Coloc' Sauvage",
     "author": "Khéméia b",
     "series": "",
@@ -5148,6 +5616,7 @@
     "notes": ""
   },
   {
+    "id": "pinocchio-2",
     "title": "Pinocchio",
     "author": "Joël Pommerat",
     "series": "",
@@ -5159,6 +5628,7 @@
     "notes": "Pièce de théâtre (Heyoka jeunesse)"
   },
   {
+    "id": "une-passion-eternelle",
     "title": "Une passion éternelle",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -5170,6 +5640,7 @@
     "notes": ""
   },
   {
+    "id": "coup-de-c-ur-pour-le-docteur",
     "title": "Coup de Cœur pour le Docteur",
     "author": "Sarah S. Cope",
     "series": "",
@@ -5181,6 +5652,7 @@
     "notes": ""
   },
   {
+    "id": "enceinte-du-milliardaire",
     "title": "Enceinte du milliardaire",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -5192,6 +5664,7 @@
     "notes": ""
   },
   {
+    "id": "la-chute-du-bad-boy",
     "title": "La Chute du bad boy",
     "author": "Gina Azzi",
     "series": "Une équipe de choc",
@@ -5203,6 +5676,7 @@
     "notes": ""
   },
   {
+    "id": "le-risque-du-heros",
     "title": "Le Risque du héros",
     "author": "Gina Azzi",
     "series": "Une équipe de choc",
@@ -5214,6 +5688,7 @@
     "notes": ""
   },
   {
+    "id": "la-recompense-du-play-boy",
     "title": "La Récompense du play-boy",
     "author": "Gina Azzi",
     "series": "Une équipe de choc",
@@ -5225,6 +5700,7 @@
     "notes": ""
   },
   {
+    "id": "la-faiblesse-du-fort",
     "title": "La faiblesse du fort",
     "author": "Gina Azzi",
     "series": "Une équipe de choc",
@@ -5236,6 +5712,7 @@
     "notes": ""
   },
   {
+    "id": "l-erreur-du-champion",
     "title": "L'Erreur du champion",
     "author": "Gina Azzi",
     "series": "Une équipe de choc",
@@ -5247,6 +5724,7 @@
     "notes": ""
   },
   {
+    "id": "ambition-over-love",
     "title": "Ambition over Love",
     "author": "Estelle Every",
     "series": "",
@@ -5258,6 +5736,7 @@
     "notes": ""
   },
   {
+    "id": "mon-richissime-voisin",
     "title": "Mon richissime voisin",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de Seattle",
@@ -5269,6 +5748,7 @@
     "notes": ""
   },
   {
+    "id": "noel-au-campus",
     "title": "Noël au campus",
     "author": "Estelle Every",
     "series": "",
@@ -5280,6 +5760,7 @@
     "notes": ""
   },
   {
+    "id": "bad-boss",
     "title": "Bad Boss",
     "author": "Estelle Every",
     "series": "Les Frères Winter",
@@ -5291,6 +5772,7 @@
     "notes": ""
   },
   {
+    "id": "bad-boy",
     "title": "Bad Boy",
     "author": "Estelle Every",
     "series": "Les Frères Winter",
@@ -5302,6 +5784,7 @@
     "notes": ""
   },
   {
+    "id": "bad-bachelor",
     "title": "Bad Bachelor",
     "author": "Estelle Every",
     "series": "Les Frères Winter",
@@ -5313,6 +5796,7 @@
     "notes": ""
   },
   {
+    "id": "bad-professor",
     "title": "Bad Professor",
     "author": "Estelle Every",
     "series": "Les Frères Winter",
@@ -5324,6 +5808,7 @@
     "notes": ""
   },
   {
+    "id": "angel-version-francaise-play-off",
     "title": "Angel (version française): play-off",
     "author": "Estelle Every",
     "series": "Angel",
@@ -5335,6 +5820,7 @@
     "notes": ""
   },
   {
+    "id": "parker-coup-de-foudre-pour-le-patron",
     "title": "Parker: Coup de foudre pour le patron",
     "author": "Aurora Shine",
     "series": "Taylor Brothers",
@@ -5346,6 +5832,7 @@
     "notes": ""
   },
   {
+    "id": "un-baiser-eternel",
     "title": "Un baiser éternel",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -5357,6 +5844,7 @@
     "notes": ""
   },
   {
+    "id": "chase-jeu-dangereux-avec-le-milliardaire",
     "title": "Chase: Jeu dangereux avec le milliardaire",
     "author": "Anna May",
     "series": "Taylor Brothers",
@@ -5368,6 +5856,7 @@
     "notes": ""
   },
   {
+    "id": "l-assistante-du-milliardaire",
     "title": "L'Assistante du Milliardaire",
     "author": "Julia Malone",
     "series": "Insupportables Milliardaires",
@@ -5379,6 +5868,7 @@
     "notes": ""
   },
   {
+    "id": "mon-richissime-patron",
     "title": "Mon richissime patron",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de Seattle",
@@ -5390,6 +5880,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-43",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -5401,6 +5892,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-44",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -5412,6 +5904,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-45",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -5423,6 +5916,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-46",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -5434,6 +5928,7 @@
     "notes": ""
   },
   {
+    "id": "dixon-un-bebe-du-milliardaire",
     "title": "Dixon: Un bébé du milliardaire",
     "author": "Aurora Shine",
     "series": "Taylor Brothers",
@@ -5445,6 +5940,7 @@
     "notes": ""
   },
   {
+    "id": "angel-version-francaise-the-next-player",
     "title": "Angel (version française): the next Player",
     "author": "Estelle Every",
     "series": "Angel",
@@ -5456,6 +5952,7 @@
     "notes": ""
   },
   {
+    "id": "une-preuve-d-amour-eternel",
     "title": "Une preuve d'amour éternel",
     "author": "Layla Hagen",
     "series": "Les Frères Maxwell",
@@ -5467,6 +5964,7 @@
     "notes": ""
   },
   {
+    "id": "apprends-moi-a-aimer",
     "title": "Apprends-moi à aimer",
     "author": "Riley Flowers",
     "series": "Des histoires d'amour irrésistibles",
@@ -5478,6 +5976,7 @@
     "notes": ""
   },
   {
+    "id": "monsieur-vantard",
     "title": "Monsieur Vantard",
     "author": "Leslie North",
     "series": "Patrons, Tyrans et Milliardaires",
@@ -5489,6 +5988,7 @@
     "notes": ""
   },
   {
+    "id": "toujours-plus-pres-de-toi",
     "title": "Toujours plus près de toi",
     "author": "Bella Andre",
     "series": "La Famille Sullivan, Maine",
@@ -5500,6 +6000,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-47",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -5511,6 +6012,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-48",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -5522,6 +6024,7 @@
     "notes": ""
   },
   {
+    "id": "la-nounou-du-milliardaire",
     "title": "La Nounou du Milliardaire",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -5533,6 +6036,7 @@
     "notes": ""
   },
   {
+    "id": "mon-richissime-ennemi",
     "title": "Mon richissime ennemi",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de Seattle",
@@ -5544,6 +6048,7 @@
     "notes": ""
   },
   {
+    "id": "debuts-givres",
     "title": "Débuts givrés",
     "author": "Ava Gray",
     "series": "Milliardaire Alpha",
@@ -5555,6 +6060,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-49",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -5566,6 +6072,7 @@
     "notes": ""
   },
   {
+    "id": "titre-indisponible-50",
     "title": "(titre indisponible)",
     "author": "",
     "series": "",
@@ -5577,6 +6084,7 @@
     "notes": ""
   },
   {
+    "id": "la-fausse-petite-amie-du-milliardaire",
     "title": "La fausse petite amie du milliardaire",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -5588,6 +6096,7 @@
     "notes": ""
   },
   {
+    "id": "desmond-detruite-par-l-homme-que-j-aime",
     "title": "Desmond: Détruite par l'homme que j'aime",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -5599,6 +6108,7 @@
     "notes": ""
   },
   {
+    "id": "amoureuse-de-l-avocat",
     "title": "Amoureuse de l'avocat",
     "author": "Anna May",
     "series": "les amoureux riches",
@@ -5610,6 +6120,7 @@
     "notes": ""
   },
   {
+    "id": "mon-richissime-noel",
     "title": "Mon richissime Noël",
     "author": "Olivia Hayle",
     "series": "Les Milliardaires de New York",
@@ -5619,27 +6130,5 @@
     "status": "lu",
     "missing": false,
     "notes": ""
-  },
-  {
-    "title": "test syn",
-    "author": "test",
-    "series": "",
-    "tome": "",
-    "year": 2026,
-    "status": "lu",
-    "notes": "",
-    "missing": false,
-    "dateAdded": "2026-08-02"
-  },
-  {
-    "title": "test 2",
-    "author": "",
-    "series": "",
-    "tome": "",
-    "year": 2026,
-    "status": "lu",
-    "notes": "",
-    "missing": false,
-    "dateAdded": "2026-08-02"
   }
 ]

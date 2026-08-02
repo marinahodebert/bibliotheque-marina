@@ -70,25 +70,37 @@ async function testGitHubConnection(cfg) {
   return { ok: true, count: file.books.length };
 }
 
-// Pousse les livres `pending` (pas encore synchronisés) dans data/books.json
-// sur la branche configurée. Relit le fichier avant d'écrire (sha à jour) et
-// retente une fois en cas de conflit d'écriture concurrente (409).
-async function syncPendingBooks(pending, { attempt = 1 } = {}) {
+// Applique un lot de mutations en attente (ajouts / modifications / suppressions,
+// identifiées par id) au fichier distant. Relit toujours le fichier juste avant
+// d'écrire pour partir de la version la plus fraîche possible, et retente une
+// fois en cas de conflit d'écriture concurrente (409).
+// mutations: { adds: Book[], edits: {[id]: Partial<Book>}, deletes: string[] }
+async function syncMutations(mutations, { attempt = 1 } = {}) {
   const cfg = getGitHubConfig();
   if (!cfg || !cfg.token) throw new Error("GitHub non connecté");
-  if (!pending.length) return null;
+  const { adds = [], edits = {}, deletes = [] } = mutations;
+  if (!adds.length && !Object.keys(edits).length && !deletes.length) return null;
 
   const current = await githubGetFile(cfg);
-  const merged = [...current.books, ...pending];
-  const message = pending.length === 1
-    ? `Ajout : ${pending[0].title}`
-    : `Ajout de ${pending.length} livres`;
+  const survivors = current.books
+    .filter(b => !deletes.includes(b.id))
+    .map(b => (edits[b.id] ? { ...b, ...edits[b.id] } : b));
+  const newAdds = adds
+    .filter(b => !deletes.includes(b.id))
+    .map(b => (edits[b.id] ? { ...b, ...edits[b.id] } : b));
+  const merged = [...survivors, ...newAdds];
+
+  const parts = [];
+  if (newAdds.length) parts.push(`+${newAdds.length}`);
+  if (Object.keys(edits).length) parts.push(`✎${Object.keys(edits).length}`);
+  if (deletes.length) parts.push(`-${deletes.length}`);
+  const message = `Bibliothèque Marina : ${parts.join(" ")}`;
 
   try {
     await githubPutFile(cfg, merged, current.sha, message);
   } catch (err) {
     if (err.status === 409 && attempt < 2) {
-      return syncPendingBooks(pending, { attempt: attempt + 1 });
+      return syncMutations(mutations, { attempt: attempt + 1 });
     }
     throw err;
   }
@@ -103,6 +115,6 @@ window.MarinaSync = {
   clearGitHubConfig,
   githubGetFile,
   testGitHubConnection,
-  syncPendingBooks,
+  syncMutations,
   GH_LAST_SYNC_KEY,
 };

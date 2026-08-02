@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Bibliothèque Marina</title>
-  <meta name="theme-color" content="#18111f" />
+  <meta name="theme-color" content="#131315" />
   <meta name="description" content="Application personnelle de suivi de lectures Kindle et Books." />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
@@ -12,50 +12,33 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header class="app-header">
-    <div>
-      <p class="eyebrow">MarinaBooks</p>
-      <h1>Bibliothèque Marina</h1>
+  <div id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><small>MarinaBooks</small>Bibliothèque Marina</div>
+      <nav id="sidebarNav"></nav>
+      <div class="sidebar-bottom">
+        <button id="syncBtnDesktop" class="ghost-btn" type="button">Synchronisation</button>
+        <button id="addBookBtnDesktop" class="fab sidebar-fab" type="button">+ Ajouter un livre</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <div id="content"></div>
     </div>
-    <button id="themeToggle" class="icon-btn" type="button" aria-label="Changer le thème">☾</button>
-  </header>
 
-  <main class="container">
-    <section class="hero card">
-      <div>
-        <h2>Ton tableau de bord lecture</h2>
-        <p>Recherche, filtre, retrouve tes séries et repère les tomes manquants.</p>
-      </div>
-      <div class="hero-actions">
-        <button id="addBookBtn" class="primary-btn" type="button">+ Ajouter</button>
-        <button id="syncBtn" class="ghost-btn" type="button">Synchronisation</button>
-        <button id="exportBtn" class="ghost-btn" type="button">Exporter</button>
-        <label class="ghost-btn import-label">Importer<input id="importInput" type="file" accept="application/json" /></label>
-      </div>
-    </section>
+    <button id="addBookBtn" class="fab mobile-only" type="button" aria-label="Ajouter un livre">+</button>
 
-    <section id="stats" class="stats-grid"></section>
-
-    <section class="card controls">
-      <input id="searchInput" type="search" placeholder="Rechercher un titre, auteur, série…" />
-      <div class="filters">
-        <select id="yearFilter"><option value="">Toutes les années</option></select>
-        <select id="authorFilter"><option value="">Tous les auteurs</option></select>
-        <select id="seriesFilter"><option value="">Toutes les séries</option></select>
-        <select id="statusFilter"><option value="">Tous les statuts</option><option value="lu">Lu</option><option value="à lire">À lire</option><option value="en cours">En cours</option><option value="abandonné">Abandonné</option></select>
-        <select id="missingFilter"><option value="">Tous</option><option value="visible">Visibles Kindle</option><option value="missing">Disparus Kindle</option></select>
-      </div>
-    </section>
-
-    <nav class="tabs" aria-label="Vues">
-      <button class="tab active" data-view="books" type="button">Livres</button>
-      <button class="tab" data-view="authors" type="button">Auteurs</button>
-      <button class="tab" data-view="series" type="button">Séries</button>
-      <button class="tab" data-view="missing" type="button">À vérifier</button>
+    <nav class="tabbar" id="tabbar" aria-label="Navigation">
+      <button data-view="home" type="button"><i></i>Accueil</button>
+      <button data-view="library" type="button"><i></i>Bibliothèque</button>
+      <button data-view="series" type="button"><i></i>Séries</button>
+      <button data-view="authors" type="button"><i></i>Auteurs</button>
     </nav>
+  </div>
 
-    <section id="content" class="content"></section>
-  </main>
+  <div class="detail-overlay" id="detailOverlay">
+    <div class="detail-panel" id="detailPanel"></div>
+  </div>
 
   <dialog id="bookDialog" class="dialog">
     <form id="bookForm" method="dialog">
@@ -84,13 +67,18 @@
       <label>Token d'accès personnel (PAT)<input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_…" /></label>
       <label>Dépôt (owner/repo)<input id="ghRepo" type="text" placeholder="marinahodebert/bibliotheque-marina" /></label>
       <label>Branche<input id="ghBranch" type="text" placeholder="refonte-v2" /></label>
-      <p class="meta sync-warn">Branche de test — laisse « refonte-v2 » tant que la synchronisation n'est pas validée. Ne mets « main » qu'à la mise en production.</p>
-      <div class="hero-actions">
+      <p class="meta sync-warn">Branche de test — laisse « refonte-v2 » tant que la synchronisation n'est pas validée en production. Ne mets « main » qu'à la mise en production.</p>
+      <div class="btn-row">
         <button id="ghSaveBtn" class="primary-btn" type="button">Enregistrer et tester</button>
         <button id="ghDisconnectBtn" class="ghost-btn" type="button">Déconnecter</button>
       </div>
       <p id="ghPendingText" class="meta"></p>
       <button id="ghSyncNowBtn" class="ghost-btn" type="button">Synchroniser maintenant</button>
+      <hr style="border:none; border-top:1px solid var(--hair); margin:.3rem 0;" />
+      <div class="btn-row">
+        <button id="exportBtn" class="ghost-btn" type="button">Exporter (JSON)</button>
+        <label class="ghost-btn import-label">Importer<input id="importInput" type="file" accept="application/json" /></label>
+      </div>
     </form>
   </dialog>
 

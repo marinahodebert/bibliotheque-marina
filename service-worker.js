@@ -1,4 +1,4 @@
-const CACHE_NAME = "bibliotheque-marina-v0-2-1";
+const CACHE_NAME = "bibliotheque-marina-v0-3-0";
 const ASSETS = [
   "./",
   "./index.html",
