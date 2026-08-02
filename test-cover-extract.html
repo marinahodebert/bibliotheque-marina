@@ -626,12 +626,25 @@ function qualityScore(d) {
   return s;
 }
 
+// Source de vérité désormais UNIQUEMENT le data/books.json distant
+// (origin/refonte-v2 via l'API GitHub) — plus jamais la copie locale sur
+// disque, qui peut diverger de ce qui existe réellement sur le dépôt (c'est
+// exactement ce qui a causé les couvertures orphelines du 2026-08-02). Sans
+// connexion GitHub, aucune comparaison n'est possible : tout sera classé
+// "nouveau" plutôt que de risquer une comparaison à des données obsolètes.
 async function fetchExistingBooks() {
+  const cfg = window.MarinaSync ? MarinaSync.getGitHubConfig() : null;
+  if (!cfg || !cfg.token) {
+    console.warn("Non connecté à GitHub : impossible de comparer à la bibliothèque distante, tout sera classé \"nouveau\".");
+    return [];
+  }
   try {
-    const res = await fetch("data/books.json", { cache: "no-cache" });
-    if (!res.ok) return [];
-    return await res.json();
-  } catch { return []; }
+    const current = await MarinaSync.githubGetFile(cfg);
+    return current.books;
+  } catch (e) {
+    console.warn("Lecture du books.json distant impossible :", e.message);
+    return [];
+  }
 }
 
 // Cherche le meilleur livre déjà présent correspondant à une détection, et
@@ -739,6 +752,28 @@ function sameBookForMerge(a, b, existingBooks) {
   return true;
 }
 
+// Détecte le bruit d'interface Kindle (onglets de navigation de l'appli lus
+// par erreur comme s'ils étaient le titre/auteur d'un livre — cas réel trouvé
+// le 2026-08-02 : auteur "PLUS", auteur "BIBLIOTHÈQUE PLUS"). Volontairement
+// étroit pour ne jamais éliminer un vrai livre :
+//  1) le champ auteur (ou le titre) est composé UNIQUEMENT de mots de cette
+//     liste fermée d'éléments d'interface connus ;
+//  2) filet de sécurité générique : le champ auteur brut n'a AUCUNE minuscule
+//     (les onglets Kindle sont toujours en capitales ; un vrai nom d'auteur,
+//     tel qu'affiché dans la liste Kindle, ne l'est jamais) — même principe
+//     que le filtrage de bruit déjà utilisé pour l'import Kindle texte.
+const KINDLE_UI_WORDS = new Set([
+  "accueil", "bibliotheque", "biblotheque", "plus", "boutique", "recherche",
+  "rechercher", "decouvrir", "reglages", "parcourir", "retour", "recemment", "ajoutes",
+]);
+function isKindleUiNoise(title, author) {
+  const wordsOf = s => protoClean(s).split(/\s+/).filter(Boolean);
+  const allUiWords = s => { const w = wordsOf(s); return w.length > 0 && w.every(x => KINDLE_UI_WORDS.has(x)); };
+  if (allUiWords(author) || allUiWords(title)) return true;
+  if (author && author.trim().length <= 40 && !/[a-z]/.test(author) && /[A-ZÀ-Ý]/.test(author)) return true;
+  return false;
+}
+
 // Fusionne toutes les détections (toutes captures) en livres uniques, compare
 // à la bibliothèque existante et range chaque livre dans l'une de 4
 // catégories, chacune avec une action par défaut distincte. Ne modifie
@@ -748,9 +783,13 @@ function sameBookForMerge(a, b, existingBooks) {
 //   - "existing-has-cover"  : déjà présent, couverture déjà là -> "none" (à cocher
 //                             manuellement pour "replace-cover").
 //   - "uncertain"           : correspondance floue -> "none", validation manuelle requise.
+// Le filtre anti-bruit s'applique ICI (pas seulement à l'OCR fraîche) pour
+// protéger aussi les détections déjà en cache dans IndexedDB (bouton
+// "Rejouer le matching"), sans avoir à refaire l'OCR.
 function mergeAndDedupe(detections, existingBooks) {
-  const complete = detections.filter(d => !d.partial);
-  const partialOnly = detections.filter(d => d.partial);
+  const usable = detections.filter(d => !isKindleUiNoise(d.title, d.author));
+  const complete = usable.filter(d => !d.partial);
+  const partialOnly = usable.filter(d => d.partial);
 
   const groups = [];
   for (const det of complete) {
@@ -799,6 +838,11 @@ els.analyzeAllBtn.addEventListener("click", analyzeAllCaptures);
 
 async function analyzeAllCaptures() {
   if (!capturedImages.length) return;
+  const cfg = window.MarinaSync ? MarinaSync.getGitHubConfig() : null;
+  if (!cfg || !cfg.token) {
+    const proceed = confirm("Non connecté à GitHub : la comparaison à ta bibliothèque distante est impossible, tout sera classé \"nouveau\". Continuer quand même ?");
+    if (!proceed) return;
+  }
   els.analyzeAllBtn.disabled = true;
   allDetections = [];
   els.captureResults.innerHTML = "";
@@ -1218,6 +1262,7 @@ function renderConsolidatedPreview() {
   const existingCount = consolidated.filter(c => c.category === "existing-no-cover" || c.category === "existing-has-cover").length;
   const uncertainCount = consolidated.filter(c => c.category === "uncertain").length;
   const partialCount = consolidated.filter(c => c.category === "partial").length;
+  const noiseCount = allDetections.filter(d => isKindleUiNoise(d.title, d.author)).length;
 
   els.consolidatedSummary.innerHTML =
     `<b>${totalCaptures}</b> capture(s) analysée(s) · <b>${totalRaw}</b> détection(s) brute(s) · <b>${totalUnique}</b> livre(s) unique(s)` +
@@ -1225,7 +1270,8 @@ function renderConsolidatedPreview() {
     (newCount ? ` · ${newCount} nouveau(x)` : "") +
     (existingCount ? ` · ${existingCount} déjà dans ta bibliothèque` : "") +
     (uncertainCount ? ` · ${uncertainCount} correspondance(s) incertaine(s)` : "") +
-    (partialCount ? ` · ${partialCount} partielle(s) ignorée(s)` : "");
+    (partialCount ? ` · ${partialCount} partielle(s) ignorée(s)` : "") +
+    (noiseCount ? ` · ${noiseCount} bruit d'interface Kindle filtré(s)` : "");
 
   els.consolidatedList.innerHTML = consolidated.map((entry, i) => {
     const img = capturedImages[entry.captureIndex]?.img;
