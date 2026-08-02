@@ -19,7 +19,9 @@ const STATUS_ORDER = [
   { value: "à lire", label: "À lire", slug: "a-lire" },
   { value: "en cours", label: "En cours", slug: "en-cours" },
   { value: "abandonné", label: "Abandonné", slug: "abandonne" },
+  { value: "non défini", label: "Non défini", slug: "non-defini" },
 ];
+const KINDLE_STATUS_CHOICES = ["à lire", "lu", "en cours", "non défini"];
 
 let currentView = "home";
 let currentDetailId = null;
@@ -47,6 +49,9 @@ const els = {
   ghRepo: document.querySelector("#ghRepo"),
   ghBranch: document.querySelector("#ghBranch"),
   ghPendingText: document.querySelector("#ghPendingText"),
+  addChoiceDialog: document.querySelector("#addChoiceDialog"),
+  kindleDialog: document.querySelector("#kindleDialog"),
+  kindleBody: document.querySelector("#kindleBody"),
 };
 
 init();
@@ -84,8 +89,14 @@ async function loadRemoteBooks() {
 
 /* ============ events (delegated, bound once) ============ */
 function bindEvents() {
-  document.querySelector("#addBookBtn").addEventListener("click", () => els.dialog.showModal());
-  document.querySelector("#addBookBtnDesktop").addEventListener("click", () => els.dialog.showModal());
+  document.querySelectorAll("[data-dialog-close]").forEach(btn => {
+    btn.addEventListener("click", () => btn.closest("dialog")?.close());
+  });
+
+  document.querySelector("#addBookBtn").addEventListener("click", () => els.addChoiceDialog.showModal());
+  document.querySelector("#addBookBtnDesktop").addEventListener("click", () => els.addChoiceDialog.showModal());
+  document.querySelector("#chooseManual").addEventListener("click", () => { els.addChoiceDialog.close(); els.dialog.showModal(); });
+  document.querySelector("#chooseKindle").addEventListener("click", () => { els.addChoiceDialog.close(); openKindleDialog(); });
   els.form.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(els.form));
@@ -94,6 +105,8 @@ function bindEvents() {
     els.form.reset();
     els.dialog.close();
   });
+
+  bindKindleDialogEvents();
 
   els.syncBtnDesktop.addEventListener("click", openSyncDialog);
   document.querySelector("#ghSaveBtn").addEventListener("click", saveAndTestGitHub);
@@ -384,6 +397,7 @@ function libraryShellHTML() {
     { status: "a-lire", label: "À lire" },
     { status: "en-cours", label: "En cours" },
     { status: "abandonne", label: "Abandonné" },
+    { status: "non-defini", label: "Non défini" },
   ];
   return `
     <div class="library-header"><h1>Bibliothèque</h1><p class="count">${allBooks.length} livre${allBooks.length > 1 ? "s" : ""}</p></div>
@@ -604,6 +618,233 @@ async function syncNow(manual) {
     if (manual) setSyncStatus(`Échec de synchronisation : ${err.message}`, "err");
   }
   updateSyncStatusUI();
+}
+
+/* ============ import Kindle ============ */
+let kindleStep = "paste";
+let kindleRows = [];
+
+function openKindleDialog() {
+  kindleStep = "paste";
+  kindleRows = [];
+  renderKindleDialog();
+  els.kindleDialog.showModal();
+}
+function renderKindleDialog() {
+  document.getElementById("kindleTitle").textContent = kindleStep === "paste" ? "Import Kindle" : "Vérifie les livres détectés";
+  els.kindleBody.innerHTML = kindleStep === "paste" ? kindlePasteHTML() : kindlePreviewHTML();
+}
+function kindlePasteHTML() {
+  return `
+    <div class="dialog-body">
+      <p class="meta">Colle ci-dessous le texte copié depuis ta bibliothèque Kindle (autant de livres que tu veux, d'un coup). Les lignes vides et le texte parasite (« dans la bibliothèque Kindle », numéros de page…) sont filtrés automatiquement.</p>
+      <textarea id="kindleTextarea" rows="12" placeholder="Colle ta liste Kindle ici…"></textarea>
+      <div class="btn-row" style="margin-top:.9rem;">
+        <button class="primary-btn" type="button" id="kindleAnalyzeBtn">Analyser</button>
+        <button class="ghost-btn" type="button" data-dialog-close>Annuler</button>
+      </div>
+    </div>
+  `;
+}
+function kindlePreviewHTML() {
+  const total = kindleRows.length;
+  const dupes = kindleRows.filter(r => r.dupe).length;
+  const incomplete = kindleRows.filter(r => r.incomplete).length;
+  const selectedCount = kindleRows.filter(r => r.selected).length;
+  if (!total) {
+    return `<div class="dialog-body">
+      <p class="empty-state">Aucun livre reconnaissable dans ce texte. Vérifie le collage puis réessaie.</p>
+      <div class="btn-row"><button class="ghost-btn" type="button" id="kindleBackBtn">Retour</button></div>
+    </div>`;
+  }
+  return `
+    <div class="dialog-body">
+      <p class="import-summary">${total} livre${total > 1 ? "s" : ""} détecté${total > 1 ? "s" : ""} · ${dupes} doublon${dupes > 1 ? "s" : ""} probable${dupes > 1 ? "s" : ""} · ${incomplete} ligne${incomplete > 1 ? "s" : ""} incomplète${incomplete > 1 ? "s" : ""}</p>
+      <label>Statut pour tous les livres importés
+        <select id="kindleGlobalStatus">
+          ${KINDLE_STATUS_CHOICES.map(s => `<option value="${s}">${STATUS_ORDER.find(o => o.value === s).label}</option>`).join("")}
+        </select>
+      </label>
+      <div class="btn-row" style="margin-bottom:.9rem;">
+        <button class="ghost-btn" type="button" id="kindleSelectAll">Tout sélectionner</button>
+        <button class="ghost-btn" type="button" id="kindleSelectNone">Tout désélectionner</button>
+      </div>
+      <div id="kindleRows">${kindleRows.map(kindleRowHTML).join("")}</div>
+      <div class="btn-row" style="margin-top:1rem;">
+        <button class="primary-btn" type="button" id="kindleCommitBtn">Importer ${selectedCount} livre${selectedCount > 1 ? "s" : ""}</button>
+        <button class="ghost-btn" type="button" id="kindleBackBtn">Retour</button>
+      </div>
+    </div>
+  `;
+}
+function kindleRowHTML(r, i) {
+  const dupeLabel = r.dupe === "bibliothèque" ? "Doublon probable — déjà dans ta bibliothèque" : r.dupe === "import" ? "Doublon probable — répété dans ce collage" : "";
+  return `
+    <div class="import-row${r.dupe ? " dupe" : ""}" data-row="${i}">
+      <input type="checkbox" class="chk" data-field="selected" ${r.selected ? "checked" : ""} aria-label="Importer cette ligne" />
+      <div class="fields">
+        <input type="text" data-field="title" value="${escapeHtml(r.title)}" placeholder="Titre" />
+        <div class="row2">
+          <input type="text" data-field="author" value="${escapeHtml(r.author)}" placeholder="Auteur" />
+          <select data-field="status">
+            ${KINDLE_STATUS_CHOICES.map(s => `<option value="${s}" ${r.status === s ? "selected" : ""}>${STATUS_ORDER.find(o => o.value === s).label}</option>`).join("")}
+          </select>
+        </div>
+        <div class="row3">
+          <input type="text" data-field="series" value="${escapeHtml(r.series)}" placeholder="Série (optionnel)" />
+          <input type="text" data-field="tome" value="${escapeHtml(String(r.tome || ""))}" placeholder="Tome" inputmode="numeric" />
+        </div>
+        ${dupeLabel ? `<span class="dupe-badge">${dupeLabel}</span>` : ""}
+        ${r.incomplete ? `<span class="warn-badge">Auteur manquant — vérifie cette ligne</span>` : ""}
+      </div>
+      <button class="remove-row" type="button" data-remove-row aria-label="Retirer cette ligne">×</button>
+    </div>
+  `;
+}
+function runKindleAnalyze() {
+  const raw = document.getElementById("kindleTextarea").value;
+  kindleRows = buildKindleRows(raw, "à lire");
+  kindleStep = "preview";
+  renderKindleDialog();
+}
+function refreshKindleCommitLabel() {
+  const btn = document.getElementById("kindleCommitBtn");
+  if (!btn) return;
+  const n = kindleRows.filter(r => r.selected).length;
+  btn.textContent = `Importer ${n} livre${n > 1 ? "s" : ""}`;
+}
+function commitKindleImport() {
+  const toAdd = kindleRows.filter(r => r.selected && r.title.trim());
+  toAdd.forEach(r => {
+    localAdds.push({
+      id: genId(r.title),
+      title: r.title.trim(),
+      author: r.author.trim(),
+      series: r.series.trim(),
+      tome: r.tome ? Number(r.tome) : "",
+      year: new Date().getFullYear(),
+      dateAdded: new Date().toISOString().slice(0, 10),
+      status: r.status,
+      missing: false,
+      notes: "",
+      cover: "",
+    });
+  });
+  saveLocalAdds();
+  refreshAndRender();
+  syncNow(false);
+  els.kindleDialog.close();
+  switchView("library");
+}
+function bindKindleDialogEvents() {
+  els.kindleDialog.addEventListener("click", (e) => {
+    if (e.target.id === "kindleAnalyzeBtn") { runKindleAnalyze(); return; }
+    if (e.target.id === "kindleBackBtn") { kindleStep = "paste"; renderKindleDialog(); return; }
+    if (e.target.id === "kindleSelectAll") { kindleRows.forEach(r => r.selected = true); renderKindleDialog(); return; }
+    if (e.target.id === "kindleSelectNone") { kindleRows.forEach(r => r.selected = false); renderKindleDialog(); return; }
+    if (e.target.id === "kindleCommitBtn") { commitKindleImport(); return; }
+    const rmBtn = e.target.closest("[data-remove-row]");
+    if (rmBtn) {
+      const idx = Number(rmBtn.closest(".import-row").dataset.row);
+      kindleRows.splice(idx, 1);
+      renderKindleDialog();
+    }
+  });
+  els.kindleDialog.addEventListener("input", (e) => {
+    if (e.target.tagName !== "INPUT" || e.target.type !== "text") return;
+    const row = e.target.closest(".import-row");
+    if (!row) return;
+    const idx = Number(row.dataset.row);
+    const field = e.target.dataset.field;
+    if (field) kindleRows[idx][field] = e.target.value;
+  });
+  els.kindleDialog.addEventListener("change", (e) => {
+    if (e.target.id === "kindleGlobalStatus") {
+      kindleRows.forEach(r => r.status = e.target.value);
+      renderKindleDialog();
+      return;
+    }
+    const row = e.target.closest(".import-row");
+    if (!row) return;
+    const idx = Number(row.dataset.row);
+    const field = e.target.dataset.field;
+    if (field === "selected") { kindleRows[idx].selected = e.target.checked; refreshKindleCommitLabel(); }
+    else if (field) kindleRows[idx][field] = e.target.value;
+  });
+}
+
+const KINDLE_MARKER = "dans la bibliotheque kindle";
+const KINDLE_NOISE = new Set(["voir plus", "voir sur amazon", "precedent", "suivant", "livres", "kindle", "bibliotheque kindle", "accueil", "boutique kindle"]);
+
+function parseKindleText(raw) {
+  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const hasMarker = lines.some(l => clean(l) === KINDLE_MARKER);
+
+  if (!hasMarker) {
+    const usable = lines.filter(l => !KINDLE_NOISE.has(clean(l)) && !/^\d+$/.test(clean(l)));
+    const pairs = [];
+    for (let i = 0; i < usable.length; i += 2) {
+      pairs.push({ title: usable[i], author: usable[i + 1] || "", incomplete: !usable[i + 1] });
+    }
+    return pairs;
+  }
+
+  const records = [];
+  let buffer = [];
+  for (const line of lines) {
+    const norm = clean(line);
+    if (norm === KINDLE_MARKER) {
+      if (buffer.length) records.push(buffer);
+      buffer = [];
+      continue;
+    }
+    if (KINDLE_NOISE.has(norm) || /^\d+$/.test(norm)) continue;
+    buffer.push(line);
+  }
+  if (buffer.length) records.push(buffer);
+
+  return records.map(lines => {
+    if (lines.length === 1) return { title: lines[0], author: "", incomplete: true };
+    const author = lines[lines.length - 1];
+    const title = lines.slice(0, -1).join(" ");
+    return { title, author, incomplete: false };
+  });
+}
+function extractSeriesTome(title) {
+  const m = title.match(/\(([^()]+?)(?:\s+t\.?\s*(\d+)|\s+tome\s*(\d+))?\)\s*$/i);
+  if (!m) return { series: "", tome: "" };
+  return { series: m[1].trim(), tome: m[2] || m[3] || "" };
+}
+function findDuplicate(title, existingBooks, batchTitlesSeen) {
+  const ct = clean(title);
+  if (!ct) return null;
+  const inExisting = existingBooks.some(b => {
+    const et = clean(b.title);
+    if (!et) return false;
+    return et === ct || (ct.length > 8 && (et.includes(ct) || ct.includes(et)));
+  });
+  if (inExisting) return "bibliothèque";
+  if (batchTitlesSeen.has(ct)) return "import";
+  return null;
+}
+function buildKindleRows(rawText, defaultStatus) {
+  const parsed = parseKindleText(rawText);
+  const seen = new Set();
+  return parsed.filter(p => p.title && p.title.trim()).map((p, i) => {
+    const { series, tome } = extractSeriesTome(p.title);
+    const dupe = findDuplicate(p.title, allBooks, seen);
+    seen.add(clean(p.title));
+    return {
+      title: p.title,
+      author: p.author || "",
+      series,
+      tome,
+      status: defaultStatus,
+      selected: !dupe,
+      dupe,
+      incomplete: Boolean(p.incomplete),
+    };
+  });
 }
 
 /* ============ export / import ============ */

@@ -44,14 +44,14 @@
     <form id="bookForm" method="dialog">
       <div class="dialog-head">
         <h2>Ajouter un livre</h2>
-        <button class="icon-btn" value="cancel" type="submit">×</button>
+        <button class="icon-btn" type="button" data-dialog-close>×</button>
       </div>
       <label>Titre<input name="title" required /></label>
       <label>Auteur<input name="author" /></label>
       <label>Série<input name="series" /></label>
       <label>Tome<input name="tome" inputmode="numeric" /></label>
       <label>Année<input name="year" inputmode="numeric" /></label>
-      <label>Statut<select name="status"><option value="lu">Lu</option><option value="en cours">En cours</option><option value="à lire">À lire</option><option value="abandonné">Abandonné</option></select></label>
+      <label>Statut<select name="status"><option value="lu">Lu</option><option value="en cours">En cours</option><option value="à lire">À lire</option><option value="abandonné">Abandonné</option><option value="non défini">Non défini</option></select></label>
       <label>Notes<textarea name="notes" rows="3"></textarea></label>
       <button class="primary-btn" value="default" type="submit">Ajouter</button>
     </form>
@@ -61,7 +61,7 @@
     <form id="syncForm" method="dialog">
       <div class="dialog-head">
         <h2>Synchronisation GitHub</h2>
-        <button class="icon-btn" value="cancel" type="submit">×</button>
+        <button class="icon-btn" type="button" data-dialog-close>×</button>
       </div>
       <p id="syncStatusText" class="meta">Non connecté.</p>
       <label>Token d'accès personnel (PAT)<input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_…" /></label>
@@ -80,6 +80,31 @@
         <label class="ghost-btn import-label">Importer<input id="importInput" type="file" accept="application/json" /></label>
       </div>
     </form>
+  </dialog>
+
+  <dialog id="addChoiceDialog" class="dialog">
+    <div class="dialog-head">
+      <h2>Ajouter des livres</h2>
+      <button class="icon-btn" type="button" data-dialog-close>×</button>
+    </div>
+    <div class="add-choice-grid">
+      <button class="add-choice" type="button" id="chooseManual">
+        <span class="add-choice-title">Ajout manuel</span>
+        <span class="add-choice-desc">Un livre à la fois, avec tous les détails.</span>
+      </button>
+      <button class="add-choice" type="button" id="chooseKindle">
+        <span class="add-choice-title">Import Kindle</span>
+        <span class="add-choice-desc">Colle une liste copiée depuis ta bibliothèque Kindle, plusieurs livres d'un coup.</span>
+      </button>
+    </div>
+  </dialog>
+
+  <dialog id="kindleDialog" class="dialog dialog-lg">
+    <div class="dialog-head">
+      <h2 id="kindleTitle">Import Kindle</h2>
+      <button class="icon-btn" type="button" data-dialog-close>×</button>
+    </div>
+    <div id="kindleBody"></div>
   </dialog>
 
   <script src="js/sync.js"></script>
