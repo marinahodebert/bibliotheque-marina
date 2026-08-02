@@ -1,8 +1,9 @@
-const CACHE_NAME = "bibliotheque-marina-v0-2-0";
+const CACHE_NAME = "bibliotheque-marina-v0-2-1";
 const ASSETS = [
   "./",
   "./index.html",
   "./css/style.css",
+  "./js/sync.js",
   "./js/app.js",
   "./data/books.json",
   "./manifest.json",

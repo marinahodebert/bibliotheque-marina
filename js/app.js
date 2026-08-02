@@ -18,6 +18,13 @@ const els = {
   missing: document.querySelector("#missingFilter"),
   dialog: document.querySelector("#bookDialog"),
   form: document.querySelector("#bookForm"),
+  syncDialog: document.querySelector("#syncDialog"),
+  syncBtn: document.querySelector("#syncBtn"),
+  syncStatusText: document.querySelector("#syncStatusText"),
+  ghToken: document.querySelector("#ghToken"),
+  ghRepo: document.querySelector("#ghRepo"),
+  ghBranch: document.querySelector("#ghBranch"),
+  ghPendingText: document.querySelector("#ghPendingText"),
 };
 
 init();
@@ -30,9 +37,19 @@ async function init() {
   allBooks = normalizeBooks([...remoteBooks, ...localAdds]);
   populateFilters();
   render();
+  updateSyncStatusUI();
 }
 
 async function loadRemoteBooks() {
+  const cfg = window.MarinaSync?.getGitHubConfig();
+  if (cfg?.token) {
+    try {
+      const file = await MarinaSync.githubGetFile(cfg);
+      return file.books;
+    } catch (err) {
+      console.error("Lecture GitHub échouée, repli sur le fichier local", err);
+    }
+  }
   try {
     const res = await fetch(BOOKS_URL, { cache: "no-cache" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -56,6 +73,11 @@ function bindEvents() {
   document.querySelector("#exportBtn").addEventListener("click", exportData);
   document.querySelector("#importInput").addEventListener("change", importData);
   els.form.addEventListener("submit", addBook);
+
+  els.syncBtn.addEventListener("click", () => { fillSyncForm(); els.syncDialog.showModal(); });
+  document.querySelector("#ghSaveBtn").addEventListener("click", saveAndTestGitHub);
+  document.querySelector("#ghDisconnectBtn").addEventListener("click", disconnectGitHub);
+  document.querySelector("#ghSyncNowBtn").addEventListener("click", () => syncNow(true));
 }
 
 function normalizeBooks(books) {
@@ -188,6 +210,7 @@ function addBook(e) {
   els.form.reset();
   els.dialog.close();
   render();
+  syncNow(false);
 }
 
 function exportData() {
@@ -207,6 +230,93 @@ async function importData(e) {
   allBooks = normalizeBooks([...remoteBooks, ...localAdds]);
   populateFilters();
   render();
+}
+
+function fillSyncForm() {
+  const cfg = MarinaSync.getGitHubConfig();
+  els.ghRepo.value = cfg ? `${cfg.owner}/${cfg.repo}` : "marinahodebert/bibliotheque-marina";
+  els.ghBranch.value = cfg?.branch || "refonte-v2";
+  els.ghToken.value = "";
+  els.ghToken.placeholder = cfg?.token ? "•••• déjà enregistré (laisse vide pour garder)" : "github_pat_…";
+  updateSyncStatusUI();
+}
+
+function updateSyncStatusUI() {
+  const cfg = MarinaSync.getGitHubConfig();
+  const last = localStorage.getItem(MarinaSync.GH_LAST_SYNC_KEY);
+  if (cfg?.token) {
+    els.syncStatusText.textContent = `Connecté à ${cfg.owner}/${cfg.repo} (branche ${cfg.branch})${last ? " · dernière synchro " + new Date(last).toLocaleString("fr-FR") : ""}`;
+    els.syncStatusText.className = "meta sync-ok";
+  } else {
+    els.syncStatusText.textContent = "Non connecté.";
+    els.syncStatusText.className = "meta";
+  }
+  els.ghPendingText.textContent = localAdds.length
+    ? `${localAdds.length} livre${localAdds.length > 1 ? "s" : ""} en attente de synchronisation.`
+    : "Rien en attente, tout est synchronisé.";
+  els.syncBtn.textContent = localAdds.length ? `Synchronisation (${localAdds.length})` : "Synchronisation";
+}
+
+async function saveAndTestGitHub() {
+  const [owner, repo] = els.ghRepo.value.trim().split("/").map(s => s.trim());
+  const branch = els.ghBranch.value.trim() || "refonte-v2";
+  const existing = MarinaSync.getGitHubConfig();
+  const token = els.ghToken.value.trim() || existing?.token;
+  if (!owner || !repo || !token) {
+    els.syncStatusText.textContent = "Renseigne le dépôt (owner/repo) et un token.";
+    els.syncStatusText.className = "meta sync-err";
+    return;
+  }
+  const cfg = { owner, repo, branch, token };
+  els.syncStatusText.textContent = "Test de connexion…";
+  els.syncStatusText.className = "meta";
+  try {
+    const result = await MarinaSync.testGitHubConnection(cfg);
+    MarinaSync.saveGitHubConfig(cfg);
+    remoteBooks = await loadRemoteBooks();
+    allBooks = normalizeBooks([...remoteBooks, ...localAdds]);
+    populateFilters();
+    render();
+    els.syncStatusText.textContent = `Connecté ✓ ${result.count} livres trouvés sur ${owner}/${repo} (${branch}).`;
+    els.syncStatusText.className = "meta sync-ok";
+    els.ghPendingText.textContent = localAdds.length
+      ? `${localAdds.length} livre${localAdds.length > 1 ? "s" : ""} en attente de synchronisation.`
+      : "Rien en attente, tout est synchronisé.";
+  } catch (err) {
+    els.syncStatusText.textContent = `Échec : ${err.message}`;
+    els.syncStatusText.className = "meta sync-err";
+  }
+}
+
+function disconnectGitHub() {
+  MarinaSync.clearGitHubConfig();
+  fillSyncForm();
+}
+
+async function syncNow(manual) {
+  const cfg = MarinaSync.getGitHubConfig();
+  if (!cfg?.token) {
+    if (manual) { els.syncStatusText.textContent = "Connecte d'abord GitHub."; els.syncStatusText.className = "meta sync-err"; }
+    return;
+  }
+  if (!localAdds.length) {
+    if (manual) updateSyncStatusUI();
+    return;
+  }
+  if (manual) { els.syncStatusText.textContent = "Synchronisation en cours…"; els.syncStatusText.className = "meta"; }
+  try {
+    const merged = await MarinaSync.syncPendingBooks(localAdds);
+    remoteBooks = merged;
+    localAdds = [];
+    saveLocalAdds();
+    allBooks = normalizeBooks([...remoteBooks, ...localAdds]);
+    populateFilters();
+    render();
+  } catch (err) {
+    console.error("Synchronisation échouée", err);
+    if (manual) { els.syncStatusText.textContent = `Échec de synchronisation : ${err.message}`; els.syncStatusText.className = "meta sync-err"; }
+  }
+  updateSyncStatusUI();
 }
 
 function loadLocalAdds() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; } }

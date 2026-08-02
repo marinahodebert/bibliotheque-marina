@@ -66,4 +66,7 @@ input, select, textarea { width: 100%; background: var(--panel); color: var(--te
 .dialog-head { display: flex; justify-content: space-between; align-items: center; }
 .dialog label { display: grid; gap: 6px; color: var(--muted); font-weight: 700; }
 .empty { text-align: center; color: var(--muted); padding: 36px; }
+.sync-ok { color: #8fd19e; }
+.sync-err { color: #ff8a80; }
+.sync-warn { font-size: .8rem; margin-top: -4px; }
 @media (min-width: 720px) { .hero { grid-template-columns: 1fr auto; align-items: center; } .stats-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

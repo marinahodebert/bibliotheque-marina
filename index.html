@@ -28,6 +28,7 @@
       </div>
       <div class="hero-actions">
         <button id="addBookBtn" class="primary-btn" type="button">+ Ajouter</button>
+        <button id="syncBtn" class="ghost-btn" type="button">Synchronisation</button>
         <button id="exportBtn" class="ghost-btn" type="button">Exporter</button>
         <label class="ghost-btn import-label">Importer<input id="importInput" type="file" accept="application/json" /></label>
       </div>
@@ -73,6 +74,27 @@
     </form>
   </dialog>
 
+  <dialog id="syncDialog" class="dialog">
+    <form id="syncForm" method="dialog">
+      <div class="dialog-head">
+        <h2>Synchronisation GitHub</h2>
+        <button class="icon-btn" value="cancel" type="submit">×</button>
+      </div>
+      <p id="syncStatusText" class="meta">Non connecté.</p>
+      <label>Token d'accès personnel (PAT)<input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_…" /></label>
+      <label>Dépôt (owner/repo)<input id="ghRepo" type="text" placeholder="marinahodebert/bibliotheque-marina" /></label>
+      <label>Branche<input id="ghBranch" type="text" placeholder="refonte-v2" /></label>
+      <p class="meta sync-warn">Branche de test — laisse « refonte-v2 » tant que la synchronisation n'est pas validée. Ne mets « main » qu'à la mise en production.</p>
+      <div class="hero-actions">
+        <button id="ghSaveBtn" class="primary-btn" type="button">Enregistrer et tester</button>
+        <button id="ghDisconnectBtn" class="ghost-btn" type="button">Déconnecter</button>
+      </div>
+      <p id="ghPendingText" class="meta"></p>
+      <button id="ghSyncNowBtn" class="ghost-btn" type="button">Synchroniser maintenant</button>
+    </form>
+  </dialog>
+
+  <script src="js/sync.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
