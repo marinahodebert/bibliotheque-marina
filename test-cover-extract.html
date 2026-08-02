@@ -39,16 +39,27 @@
   .preview-card { display: flex; gap: 1rem; background: #1b1b1e; border-radius: 10px; padding: .9rem; border: 1px solid rgba(242,241,238,.1); align-items: flex-start; }
   .preview-card.partial { border-color: rgba(255,148,87,.5); background: #201c19; }
   .preview-card.existing { border-color: rgba(139,140,255,.5); }
+  .preview-card.uncertain { border-color: rgba(255,207,64,.55); background: #201d16; }
   .preview-cover { width: 80px; height: auto; border-radius: 6px; flex: none; background: #0b0b0d; }
   .preview-fields { flex: 1; display: grid; gap: .5rem; min-width: 0; }
   .preview-fields label { display: flex; flex-direction: column; gap: .25rem; font-size: .72rem; color: #95939a; }
   .preview-fields input { background: #232326; color: #f2f1ee; border: 1px solid rgba(242,241,238,.16); border-radius: 7px; padding: .5rem .6rem; font: inherit; }
   .field-row { display: grid; grid-template-columns: 2fr 1fr; gap: .6rem; }
-  .partial-badge, .merge-badge, .existing-badge { display: block; font-size: .7rem; font-weight: 700; padding: .25rem .6rem; border-radius: 999px; margin-bottom: .35rem; width: fit-content; }
+  .partial-badge, .merge-badge, .existing-badge, .uncertain-badge { display: block; font-size: .7rem; font-weight: 700; padding: .25rem .6rem; border-radius: 999px; margin-bottom: .35rem; width: fit-content; }
   .partial-badge { color: #ff9457; background: rgba(255,148,87,.15); }
   .merge-badge { color: #5b8cff; background: rgba(91,140,255,.15); }
   .existing-badge { color: #b78cff; background: rgba(183,140,255,.15); }
+  .uncertain-badge { color: #ffcf40; background: rgba(255,207,64,.15); }
   .preview-check { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: #95939a; flex: none; white-space: nowrap; padding-top: .3rem; }
+  .action-note { font-size: .78rem; color: #6c6a70; flex: none; white-space: nowrap; padding-top: .3rem; }
+  .resolve-group { flex: none; display: flex; flex-direction: column; gap: .35rem; font-size: .74rem; color: #95939a; background: #232019; border-radius: 8px; padding: .6rem .7rem; max-width: 260px; }
+  .resolve-group label { display: flex; align-items: flex-start; gap: .4rem; cursor: pointer; }
+  .existing-cover-thumb { width: 44px; height: auto; border-radius: 4px; margin-left: .5rem; vertical-align: middle; border: 1px solid rgba(242,241,238,.2); }
+  .recap-block { margin: 1.4rem 0; padding: 1rem 1.2rem; background: #1b1b1e; border-radius: 10px; border: 1px solid rgba(242,241,238,.12); }
+  .recap-block h2 { margin: 0 0 .6rem; }
+  .recap-list { margin: 0 0 .9rem; padding-left: 1.2rem; font-size: .9rem; line-height: 1.7; }
+  .recap-list b { color: #3fbe86; }
+  .recap-note { font-size: .85rem; color: #95939a; margin-top: .7rem; max-width: 70ch; }
 </style>
 </head>
 <body>
@@ -100,6 +111,7 @@
   <h2 id="consolidatedTitle" style="display:none;">Livres consolidés</h2>
   <p class="summary" id="consolidatedSummary"></p>
   <div class="preview-list" id="consolidatedList"></div>
+  <div class="recap-block" id="recapBlock" style="display:none;"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -127,6 +139,7 @@ const els = {
   consolidatedTitle: document.getElementById("consolidatedTitle"),
   consolidatedSummary: document.getElementById("consolidatedSummary"),
   consolidatedList: document.getElementById("consolidatedList"),
+  recapBlock: document.getElementById("recapBlock"),
 };
 
 let capturedImages = []; // [{ img, name }], dans l'ordre de dépôt
@@ -393,8 +406,43 @@ async function fetchExistingBooks() {
   } catch { return []; }
 }
 
-// Fusionne toutes les détections (toutes captures) en livres uniques, puis
-// compare à la bibliothèque existante. Ne modifie jamais books.json.
+// Cherche le meilleur livre déjà présent correspondant à une détection, et
+// qualifie la confiance de la correspondance :
+// - "certain"   : titre normalisé strictement égal, et auteur égal (ou l'un
+//                 des deux manque, ce qui n'est pas un conflit).
+// - "uncertain" : ne matche que par inclusion partielle (titre ou auteur),
+//                 donc plausible mais pas fiable -> ne jamais agir seul.
+// Un conflit de tome élimine le candidat, quelle que soit la confiance par
+// ailleurs (mêmes règles que sameBook/tomeConflict pour la fusion inter-captures).
+function matchExisting(entry, existingBooks) {
+  let uncertain = null;
+  for (const b of existingBooks) {
+    if (tomeConflict(entry.tome, b.tome)) continue;
+    const ca = protoClean(entry.title), cb = protoClean(b.title);
+    if (!ca || !cb) continue;
+    const titleExact = ca === cb;
+    const titleFuzzy = !titleExact && ca.length > 8 && (ca.includes(cb) || cb.includes(ca));
+    if (!titleExact && !titleFuzzy) continue;
+    const aa = entry.author ? protoClean(entry.author) : "";
+    const ba = b.author ? protoClean(b.author) : "";
+    const authorExact = !aa || !ba || aa === ba;
+    const authorFuzzy = !authorExact && aa.length > 3 && ba.length > 3 && (aa.includes(ba) || ba.includes(aa));
+    if (!authorExact && !authorFuzzy) continue;
+    if (titleExact && authorExact) return { book: b, confidence: "certain" };
+    if (!uncertain) uncertain = { book: b, confidence: "uncertain" };
+  }
+  return uncertain;
+}
+
+// Fusionne toutes les détections (toutes captures) en livres uniques, compare
+// à la bibliothèque existante et range chaque livre dans l'une de 4
+// catégories, chacune avec une action par défaut distincte. Ne modifie
+// jamais books.json ni le dépôt : "action" ne vit qu'en mémoire ici.
+//   - "new"                : absent de la bibliothèque -> "add" (coché).
+//   - "existing-no-cover"   : déjà présent, sans couverture -> "add-cover" (coché).
+//   - "existing-has-cover"  : déjà présent, couverture déjà là -> "none" (à cocher
+//                             manuellement pour "replace-cover").
+//   - "uncertain"           : correspondance floue -> "none", validation manuelle requise.
 function mergeAndDedupe(detections, existingBooks) {
   const complete = detections.filter(d => !d.partial);
   const partialOnly = detections.filter(d => d.partial);
@@ -412,25 +460,30 @@ function mergeAndDedupe(detections, existingBooks) {
 
   // Une couverture partielle qui correspond déjà à un livre complet ailleurs
   // n'apporte rien de plus : on l'ignore silencieusement. Sinon, elle reste
-  // seule au dossier, signalée et décochée.
+  // seule au dossier, signalée et jamais actionnable.
   const orphanPartials = partialOnly.filter(p => !groups.some(g => sameBook(g.best, p)));
 
-  const finalList = groups.map(g => ({
+  const rawList = groups.map(g => ({
     ...g.best,
     mergedCount: g.items.length,
     mergedFromCaptures: [...new Set(g.items.map(i => i.captureIndex))].sort((a, b) => a - b),
-    partial: false,
   })).concat(orphanPartials.map(p => ({
     ...p, mergedCount: 1, mergedFromCaptures: [p.captureIndex],
   })));
 
-  return finalList.map(entry => {
-    const existing = existingBooks.find(b => titleMatch(entry.title, b.title) && (!entry.author || !b.author || authorMatch(entry.author, b.author)));
-    return {
-      ...entry,
-      existingMatch: existing ? { title: existing.title, author: existing.author } : null,
-      selected: !entry.partial && !existing,
-    };
+  return rawList.map(entry => {
+    if (entry.partial) {
+      return { ...entry, category: "partial", existingMatch: null, action: "none" };
+    }
+    const match = matchExisting(entry, existingBooks);
+    if (!match) {
+      return { ...entry, category: "new", existingMatch: null, action: "add" };
+    }
+    if (match.confidence === "uncertain") {
+      return { ...entry, category: "uncertain", existingMatch: match.book, action: "none" };
+    }
+    const category = match.book.cover ? "existing-has-cover" : "existing-no-cover";
+    return { ...entry, category, existingMatch: match.book, action: category === "existing-no-cover" ? "add-cover" : "none" };
   });
 }
 
@@ -520,32 +573,103 @@ function renderCaptureOverlay(ci, img, boxes, name) {
   els.captureResults.appendChild(wrap);
 }
 
+function badgesHtml(entry) {
+  const badges = [];
+  if (entry.category === "partial") badges.push(`<span class="partial-badge">Partielle — ignorée, à reprendre dans une autre capture</span>`);
+  if (entry.mergedCount > 1) {
+    const tomeSuffix = entry.tome ? ` — Tome ${escapeHtml(String(entry.tome))}` : "";
+    badges.push(`<span class="merge-badge">Fusionné depuis ${entry.mergedCount} captures (${entry.mergedFromCaptures.map(c => "#" + (c + 1)).join(", ")})${tomeSuffix}</span>`);
+  }
+  if (entry.category === "existing-no-cover") badges.push(`<span class="existing-badge">Déjà dans ta bibliothèque : « ${escapeHtml(entry.existingMatch.title)} » — sans couverture, celle-ci pourra la compléter</span>`);
+  if (entry.category === "existing-has-cover") badges.push(`<span class="existing-badge">Déjà dans ta bibliothèque : « ${escapeHtml(entry.existingMatch.title)} » — a déjà une couverture</span>`);
+  if (entry.category === "uncertain") badges.push(`<span class="uncertain-badge">Correspondance incertaine avec « ${escapeHtml(entry.existingMatch.title)} » — à valider manuellement</span>`);
+  return badges.join("");
+}
+function actionControlHtml(entry, i) {
+  if (entry.category === "partial") {
+    return `<span class="action-note">Ignorée (partielle)</span>`;
+  }
+  if (entry.category === "new") {
+    return `<label class="preview-check"><input type="checkbox" data-idx="${i}" data-field="action-toggle" data-on="add" ${entry.action === "add" ? "checked" : ""} /> Ajouter à la bibliothèque</label>`;
+  }
+  if (entry.category === "existing-no-cover") {
+    return `<label class="preview-check"><input type="checkbox" data-idx="${i}" data-field="action-toggle" data-on="add-cover" ${entry.action === "add-cover" ? "checked" : ""} /> Ajouter la couverture</label>`;
+  }
+  if (entry.category === "existing-has-cover") {
+    const thumb = entry.existingMatch.cover ? `<img class="existing-cover-thumb" src="${escapeHtml(entry.existingMatch.cover)}" alt="" />` : "";
+    return `<label class="preview-check"><input type="checkbox" data-idx="${i}" data-field="action-toggle" data-on="replace-cover" ${entry.action === "replace-cover" ? "checked" : ""} /> Remplacer la couverture existante${thumb}</label>`;
+  }
+  if (entry.category === "uncertain") {
+    const name = `resolve-${i}`;
+    return `<div class="resolve-group">
+      <label><input type="radio" name="${name}" data-idx="${i}" data-field="action-radio" value="none" ${entry.action === "none" ? "checked" : ""} /> Ignorer (par défaut)</label>
+      <label><input type="radio" name="${name}" data-idx="${i}" data-field="action-radio" value="add-cover" ${entry.action === "add-cover" ? "checked" : ""} /> Confirmer : associer à « ${escapeHtml(entry.existingMatch.title)} » et ajouter la couverture</label>
+      <label><input type="radio" name="${name}" data-idx="${i}" data-field="action-radio" value="add" ${entry.action === "add" ? "checked" : ""} /> Livre différent → ajouter comme nouveau</label>
+    </div>`;
+  }
+  return "";
+}
+function cardClass(entry) {
+  if (entry.category === "partial") return " partial";
+  if (entry.category === "uncertain") return " uncertain";
+  if (entry.category === "existing-no-cover" || entry.category === "existing-has-cover") return " existing";
+  return "";
+}
+function computeTally(list) {
+  const t = { add: 0, addCover: 0, replaceCover: 0, ignored: 0 };
+  list.forEach(e => {
+    if (e.action === "add") t.add++;
+    else if (e.action === "add-cover") t.addCover++;
+    else if (e.action === "replace-cover") t.replaceCover++;
+    else t.ignored++;
+  });
+  return t;
+}
+function renderRecap() {
+  const t = computeTally(consolidated);
+  els.recapBlock.style.display = "block";
+  els.recapBlock.innerHTML = `<h2>Récapitulatif avant validation</h2>
+    <ul class="recap-list">
+      <li><b>${t.add}</b> nouveau(x) livre(s) seront ajoutés</li>
+      <li><b>${t.addCover}</b> couverture(s) de livres existants seront ajoutées</li>
+      <li><b>${t.replaceCover}</b> couverture(s) seront remplacées</li>
+      <li><b>${t.ignored}</b> élément(s) ignorés</li>
+    </ul>
+    <button id="validateBtn">Valider (simulation — rien n'est écrit)</button>
+    <p class="recap-note" id="validateResult"></p>`;
+  document.getElementById("validateBtn").addEventListener("click", () => {
+    const t2 = computeTally(consolidated);
+    document.getElementById("validateResult").textContent =
+      `Simulation : ${t2.add} nouveau(x) livre(s) ajouté(s), ${t2.addCover} couverture(s) ajoutée(s), ${t2.replaceCover} couverture(s) remplacée(s), ${t2.ignored} élément(s) ignoré(s). Aucune écriture réelle n'a été faite : books.json et le dépôt ne sont pas modifiés à cette étape.`;
+  });
+}
+
 function renderConsolidatedPreview() {
   els.consolidatedTitle.style.display = "block";
   const totalCaptures = capturedImages.length;
   const totalRaw = allDetections.length;
   const totalUnique = consolidated.length;
   const mergedCount = consolidated.filter(c => c.mergedCount > 1).length;
-  const alreadyInLibrary = consolidated.filter(c => c.existingMatch).length;
-  const partialCount = consolidated.filter(c => c.partial).length;
+  const newCount = consolidated.filter(c => c.category === "new").length;
+  const existingCount = consolidated.filter(c => c.category === "existing-no-cover" || c.category === "existing-has-cover").length;
+  const uncertainCount = consolidated.filter(c => c.category === "uncertain").length;
+  const partialCount = consolidated.filter(c => c.category === "partial").length;
 
   els.consolidatedSummary.innerHTML =
     `<b>${totalCaptures}</b> capture(s) analysée(s) · <b>${totalRaw}</b> détection(s) brute(s) · <b>${totalUnique}</b> livre(s) unique(s)` +
     (mergedCount ? ` · ${mergedCount} fusionné(s) entre captures` : "") +
-    (alreadyInLibrary ? ` · ${alreadyInLibrary} déjà dans ta bibliothèque` : "") +
-    (partialCount ? ` · ${partialCount} partielle(s) ignorée(s) pour l'import` : "");
+    (newCount ? ` · ${newCount} nouveau(x)` : "") +
+    (existingCount ? ` · ${existingCount} déjà dans ta bibliothèque` : "") +
+    (uncertainCount ? ` · ${uncertainCount} correspondance(s) incertaine(s)` : "") +
+    (partialCount ? ` · ${partialCount} partielle(s) ignorée(s)` : "");
 
   els.consolidatedList.innerHTML = consolidated.map((entry, i) => {
     const img = capturedImages[entry.captureIndex]?.img;
     const cover = img ? cropToDataUrl(img, entry.x, entry.y, entry.w, entry.h) : "";
-    const badges = [];
-    if (entry.partial) badges.push(`<span class="partial-badge">Partielle — ignorée, à reprendre dans une autre capture</span>`);
-    if (entry.mergedCount > 1) badges.push(`<span class="merge-badge">Fusionné depuis ${entry.mergedCount} captures (${entry.mergedFromCaptures.map(c => "#" + (c + 1)).join(", ")})</span>`);
-    if (entry.existingMatch) badges.push(`<span class="existing-badge">Déjà dans ta bibliothèque : « ${escapeHtml(entry.existingMatch.title)} » — couverture disponible pour la compléter</span>`);
-    return `<div class="preview-card${entry.partial ? " partial" : ""}${entry.existingMatch ? " existing" : ""}">
+    return `<div class="preview-card${cardClass(entry)}">
       <img class="preview-cover" src="${cover}" alt="" />
       <div class="preview-fields">
-        ${badges.join("")}
+        ${badgesHtml(entry)}
         <label>Titre<input type="text" value="${escapeHtml(entry.title)}" data-idx="${i}" data-field="title" /></label>
         <label>Auteur<input type="text" value="${escapeHtml(entry.author)}" data-idx="${i}" data-field="author" /></label>
         <div class="field-row">
@@ -553,16 +677,23 @@ function renderConsolidatedPreview() {
           <label>Tome<input type="text" value="${escapeHtml(String(entry.tome || ""))}" data-idx="${i}" data-field="tome" /></label>
         </div>
       </div>
-      <label class="preview-check"><input type="checkbox" data-idx="${i}" data-field="selected" ${entry.selected ? "checked" : ""} /> Importer</label>
+      ${actionControlHtml(entry, i)}
     </div>`;
   }).join("");
+  renderRecap();
 }
 els.consolidatedList.addEventListener("input", e => {
   const idx = e.target.dataset.idx;
   const field = e.target.dataset.field;
   if (idx === undefined || !field || !consolidated[idx]) return;
-  if (field === "selected") { consolidated[idx].selected = e.target.checked; return; }
-  consolidated[idx][field] = e.target.value;
+  if (field === "action-toggle") {
+    consolidated[idx].action = e.target.checked ? e.target.dataset.on : "none";
+  } else if (field === "action-radio") {
+    consolidated[idx].action = e.target.value;
+  } else {
+    consolidated[idx][field] = e.target.value;
+  }
+  renderRecap();
 });
 </script>
 </body>
