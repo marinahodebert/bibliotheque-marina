@@ -74,12 +74,19 @@
   .preview-card { scroll-margin-top: 1.2rem; }
   .preview-card.flash { animation: flashHighlight 1.6s ease; }
   @keyframes flashHighlight { 0%, 100% { box-shadow: none; } 15% { box-shadow: 0 0 0 3px rgba(255,180,84,.85); } }
+  .persist-bar { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.2rem; }
+  .persist-bar button { background: #232326; color: #f2f1ee; font-weight: 600; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Prototype — extraction multi-captures Kindle</h1>
-  <p class="intro">Outil jetable, indépendant de l'application. Dépose plusieurs captures de ta bibliothèque Kindle <b>dans l'ordre où tu les as prises</b> (elles peuvent se chevaucher) : chacune est détectée et découpée, l'OCR récupère titre/auteur, puis tous les résultats sont fusionnés en une seule liste de livres uniques — un même livre vu sur deux captures qui se chevauchent ne doit donner qu'une seule fiche. Les couvertures partielles (coupées par le bord d'une capture) sont ignorées pour l'import. La liste est aussi comparée à <code>data/books.json</code> (lecture seule) pour repérer ce que tu as déjà. Rien n'est envoyé nulle part, rien n'est écrit dans ta bibliothèque.</p>
+  <p class="intro">Outil jetable, indépendant de l'application. Dépose plusieurs captures de ta bibliothèque Kindle <b>dans l'ordre où tu les as prises</b> (elles peuvent se chevaucher) : chacune est détectée et découpée, l'OCR récupère titre/auteur, puis tous les résultats sont fusionnés en une seule liste de livres uniques — un même livre vu sur deux captures qui se chevauchent ne doit donner qu'une seule fiche. Les couvertures partielles (coupées par le bord d'une capture) sont ignorées pour l'import. La liste est aussi comparée à <code>data/books.json</code> (lecture seule) pour repérer ce que tu as déjà. Rien n'est envoyé nulle part, rien n'est écrit dans ta bibliothèque. Les captures et les derniers résultats sont mémorisés localement dans ton navigateur (IndexedDB) pour éviter de les resélectionner à chaque correction — rien de tout ça ne quitte ton Mac ni n'est commité dans le dépôt.</p>
+
+  <div class="persist-bar" id="persistBar">
+    <button id="reuseCapturesBtn" type="button" style="display:none;"></button>
+    <button id="replayMatchBtn" type="button" style="display:none;">Rejouer le matching (résultats OCR en cache, pas de nouvel OCR)</button>
+  </div>
 
   <div class="dropzone" id="dropzone">Dépose une ou plusieurs captures ici (dans l'ordre), ou clique pour les choisir</div>
   <input type="file" id="fileInput" accept="image/*" multiple />
@@ -156,11 +163,114 @@ const els = {
   consolidatedList: document.getElementById("consolidatedList"),
   recapBlock: document.getElementById("recapBlock"),
   diagnosticBlock: document.getElementById("diagnosticBlock"),
+  reuseCapturesBtn: document.getElementById("reuseCapturesBtn"),
+  replayMatchBtn: document.getElementById("replayMatchBtn"),
 };
 
 let capturedImages = []; // [{ img, name }], dans l'ordre de dépôt
 let allDetections = [];  // détections brutes, toutes captures confondues
 let consolidated = [];   // livres uniques après fusion + comparaison à la bibliothèque
+
+// ---------------------------------------------------------------------------
+// Persistance locale (IndexedDB uniquement) : mémorise les dernières captures
+// déposées et, si elles n'ont pas changé, les derniers résultats de
+// détection/OCR — pour éviter de tout resélectionner et de refaire l'OCR à
+// chaque correction du matching. Rien n'est envoyé nulle part, rien n'est
+// commité dans le dépôt : ça ne vit que dans le navigateur de cette machine.
+// ---------------------------------------------------------------------------
+const IDB_NAME = "kindle-cover-extract-proto";
+const IDB_VERSION = 1;
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains("captures")) db.createObjectStore("captures");
+      if (!db.objectStoreNames.contains("detections")) db.createObjectStore("detections");
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function idbPut(store, key, value) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, "readwrite");
+    tx.objectStore(store).put(value, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function idbGet(store, key) {
+  const db = await idbOpen();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, "readonly");
+    const req = tx.objectStore(store).get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+// Nom + taille + ordre de chaque capture : suffisant pour détecter si le jeu
+// de captures a changé, sans avoir à hacher le contenu des images.
+function capturesFingerprint(items) {
+  return items.map(it => `${it.name}:${it.blob ? it.blob.size : ""}`).join("|");
+}
+async function saveCapturesToIdb(loaded) {
+  try {
+    await idbPut("captures", "last", {
+      items: loaded.map(c => ({ name: c.name, blob: c.blob })),
+      savedAt: Date.now(),
+    });
+  } catch (e) {
+    console.warn("Sauvegarde locale des captures impossible :", e);
+  }
+}
+async function refreshReuseButton() {
+  try {
+    const saved = await idbGet("captures", "last");
+    if (saved && saved.items && saved.items.length) {
+      const d = new Date(saved.savedAt);
+      els.reuseCapturesBtn.textContent = `Réutiliser les dernières captures (${saved.items.length}, sauvegardées le ${d.toLocaleDateString()} à ${d.toLocaleTimeString()})`;
+      els.reuseCapturesBtn.style.display = "inline-flex";
+    } else {
+      els.reuseCapturesBtn.style.display = "none";
+    }
+  } catch {
+    els.reuseCapturesBtn.style.display = "none";
+  }
+}
+els.reuseCapturesBtn.addEventListener("click", async () => {
+  const saved = await idbGet("captures", "last");
+  if (!saved || !saved.items || !saved.items.length) return;
+  loadCaptures(saved.items);
+});
+async function saveDetectionsToIdb(fingerprint, detections) {
+  try {
+    await idbPut("detections", "last", { fingerprint, allDetections: detections, savedAt: Date.now() });
+  } catch (e) {
+    console.warn("Sauvegarde locale des résultats impossible :", e);
+  }
+}
+async function checkForCachedDetections() {
+  try {
+    const saved = await idbGet("detections", "last");
+    const fp = capturesFingerprint(capturedImages);
+    els.replayMatchBtn.style.display = (saved && saved.fingerprint === fp && saved.allDetections && saved.allDetections.length) ? "inline-flex" : "none";
+  } catch {
+    els.replayMatchBtn.style.display = "none";
+  }
+}
+els.replayMatchBtn.addEventListener("click", async () => {
+  const saved = await idbGet("detections", "last");
+  if (!saved) return;
+  allDetections = saved.allDetections;
+  els.progress.textContent = "Rejeu du matching (résultats OCR en cache, pas de nouvel OCR)…";
+  const existingBooks = await fetchExistingBooks();
+  consolidated = mergeAndDedupe(allDetections, existingBooks);
+  renderConsolidatedPreview();
+  els.progress.textContent = "Terminé (matching rejoué depuis le cache).";
+});
+refreshReuseButton();
 
 // ---------------------------------------------------------------------------
 // Chargement des fichiers (plusieurs, dans l'ordre)
@@ -178,10 +288,17 @@ els.fileInput.addEventListener("change", e => handleFiles(e.target.files));
 function handleFiles(fileList) {
   const files = Array.from(fileList).filter(f => f.type.startsWith("image/"));
   if (!files.length) return;
-  Promise.all(files.map(f => new Promise(resolve => {
+  loadCaptures(files.map(f => ({ blob: f, name: f.name })));
+}
+
+// items : [{ blob, name }] — blob est un File (picker/drop) ou un Blob relu
+// depuis IndexedDB (bouton "Réutiliser les dernières captures").
+function loadCaptures(items) {
+  if (!items.length) return;
+  Promise.all(items.map(it => new Promise(resolve => {
     const img = new Image();
-    img.onload = () => resolve({ img, name: f.name });
-    img.src = URL.createObjectURL(f);
+    img.onload = () => resolve({ img, name: it.name, blob: it.blob });
+    img.src = URL.createObjectURL(it.blob);
   }))).then(loaded => {
     capturedImages = loaded;
     els.fileList.innerHTML = loaded.map((c, i) => `<li><b>Capture ${i + 1}</b> — ${c.name} (${c.img.naturalWidth}×${c.img.naturalHeight}px)</li>`).join("");
@@ -192,6 +309,9 @@ function handleFiles(fileList) {
     els.consolidatedSummary.textContent = "";
     els.captureResultsTitle.style.display = "none";
     els.consolidatedTitle.style.display = "none";
+
+    saveCapturesToIdb(loaded);
+    checkForCachedDetections();
   });
 }
 
@@ -645,6 +765,8 @@ async function analyzeAllCaptures() {
   const existingBooks = await fetchExistingBooks();
   consolidated = mergeAndDedupe(allDetections, existingBooks);
   renderConsolidatedPreview();
+  await saveDetectionsToIdb(capturesFingerprint(capturedImages), allDetections);
+  checkForCachedDetections();
   els.progress.textContent = "Terminé.";
   els.analyzeAllBtn.disabled = false;
 }
