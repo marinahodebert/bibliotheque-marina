@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Prototype — détection de couvertures dans une capture Kindle</title>
+<title>Prototype — extraction multi-captures Kindle</title>
 <style>
   :root { color-scheme: dark; }
   * { box-sizing: border-box; }
   body { margin: 0; padding: 1.5rem; background: #131315; color: #f2f1ee; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; }
   .wrap { max-width: 1100px; margin: 0 auto; }
   h1 { font-size: 1.3rem; margin: 0 0 .3rem; }
+  h2 { font-size: 1.02rem; margin: 1.6rem 0 .6rem; }
   p.intro { color: #95939a; font-size: .88rem; margin: 0 0 1.3rem; max-width: 72ch; }
   .dropzone {
     border: 2px dashed rgba(242,241,238,.22); border-radius: 12px; padding: 2rem; text-align: center;
@@ -17,40 +18,47 @@
   }
   .dropzone.drag { border-color: #ff7a59; color: #f2f1ee; }
   input[type="file"] { display: none; }
+  .file-list { list-style: none; margin: 0 0 1.2rem; padding: 0; font-size: .84rem; color: #95939a; }
+  .file-list li { padding: .3rem 0; border-bottom: 1px solid rgba(242,241,238,.08); }
+  .file-list b { color: #f2f1ee; }
   .controls { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-bottom: 1.2rem; padding: 1rem 1.2rem; background: #1b1b1e; border-radius: 10px; }
   .controls label { display: flex; flex-direction: column; gap: .3rem; font-size: .78rem; color: #95939a; min-width: 160px; }
   .controls input[type="range"] { width: 100%; }
   .controls .val { color: #ffb454; font-weight: 700; }
-  button { font: inherit; cursor: pointer; border: none; border-radius: 9px; padding: .6rem 1rem; font-weight: 700; background: linear-gradient(135deg,#ff5c8a,#ff7a59 55%,#ffb454); color: #171214; }
-  .canvas-wrap { position: relative; margin-bottom: 1.4rem; max-width: 100%; overflow: auto; background: #0b0b0d; border-radius: 10px; }
-  canvas { display: block; max-width: 100%; height: auto; }
-  .summary { font-size: .9rem; margin-bottom: 1rem; color: #f2f1ee; }
+  button { font: inherit; cursor: pointer; border: none; border-radius: 9px; padding: .7rem 1.1rem; font-weight: 700; background: linear-gradient(135deg,#ff5c8a,#ff7a59 55%,#ffb454); color: #171214; }
+  button:disabled { opacity: .5; cursor: default; }
+  .run-bar { display: flex; align-items: center; gap: .9rem; margin-bottom: 1rem; }
+  .progress { font-size: .85rem; color: #95939a; }
+  .capture-result { margin-bottom: 1.2rem; }
+  .capture-label { font-size: .84rem; color: #95939a; margin: 0 0 .4rem; }
+  .capture-label b { color: #f2f1ee; }
+  .capture-result canvas { max-width: 320px; width: 100%; height: auto; border-radius: 8px; display: block; background: #0b0b0d; }
+  .summary { font-size: .92rem; margin: 1rem 0; color: #f2f1ee; line-height: 1.6; }
   .summary b { color: #3fbe86; }
-  .crops { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: .8rem; }
-  .crop-item { background: #1b1b1e; border-radius: 8px; overflow: hidden; border: 1px solid rgba(242,241,238,.1); }
-  .crop-item.partial { opacity: .55; border-color: rgba(255,148,87,.5); }
-  .crop-item canvas { width: 100%; display: block; }
-  .crop-item .label { font-size: .65rem; color: #95939a; padding: .3rem .4rem; text-align: center; }
-  .ocr-bar { margin: 1.4rem 0; }
-  .ocr-progress { font-size: .85rem; color: #95939a; margin-left: .8rem; }
   .preview-list { display: flex; flex-direction: column; gap: .8rem; margin-top: 1rem; }
   .preview-card { display: flex; gap: 1rem; background: #1b1b1e; border-radius: 10px; padding: .9rem; border: 1px solid rgba(242,241,238,.1); align-items: flex-start; }
   .preview-card.partial { border-color: rgba(255,148,87,.5); background: #201c19; }
-  .preview-cover { width: 80px; height: auto; border-radius: 6px; flex: none; }
+  .preview-card.existing { border-color: rgba(139,140,255,.5); }
+  .preview-cover { width: 80px; height: auto; border-radius: 6px; flex: none; background: #0b0b0d; }
   .preview-fields { flex: 1; display: grid; gap: .5rem; min-width: 0; }
   .preview-fields label { display: flex; flex-direction: column; gap: .25rem; font-size: .72rem; color: #95939a; }
   .preview-fields input { background: #232326; color: #f2f1ee; border: 1px solid rgba(242,241,238,.16); border-radius: 7px; padding: .5rem .6rem; font: inherit; }
-  .partial-badge { display: inline-block; font-size: .72rem; font-weight: 700; color: #ff9457; background: rgba(255,148,87,.15); padding: .25rem .6rem; border-radius: 999px; margin-bottom: .3rem; }
+  .field-row { display: grid; grid-template-columns: 2fr 1fr; gap: .6rem; }
+  .partial-badge, .merge-badge, .existing-badge { display: block; font-size: .7rem; font-weight: 700; padding: .25rem .6rem; border-radius: 999px; margin-bottom: .35rem; width: fit-content; }
+  .partial-badge { color: #ff9457; background: rgba(255,148,87,.15); }
+  .merge-badge { color: #5b8cff; background: rgba(91,140,255,.15); }
+  .existing-badge { color: #b78cff; background: rgba(183,140,255,.15); }
   .preview-check { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: #95939a; flex: none; white-space: nowrap; padding-top: .3rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Prototype — détection et découpe de couvertures</h1>
-  <p class="intro">Outil jetable, indépendant de l'application. Dépose une capture de ta bibliothèque Kindle : l'algorithme détecte et découpe chaque couverture, puis l'OCR récupère le titre et l'auteur dans la zone de texte associée. Une couverture qui touche le bord de l'image (haut ou bas) est signalée comme partielle et n'est pas cochée pour import — elle sera normalement complète dans une capture suivante qui chevauche. Rien n'est envoyé nulle part, tout se passe dans ton navigateur, et rien n'est écrit dans ta bibliothèque.</p>
+  <h1>Prototype — extraction multi-captures Kindle</h1>
+  <p class="intro">Outil jetable, indépendant de l'application. Dépose plusieurs captures de ta bibliothèque Kindle <b>dans l'ordre où tu les as prises</b> (elles peuvent se chevaucher) : chacune est détectée et découpée, l'OCR récupère titre/auteur, puis tous les résultats sont fusionnés en une seule liste de livres uniques — un même livre vu sur deux captures qui se chevauchent ne doit donner qu'une seule fiche. Les couvertures partielles (coupées par le bord d'une capture) sont ignorées pour l'import. La liste est aussi comparée à <code>data/books.json</code> (lecture seule) pour repérer ce que tu as déjà. Rien n'est envoyé nulle part, rien n'est écrit dans ta bibliothèque.</p>
 
-  <div class="dropzone" id="dropzone">Dépose une image ici, ou clique pour en choisir une</div>
-  <input type="file" id="fileInput" accept="image/*" />
+  <div class="dropzone" id="dropzone">Dépose une ou plusieurs captures ici (dans l'ordre), ou clique pour les choisir</div>
+  <input type="file" id="fileInput" accept="image/*" multiple />
+  <ul class="file-list" id="fileList"></ul>
 
   <div class="controls" id="controls" style="display:none;">
     <label>Mise en page
@@ -79,18 +87,19 @@
       <input type="range" id="mergeGap" min="0" max="150" value="40" />
       <span class="val" id="mergeGapVal">40</span>
     </label>
-    <div style="display:flex;align-items:flex-end;"><button id="redetectBtn">Redétecter</button></div>
   </div>
 
-  <div class="canvas-wrap"><canvas id="overlayCanvas"></canvas></div>
-  <p class="summary" id="summary"></p>
-  <div class="crops" id="crops"></div>
-
-  <div class="ocr-bar" id="ocrBar" style="display:none;">
-    <button id="extractBtn">Extraire titre / auteur (OCR)</button>
-    <span class="ocr-progress" id="ocrProgress"></span>
+  <div class="run-bar">
+    <button id="analyzeAllBtn" disabled>Analyser toutes les captures</button>
+    <span class="progress" id="progress"></span>
   </div>
-  <div class="preview-list" id="previewList"></div>
+
+  <h2 id="captureResultsTitle" style="display:none;">Détail par capture</h2>
+  <div id="captureResults"></div>
+
+  <h2 id="consolidatedTitle" style="display:none;">Livres consolidés</h2>
+  <p class="summary" id="consolidatedSummary"></p>
+  <div class="preview-list" id="consolidatedList"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -98,10 +107,8 @@
 const els = {
   dropzone: document.getElementById("dropzone"),
   fileInput: document.getElementById("fileInput"),
+  fileList: document.getElementById("fileList"),
   controls: document.getElementById("controls"),
-  overlayCanvas: document.getElementById("overlayCanvas"),
-  summary: document.getElementById("summary"),
-  crops: document.getElementById("crops"),
   threshold: document.getElementById("threshold"),
   thresholdVal: document.getElementById("thresholdVal"),
   minGap: document.getElementById("minGap"),
@@ -112,40 +119,51 @@ const els = {
   ratioVal: document.getElementById("ratioVal"),
   mergeGap: document.getElementById("mergeGap"),
   mergeGapVal: document.getElementById("mergeGapVal"),
-  redetectBtn: document.getElementById("redetectBtn"),
   layoutMode: document.getElementById("layoutMode"),
-  ocrBar: document.getElementById("ocrBar"),
-  extractBtn: document.getElementById("extractBtn"),
-  ocrProgress: document.getElementById("ocrProgress"),
-  previewList: document.getElementById("previewList"),
+  analyzeAllBtn: document.getElementById("analyzeAllBtn"),
+  progress: document.getElementById("progress"),
+  captureResultsTitle: document.getElementById("captureResultsTitle"),
+  captureResults: document.getElementById("captureResults"),
+  consolidatedTitle: document.getElementById("consolidatedTitle"),
+  consolidatedSummary: document.getElementById("consolidatedSummary"),
+  consolidatedList: document.getElementById("consolidatedList"),
 };
 
-let currentImage = null;
-let lastBoxes = [];
-let previewData = [];
+let capturedImages = []; // [{ img, name }], dans l'ordre de dépôt
+let allDetections = [];  // détections brutes, toutes captures confondues
+let consolidated = [];   // livres uniques après fusion + comparaison à la bibliothèque
 
+// ---------------------------------------------------------------------------
+// Chargement des fichiers (plusieurs, dans l'ordre)
+// ---------------------------------------------------------------------------
 els.dropzone.addEventListener("click", () => els.fileInput.click());
 els.dropzone.addEventListener("dragover", e => { e.preventDefault(); els.dropzone.classList.add("drag"); });
 els.dropzone.addEventListener("dragleave", () => els.dropzone.classList.remove("drag"));
 els.dropzone.addEventListener("drop", e => {
   e.preventDefault();
   els.dropzone.classList.remove("drag");
-  const file = e.dataTransfer.files[0];
-  if (file) loadImage(file);
+  handleFiles(e.dataTransfer.files);
 });
-els.fileInput.addEventListener("change", e => {
-  const file = e.target.files[0];
-  if (file) loadImage(file);
-});
+els.fileInput.addEventListener("change", e => handleFiles(e.target.files));
 
-function loadImage(file) {
-  const img = new Image();
-  img.onload = () => {
-    currentImage = img;
+function handleFiles(fileList) {
+  const files = Array.from(fileList).filter(f => f.type.startsWith("image/"));
+  if (!files.length) return;
+  Promise.all(files.map(f => new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve({ img, name: f.name });
+    img.src = URL.createObjectURL(f);
+  }))).then(loaded => {
+    capturedImages = loaded;
+    els.fileList.innerHTML = loaded.map((c, i) => `<li><b>Capture ${i + 1}</b> — ${c.name} (${c.img.naturalWidth}×${c.img.naturalHeight}px)</li>`).join("");
     els.controls.style.display = "flex";
-    runDetection();
-  };
-  img.src = URL.createObjectURL(file);
+    els.analyzeAllBtn.disabled = false;
+    els.captureResults.innerHTML = "";
+    els.consolidatedList.innerHTML = "";
+    els.consolidatedSummary.textContent = "";
+    els.captureResultsTitle.style.display = "none";
+    els.consolidatedTitle.style.display = "none";
+  });
 }
 
 [els.threshold, els.minGap, els.minSize, els.ratioMin, els.mergeGap].forEach(input => {
@@ -160,10 +178,21 @@ function updateLabels() {
   els.ratioVal.textContent = rMin.toFixed(2) + " – " + (rMin + 0.6).toFixed(2);
 }
 updateLabels();
-els.redetectBtn.addEventListener("click", runDetection);
-els.layoutMode.addEventListener("change", runDetection);
 
-// ---- détection par profils de projection (analyse de contenu vs fond) ----
+function readOpts() {
+  return {
+    thresholdRatio: els.threshold.value / 100,
+    minGap: Number(els.minGap.value),
+    minSize: Number(els.minSize.value),
+    ratioMin: els.ratioMin.value / 100,
+    ratioMax: els.ratioMin.value / 100 + 0.6,
+    mergeGap: Number(els.mergeGap.value),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Détection par profils de projection (inchangée, validée précédemment)
+// ---------------------------------------------------------------------------
 function toGrayscale(imageData) {
   const { data, width, height } = imageData;
   const gray = new Float32Array(width * height);
@@ -181,12 +210,6 @@ function columnActivity(gray, width, height) {
   }
   return profile;
 }
-// Activité par ligne = le PIC local le plus fort le long de la ligne, pas la
-// moyenne sur toute la largeur. En mode liste, la vignette n'occupe qu'une
-// partie de la largeur (le reste est le texte/le fond) : une moyenne globale
-// dilue ce signal et rend les vraies lignes de contenu indiscernables des
-// espaces entre elles. Le pic local, lui, reste fort là où il y a une image,
-// quelle que soit sa position, sans supposer où elle se trouve.
 function rowActivity(gray, width, height) {
   const profile = new Float32Array(height);
   const rowGrad = new Float32Array(width);
@@ -213,34 +236,21 @@ function smooth(arr, radius) {
   }
   return out;
 }
-// segmente un profil 1D en bandes "contenu" séparées par des bandes "fond"
 function findContentBands(profile, thresholdRatio, minGap) {
   const max = Math.max(...profile);
   const isBackground = profile.map(v => v < max * thresholdRatio);
   const bands = [];
-  let start = null;
-  let gapRun = 0;
+  let start = null, gapRun = 0;
   for (let i = 0; i < isBackground.length; i++) {
-    if (!isBackground[i]) {
-      if (start === null) start = i;
-      gapRun = 0;
-    } else {
+    if (!isBackground[i]) { if (start === null) start = i; gapRun = 0; }
+    else {
       gapRun++;
-      if (start !== null && gapRun >= minGap) {
-        bands.push([start, i - gapRun]);
-        start = null;
-      }
+      if (start !== null && gapRun >= minGap) { bands.push([start, i - gapRun]); start = null; }
     }
   }
   if (start !== null) bands.push([start, isBackground.length - 1]);
   return bands.filter(([a, b]) => b - a > 3);
 }
-// Fusionne les bandes proches (petit espace entre elles) en une seule. Sert
-// à recoller une ligne de la liste que le texte du titre (plusieurs lignes,
-// avec de petits interlignes) aurait fragmentée en plusieurs bandes de
-// contenu séparées, sans pour autant fusionner deux livres différents —
-// l'espace entre deux lignes de titre est en général bien plus petit que
-// l'espace entre deux livres.
 function mergeBands(bands, maxMergeGap) {
   if (!bands.length) return bands;
   const sorted = [...bands].map(b => [...b]).sort((a, b) => a[0] - b[0]);
@@ -253,11 +263,6 @@ function mergeBands(bands, maxMergeGap) {
   }
   return merged;
 }
-
-// Version de columnActivity restreinte à une bande de lignes [y0,y1) — sert
-// à analyser une seule ligne de la liste indépendamment des autres, pour y
-// repérer où s'arrête la vignette (dense, photographique) et où commence le
-// texte (fond clair, traits épars).
 function columnActivityInRows(gray, width, y0, y1) {
   const h = y1 - y0;
   const profile = new Float32Array(width);
@@ -268,13 +273,14 @@ function columnActivityInRows(gray, width, y0, y1) {
   }
   return profile;
 }
+const EDGE_MARGIN = 3;
+function touchesEdge(y0, y1, height) { return y0 <= EDGE_MARGIN || y1 >= height - 1 - EDGE_MARGIN; }
 
 function detectGrid(gray, width, height, opts) {
   const colProfile = smooth(columnActivity(gray, width, height), 2);
   const rowProfile = smooth(rowActivity(gray, width, height), 2);
   const colBands = findContentBands(colProfile, opts.thresholdRatio, opts.minGap);
   const rowBands = mergeBands(findContentBands(rowProfile, opts.thresholdRatio, opts.minGap), opts.mergeGap);
-
   const boxes = [];
   for (const [ry0, ry1] of rowBands) {
     for (const [cx0, cx1] of colBands) {
@@ -282,36 +288,21 @@ function detectGrid(gray, width, height, opts) {
       if (w < opts.minSize || h < opts.minSize) continue;
       const ratio = w / h;
       if (ratio < opts.ratioMin || ratio > opts.ratioMax) continue;
-      boxes.push({ x: cx0, y: ry0, w, h });
+      boxes.push({ x: cx0, y: ry0, w, h, partial: touchesEdge(ry0, ry1, height), textRegion: null });
     }
   }
   return boxes;
 }
-
-// Une bande de ligne qui touche le bord haut ou bas de l'image n'a pas été
-// refermée par un vrai espace (elle continue au-delà de ce que la capture
-// montre) : c'est le signal qu'une ligne est coupée par le bord de l'écran,
-// pas un jugement sur le contenu lui-même.
-const EDGE_MARGIN = 3;
-function touchesEdge(y0, y1, height) {
-  return y0 <= EDGE_MARGIN || y1 >= height - 1 - EDGE_MARGIN;
-}
-
-// Mode liste : on détecte d'abord chaque ligne (une par livre), puis, à
-// l'intérieur de chaque ligne, on ne garde que la première bande de contenu
-// à partir de la gauche (la vignette). Le reste de la ligne (après la
-// vignette) est conservé comme "zone de texte" pour l'OCR du titre/auteur.
 function detectList(gray, width, height, opts) {
   const rowProfile = smooth(rowActivity(gray, width, height), 2);
   const rowBands = mergeBands(findContentBands(rowProfile, opts.thresholdRatio, opts.minGap), opts.mergeGap);
-
   const boxes = [];
   for (const [ry0, ry1] of rowBands) {
     if (ry1 - ry0 < opts.minSize) continue;
     const colProfile = smooth(columnActivityInRows(gray, width, ry0, ry1), 2);
     const colBands = findContentBands(colProfile, opts.thresholdRatio, opts.minGap);
     if (!colBands.length) continue;
-    const [cx0, cx1] = colBands[0]; // la vignette est toujours la plus à gauche
+    const [cx0, cx1] = colBands[0];
     const w = cx1 - cx0, h = ry1 - ry0;
     if (w < opts.minSize || h < opts.minSize) continue;
     const ratio = w / h;
@@ -326,67 +317,6 @@ function detectList(gray, width, height, opts) {
   return boxes;
 }
 
-function runDetection() {
-  if (!currentImage) return;
-  const img = currentImage;
-  const canvas = els.overlayCanvas;
-  canvas.width = img.naturalWidth;
-  canvas.height = img.naturalHeight;
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const gray = toGrayscale(imageData);
-
-  const opts = {
-    thresholdRatio: els.threshold.value / 100,
-    minGap: Number(els.minGap.value),
-    minSize: Number(els.minSize.value),
-    ratioMin: els.ratioMin.value / 100,
-    ratioMax: els.ratioMin.value / 100 + 0.6,
-    mergeGap: Number(els.mergeGap.value),
-  };
-
-  const isList = els.layoutMode.value === "list";
-  const boxes = isList
-    ? detectList(gray, canvas.width, canvas.height, opts)
-    : detectGrid(gray, canvas.width, canvas.height, opts);
-  lastBoxes = boxes;
-  previewData = [];
-  els.previewList.innerHTML = "";
-
-  ctx.lineWidth = Math.max(2, canvas.width / 400);
-  ctx.font = `${Math.max(14, canvas.width / 60)}px sans-serif`;
-  boxes.forEach((b, i) => {
-    ctx.strokeStyle = b.partial ? "#ff9457" : "#ff5c8a";
-    ctx.fillStyle = ctx.strokeStyle;
-    ctx.setLineDash(b.partial ? [8, 6] : []);
-    ctx.strokeRect(b.x, b.y, b.w, b.h);
-    ctx.fillText(b.partial ? `${i + 1} (partielle)` : String(i + 1), b.x + 4, b.y + Math.max(16, canvas.width / 50));
-  });
-  ctx.setLineDash([]);
-
-  const partialCount = boxes.filter(b => b.partial).length;
-  els.summary.innerHTML = `<b>${boxes.length}</b> zone(s) détectée(s) — image ${canvas.width}×${canvas.height}px.${partialCount ? ` <span style="color:#ff9457;">${partialCount} partielle(s), en pointillé.</span>` : ""}`;
-
-  els.crops.innerHTML = "";
-  boxes.forEach((b, i) => {
-    const cropCanvas = document.createElement("canvas");
-    cropCanvas.width = b.w;
-    cropCanvas.height = b.h;
-    cropCanvas.getContext("2d").drawImage(img, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h);
-    const item = document.createElement("div");
-    item.className = "crop-item" + (b.partial ? " partial" : "");
-    item.appendChild(cropCanvas);
-    const label = document.createElement("div");
-    label.className = "label";
-    label.textContent = `#${i + 1} · ${b.w}×${b.h}${b.partial ? " · partielle" : ""}`;
-    item.appendChild(label);
-    els.crops.appendChild(item);
-  });
-
-  els.ocrBar.style.display = isList && boxes.length ? "block" : "none";
-}
-
 function cropToDataUrl(img, x, y, w, h) {
   const c = document.createElement("canvas");
   c.width = Math.max(1, w);
@@ -397,75 +327,242 @@ function cropToDataUrl(img, x, y, w, h) {
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>'"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[ch]));
 }
-
-// Découpe l'OCR brut d'une zone de texte en titre/auteur : la dernière ligne
-// est presque toujours "dans la bibliothèque Kindle" (repérée en tolérant les
-// fautes de l'OCR sur cette phrase précise), l'avant-dernière est l'auteur,
-// tout ce qui précède est le titre.
 function parseOcrText(raw) {
   const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
   if (!lines.length) return { title: "", author: "" };
   const clean = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   let end = lines.length;
-  if (end > 0 && /dans.{0,8}biblioth.{0,4}que.{0,3}kindle/.test(clean(lines[end - 1]))) end -= 1;
+  if (end > 0 && /dans.{5,40}kind/.test(clean(lines[end - 1]))) end -= 1;
   if (end <= 0) return { title: "", author: "" };
   const author = lines[end - 1] || "";
   const title = lines.slice(0, Math.max(0, end - 1)).join(" ").trim();
   return { title, author };
 }
+// Même heuristique que dans l'app réelle : un suffixe "(Série t.N)" en fin de
+// titre, quand il existe, donne série + tome ; sinon les deux restent vides.
+function extractSeriesTome(title) {
+  const m = String(title || "").match(/\(([^()]+?)(?:\s+t\.?\s*(\d+)|\s+tome\s*(\d+))?\)\s*$/i);
+  if (!m) return { series: "", tome: "" };
+  return { series: m[1].trim(), tome: m[2] || m[3] || "" };
+}
 
-async function extractTitleAuthor() {
-  if (!currentImage || !lastBoxes.length || !window.Tesseract) return;
-  els.extractBtn.disabled = true;
+// ---------------------------------------------------------------------------
+// Normalisation / correspondance — même principe que le dédoublonnage déjà
+// construit pour l'import Kindle texte (clean() + égalité ou inclusion).
+// ---------------------------------------------------------------------------
+function protoClean(str) {
+  return String(str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+}
+function titleMatch(a, b) {
+  const ca = protoClean(a), cb = protoClean(b);
+  if (!ca || !cb) return false;
+  return ca === cb || (ca.length > 8 && (ca.includes(cb) || cb.includes(ca)));
+}
+function authorMatch(a, b) {
+  const ca = protoClean(a), cb = protoClean(b);
+  if (!ca || !cb) return false;
+  return ca === cb || (ca.length > 3 && (ca.includes(cb) || cb.includes(ca)));
+}
+function tomeConflict(a, b) {
+  const ta = a ? Number(a) : null, tb = b ? Number(b) : null;
+  return ta !== null && tb !== null && !Number.isNaN(ta) && !Number.isNaN(tb) && ta !== tb;
+}
+function sameBook(a, b) {
+  if (!titleMatch(a.title, b.title)) return false;
+  if (a.author && b.author && !authorMatch(a.author, b.author)) return false;
+  if (tomeConflict(a.tome, b.tome)) return false;
+  return true;
+}
+// Score de qualité pour choisir, parmi plusieurs détections d'un même livre
+// sur des captures différentes, laquelle garder : titre/auteur non vides
+// d'abord, texte le plus long ensuite (proxy d'un OCR plus complet), taille
+// de la couverture en dernier (proxy d'un cadrage plus complet).
+function qualityScore(d) {
+  let s = 0;
+  if (d.title) s += 1000 + d.title.length;
+  if (d.author) s += 500;
+  s += (d.w * d.h) / 1000;
+  return s;
+}
+
+async function fetchExistingBooks() {
+  try {
+    const res = await fetch("data/books.json", { cache: "no-cache" });
+    if (!res.ok) return [];
+    return await res.json();
+  } catch { return []; }
+}
+
+// Fusionne toutes les détections (toutes captures) en livres uniques, puis
+// compare à la bibliothèque existante. Ne modifie jamais books.json.
+function mergeAndDedupe(detections, existingBooks) {
+  const complete = detections.filter(d => !d.partial);
+  const partialOnly = detections.filter(d => d.partial);
+
+  const groups = [];
+  for (const det of complete) {
+    const target = groups.find(g => sameBook(g.best, det));
+    if (target) {
+      target.items.push(det);
+      if (qualityScore(det) > qualityScore(target.best)) target.best = det;
+    } else {
+      groups.push({ items: [det], best: det });
+    }
+  }
+
+  // Une couverture partielle qui correspond déjà à un livre complet ailleurs
+  // n'apporte rien de plus : on l'ignore silencieusement. Sinon, elle reste
+  // seule au dossier, signalée et décochée.
+  const orphanPartials = partialOnly.filter(p => !groups.some(g => sameBook(g.best, p)));
+
+  const finalList = groups.map(g => ({
+    ...g.best,
+    mergedCount: g.items.length,
+    mergedFromCaptures: [...new Set(g.items.map(i => i.captureIndex))].sort((a, b) => a - b),
+    partial: false,
+  })).concat(orphanPartials.map(p => ({
+    ...p, mergedCount: 1, mergedFromCaptures: [p.captureIndex],
+  })));
+
+  return finalList.map(entry => {
+    const existing = existingBooks.find(b => titleMatch(entry.title, b.title) && (!entry.author || !b.author || authorMatch(entry.author, b.author)));
+    return {
+      ...entry,
+      existingMatch: existing ? { title: existing.title, author: existing.author } : null,
+      selected: !entry.partial && !existing,
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Pipeline complet : pour chaque capture, détecter puis OCR ; puis fusionner.
+// ---------------------------------------------------------------------------
+els.analyzeAllBtn.addEventListener("click", analyzeAllCaptures);
+
+async function analyzeAllCaptures() {
+  if (!capturedImages.length) return;
+  els.analyzeAllBtn.disabled = true;
+  allDetections = [];
+  els.captureResults.innerHTML = "";
+  els.captureResultsTitle.style.display = "block";
+  const opts = readOpts();
+  const isList = els.layoutMode.value === "list";
+
   const worker = await Tesseract.createWorker("fra");
   try {
-    const results = [];
-    for (let i = 0; i < lastBoxes.length; i++) {
-      const b = lastBoxes[i];
-      els.ocrProgress.textContent = `OCR ${i + 1}/${lastBoxes.length}…`;
-      if (b.partial || !b.textRegion || b.textRegion.w <= 0) {
-        results.push({ box: b, title: "", author: "" });
-        continue;
+    for (let ci = 0; ci < capturedImages.length; ci++) {
+      const { img, name } = capturedImages[ci];
+      els.progress.textContent = `Capture ${ci + 1}/${capturedImages.length} : détection…`;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const gray = toGrayscale(imageData);
+      const boxes = isList
+        ? detectList(gray, canvas.width, canvas.height, opts)
+        : detectGrid(gray, canvas.width, canvas.height, opts);
+
+      renderCaptureOverlay(ci, img, boxes, name);
+
+      for (let bi = 0; bi < boxes.length; bi++) {
+        const b = boxes[bi];
+        let title = "", author = "";
+        if (!b.partial && b.textRegion && b.textRegion.w > 0) {
+          els.progress.textContent = `Capture ${ci + 1}/${capturedImages.length} : OCR livre ${bi + 1}/${boxes.length}…`;
+          const tc = document.createElement("canvas");
+          tc.width = b.textRegion.w;
+          tc.height = b.textRegion.h;
+          tc.getContext("2d").drawImage(img, b.textRegion.x, b.textRegion.y, b.textRegion.w, b.textRegion.h, 0, 0, b.textRegion.w, b.textRegion.h);
+          const { data } = await worker.recognize(tc);
+          ({ title, author } = parseOcrText(data.text || ""));
+        }
+        const { series, tome } = extractSeriesTome(title);
+        allDetections.push({ captureIndex: ci, x: b.x, y: b.y, w: b.w, h: b.h, partial: b.partial, title, author, series, tome });
       }
-      const t = b.textRegion;
-      const textCanvas = document.createElement("canvas");
-      textCanvas.width = t.w;
-      textCanvas.height = t.h;
-      textCanvas.getContext("2d").drawImage(currentImage, t.x, t.y, t.w, t.h, 0, 0, t.w, t.h);
-      const { data } = await worker.recognize(textCanvas);
-      results.push({ box: b, ...parseOcrText(data.text || "") });
     }
-    previewData = results;
-    renderPreview();
-    els.ocrProgress.textContent = "Terminé.";
   } finally {
     await worker.terminate();
-    els.extractBtn.disabled = false;
   }
-}
-els.extractBtn?.addEventListener("click", extractTitleAuthor);
 
-function renderPreview() {
-  els.previewList.innerHTML = previewData.map((r, i) => {
-    const b = r.box;
-    const cover = cropToDataUrl(currentImage, b.x, b.y, b.w, b.h);
-    return `<div class="preview-card${b.partial ? " partial" : ""}">
+  els.progress.textContent = "Comparaison à ta bibliothèque…";
+  const existingBooks = await fetchExistingBooks();
+  consolidated = mergeAndDedupe(allDetections, existingBooks);
+  renderConsolidatedPreview();
+  els.progress.textContent = "Terminé.";
+  els.analyzeAllBtn.disabled = false;
+}
+
+function renderCaptureOverlay(ci, img, boxes, name) {
+  const canvas = document.createElement("canvas");
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+  ctx.lineWidth = Math.max(2, canvas.width / 400);
+  ctx.font = `${Math.max(14, canvas.width / 60)}px sans-serif`;
+  boxes.forEach((b, i) => {
+    ctx.strokeStyle = b.partial ? "#ff9457" : "#ff5c8a";
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.setLineDash(b.partial ? [8, 6] : []);
+    ctx.strokeRect(b.x, b.y, b.w, b.h);
+    ctx.fillText(String(i + 1), b.x + 4, b.y + Math.max(16, canvas.width / 50));
+  });
+  ctx.setLineDash([]);
+
+  const partialCount = boxes.filter(b => b.partial).length;
+  const wrap = document.createElement("div");
+  wrap.className = "capture-result";
+  wrap.innerHTML = `<p class="capture-label">Capture <b>${ci + 1}</b> — ${escapeHtml(name)} : <b>${boxes.length}</b> zone(s)${partialCount ? `, ${partialCount} partielle(s)` : ""}</p>`;
+  wrap.appendChild(canvas);
+  els.captureResults.appendChild(wrap);
+}
+
+function renderConsolidatedPreview() {
+  els.consolidatedTitle.style.display = "block";
+  const totalCaptures = capturedImages.length;
+  const totalRaw = allDetections.length;
+  const totalUnique = consolidated.length;
+  const mergedCount = consolidated.filter(c => c.mergedCount > 1).length;
+  const alreadyInLibrary = consolidated.filter(c => c.existingMatch).length;
+  const partialCount = consolidated.filter(c => c.partial).length;
+
+  els.consolidatedSummary.innerHTML =
+    `<b>${totalCaptures}</b> capture(s) analysée(s) · <b>${totalRaw}</b> détection(s) brute(s) · <b>${totalUnique}</b> livre(s) unique(s)` +
+    (mergedCount ? ` · ${mergedCount} fusionné(s) entre captures` : "") +
+    (alreadyInLibrary ? ` · ${alreadyInLibrary} déjà dans ta bibliothèque` : "") +
+    (partialCount ? ` · ${partialCount} partielle(s) ignorée(s) pour l'import` : "");
+
+  els.consolidatedList.innerHTML = consolidated.map((entry, i) => {
+    const img = capturedImages[entry.captureIndex]?.img;
+    const cover = img ? cropToDataUrl(img, entry.x, entry.y, entry.w, entry.h) : "";
+    const badges = [];
+    if (entry.partial) badges.push(`<span class="partial-badge">Partielle — ignorée, à reprendre dans une autre capture</span>`);
+    if (entry.mergedCount > 1) badges.push(`<span class="merge-badge">Fusionné depuis ${entry.mergedCount} captures (${entry.mergedFromCaptures.map(c => "#" + (c + 1)).join(", ")})</span>`);
+    if (entry.existingMatch) badges.push(`<span class="existing-badge">Déjà dans ta bibliothèque : « ${escapeHtml(entry.existingMatch.title)} » — couverture disponible pour la compléter</span>`);
+    return `<div class="preview-card${entry.partial ? " partial" : ""}${entry.existingMatch ? " existing" : ""}">
       <img class="preview-cover" src="${cover}" alt="" />
       <div class="preview-fields">
-        ${b.partial ? `<span class="partial-badge">Partielle — coupée par le bord de la capture, à reprendre dans une capture suivante</span>` : ""}
-        <label>Titre<input type="text" value="${escapeHtml(r.title)}" data-idx="${i}" data-field="title" /></label>
-        <label>Auteur<input type="text" value="${escapeHtml(r.author)}" data-idx="${i}" data-field="author" /></label>
+        ${badges.join("")}
+        <label>Titre<input type="text" value="${escapeHtml(entry.title)}" data-idx="${i}" data-field="title" /></label>
+        <label>Auteur<input type="text" value="${escapeHtml(entry.author)}" data-idx="${i}" data-field="author" /></label>
+        <div class="field-row">
+          <label>Série<input type="text" value="${escapeHtml(entry.series)}" data-idx="${i}" data-field="series" /></label>
+          <label>Tome<input type="text" value="${escapeHtml(String(entry.tome || ""))}" data-idx="${i}" data-field="tome" /></label>
+        </div>
       </div>
-      <label class="preview-check"><input type="checkbox" data-idx="${i}" data-field="selected" ${b.partial ? "" : "checked"} /> Importer</label>
+      <label class="preview-check"><input type="checkbox" data-idx="${i}" data-field="selected" ${entry.selected ? "checked" : ""} /> Importer</label>
     </div>`;
   }).join("");
 }
-els.previewList.addEventListener("input", (e) => {
+els.consolidatedList.addEventListener("input", e => {
   const idx = e.target.dataset.idx;
   const field = e.target.dataset.field;
-  if (idx === undefined || !field || !previewData[idx]) return;
-  if (field === "selected") return; // état visuel seulement pour l'instant, pas de commit dans ce prototype
-  previewData[idx][field] = e.target.value;
+  if (idx === undefined || !field || !consolidated[idx]) return;
+  if (field === "selected") { consolidated[idx].selected = e.target.checked; return; }
+  consolidated[idx][field] = e.target.value;
 });
 </script>
 </body>
