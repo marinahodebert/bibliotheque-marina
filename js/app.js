@@ -100,7 +100,13 @@ function bindEvents() {
   els.form.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(els.form));
-    if (!data.title || !data.title.trim()) return;
+    const title = (data.title || "").trim();
+    if (!title) return;
+    const similar = findSimilarBook(title, allBooks);
+    if (similar) {
+      const proceed = confirm(`Un livre au titre proche existe déjà dans ta bibliothèque :\n« ${similar.title} » — ${similar.author}\n\nAjouter quand même « ${title} » ?`);
+      if (!proceed) return;
+    }
     addBookFromForm(data);
     els.form.reset();
     els.dialog.close();
@@ -221,6 +227,32 @@ function refreshAndRender() {
   renderNav();
   renderCurrentView();
   if (currentDetailId) renderDetail();
+  populateAddFormSuggestions();
+}
+// Autocomplétion auteur/série du formulaire d'ajout manuel, à partir des
+// valeurs déjà présentes dans la bibliothèque. Ne touche pas à l'import
+// Kindle (qui a son propre formulaire, dans une autre boîte de dialogue).
+function populateAddFormSuggestions() {
+  const authorList = document.getElementById("authorSuggestions");
+  const seriesList = document.getElementById("seriesSuggestions");
+  if (!authorList || !seriesList) return;
+  const authors = [...new Set(allBooks.map(b => b.author).filter(a => a && a !== "Auteur non disponible"))].sort((a, b) => a.localeCompare(b, "fr"));
+  const series = [...new Set(allBooks.map(b => b.series).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
+  authorList.innerHTML = authors.map(a => `<option value="${escapeHtml(a)}"></option>`).join("");
+  seriesList.innerHTML = series.map(s => `<option value="${escapeHtml(s)}"></option>`).join("");
+}
+// Détection de doublon pour l'ajout manuel d'un seul livre (distinct de
+// findDuplicate(), utilisée par l'import Kindle pour la prévisualisation en
+// lot — on ne touche pas à cette dernière). Retourne le livre existant le
+// plus proche, ou null.
+function findSimilarBook(title, existingBooks) {
+  const ct = clean(title);
+  if (!ct) return null;
+  return existingBooks.find(b => {
+    const et = clean(b.title);
+    if (!et) return false;
+    return et === ct || (ct.length > 8 && (et.includes(ct) || ct.includes(et)));
+  }) || null;
 }
 
 /* ============ mutations ============ */
