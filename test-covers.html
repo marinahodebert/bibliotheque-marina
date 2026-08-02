@@ -10,14 +10,16 @@
   body { margin: 0; padding: 1.5rem; background: #131315; color: #f2f1ee; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; }
   .wrap { max-width: 900px; margin: 0 auto; }
   h1 { font-size: 1.4rem; margin: 0 0 .3rem; }
-  p.intro { color: #95939a; font-size: .9rem; margin: 0 0 1.2rem; max-width: 65ch; }
-  .bar { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.4rem; }
+  p.intro { color: #95939a; font-size: .9rem; margin: 0 0 1.2rem; max-width: 68ch; }
+  .bar { display: flex; align-items: center; gap: .8rem; margin-bottom: 1.4rem; flex-wrap: wrap; }
   button { font: inherit; cursor: pointer; border: none; border-radius: 9px; padding: .7rem 1.1rem; font-weight: 700; }
   #runBtn { background: linear-gradient(135deg,#ff5c8a,#ff7a59 55%,#ffb454); color: #171214; }
   #runBtn:disabled { opacity: .5; cursor: default; }
   .progress { font-size: .85rem; color: #95939a; }
+  .sample-meta { font-size: .8rem; color: #95939a; margin: 0 0 1.2rem; }
   table.summary { border-collapse: collapse; margin-bottom: 1.4rem; font-size: .85rem; }
   table.summary td { padding: .3rem .8rem .3rem 0; }
+  table.summary tr.highlight td { font-weight: 700; color: #ffb454; padding-top: .6rem; }
   .badge { display: inline-flex; padding: .15rem .55rem; border-radius: 999px; font-size: .72rem; font-weight: 700; }
   .badge.confident { background: rgba(63,190,134,.18); color: #3fbe86; }
   .badge.ambiguous { background: rgba(255,148,87,.2); color: #ff9457; }
@@ -39,19 +41,20 @@
 <body>
 <div class="wrap">
   <h1>Test de correspondance de couvertures</h1>
-  <p class="intro">Page de diagnostic jetable — étape 1 du plan. Interroge Google Books, puis Open Library, puis Apple Books (iTunes Search), en s'arrêtant dès qu'une source qualifie un candidat, sur un échantillon de 16 vrais livres représentatifs de ta bibliothèque (romances auto-éditées, séries à tomes, titres plus connus, une pièce de théâtre). Ne modifie rien dans <code>data/books.json</code> — purement informatif.</p>
+  <p class="intro">Page de diagnostic jetable — étape 1 du plan. Échantillon de 50 livres sélectionné automatiquement depuis <code>data/books.json</code> (diversité d'auteurs, de séries, d'années, mélange avec/sans série — voir le détail de l'échantillon ci-dessous). Interroge Google Books, puis Open Library, puis Apple Books, en s'arrêtant dès qu'une source qualifie un candidat. Strictement lecture seule : aucune écriture dans <code>data/books.json</code>.</p>
 
-  <div class="bar" style="flex-wrap:wrap;">
+  <div class="bar">
     <label style="font-size:.82rem;color:#95939a;display:flex;flex-direction:column;gap:.3rem;">
-      Clé API Google Books (facultative — restera uniquement dans ce navigateur)
+      Clé API Google Books (facultative — reste uniquement dans ce navigateur)
       <input id="googleKeyInput" type="password" autocomplete="off" placeholder="AIza…" style="background:#232326;color:#f2f1ee;border:1px solid rgba(242,241,238,.16);border-radius:8px;padding:.5rem .7rem;font:inherit;min-width:280px;" />
     </label>
   </div>
   <div class="bar">
-    <button id="runBtn" type="button">Lancer le test (16 livres)</button>
+    <button id="runBtn" type="button" disabled>Chargement de l'échantillon…</button>
     <span class="progress" id="progressText"></span>
   </div>
 
+  <p class="sample-meta" id="sampleMeta"></p>
   <table class="summary" id="summaryTable"></table>
 
   <div id="results"></div>
@@ -59,30 +62,56 @@
 
 <script src="js/covers.js"></script>
 <script>
-const SAMPLE_BOOKS = [
-  { title: "Off-campus - Tome 05: The legacy", author: "Elle Kennedy", series: "Off-campus", tome: 5 },
-  { title: "Off-campus - Tome 02: The mistake", author: "Elle Kennedy", series: "Off-campus", tome: 2 },
-  { title: "Daydream - Maple Hills Tome 3", author: "Hannah Grace", series: "Maple Hills", tome: 3 },
-  { title: "Icebreaker - Maple Hills Tome 1", author: "Hannah Grace", series: "Maple Hills", tome: 1 },
-  { title: "Marked men - Tome 01", author: "Jay Crownover", series: "Marked Men", tome: 1 },
-  { title: "Vicious", author: "L.J. Shen", series: "All Saints High", tome: 1 },
-  { title: "Impitoyable", author: "Jennifer Sucevic", series: "Claremont Cougars", tome: 1 },
-  { title: "Un PDG à charmer", author: "Layla Hagen", series: "Les Frères Whitley", tome: 5 },
-  { title: "Un Amour Inéluctable (La Famille Bennett)", author: "Layla Hagen", series: "La Famille Bennett", tome: "" },
-  { title: "14 jours la MIENNE: Achetée par le milliardaire (Mon milliardaire t.1)", author: "Anna May", series: "Mon milliardaire", tome: 1 },
-  { title: "Diable de velours (La Bratva Vorobev t.1)", author: "Nicole Fox", series: "La Bratva Vorobev", tome: 1 },
-  { title: "Sur la ligne", author: "Nikki Lawson", series: "Les coeurs du hockey", tome: 1 },
-  { title: "Pour 100 Jours", author: "Lara Adrian", series: "Série 100", tome: 1 },
-  { title: "Le milliardaire inoubliable ~ Tanner", author: "J. S. Scott", series: "L'obsession du milliardaire", tome: 21 },
-  { title: "La Fausse Épouse", author: "Annie J. Rose", series: "", tome: "" },
-  { title: "Pinocchio", author: "Joël Pommerat", series: "", tome: "" },
-];
+// ---- sélection représentative de 50 livres depuis data/books.json ----
+// Répartition round-robin par année, avec un plafond par auteur et par
+// série pour qu'aucun des deux ne domine l'échantillon. Déterministe (pas
+// de tirage aléatoire) pour que deux exécutions soient comparables.
+function pickRepresentativeSample(books, targetSize, maxPerAuthor, maxPerSeries) {
+  const byYear = {};
+  books.forEach((b, i) => {
+    const y = String(b.year || "inconnue");
+    (byYear[y] ||= []).push({ b, i });
+  });
+  const years = Object.keys(byYear).sort();
+  const pointers = {};
+  years.forEach(y => { pointers[y] = 0; });
+
+  const authorCount = {};
+  const seriesCount = {};
+  const picked = [];
+
+  let progressed = true;
+  while (picked.length < targetSize && progressed) {
+    progressed = false;
+    for (const y of years) {
+      if (picked.length >= targetSize) break;
+      const list = byYear[y];
+      while (pointers[y] < list.length) {
+        const { b } = list[pointers[y]];
+        pointers[y]++;
+        const a = b.author || "inconnu";
+        const s = b.series || "";
+        const aCount = authorCount[a] || 0;
+        const sCount = s ? (seriesCount[s] || 0) : 0;
+        if (aCount >= maxPerAuthor) continue;
+        if (s && sCount >= maxPerSeries) continue;
+        authorCount[a] = aCount + 1;
+        if (s) seriesCount[s] = sCount + 1;
+        picked.push(b);
+        progressed = true;
+        break;
+      }
+    }
+  }
+  return picked;
+}
 
 const els = {
   runBtn: document.getElementById("runBtn"),
   progressText: document.getElementById("progressText"),
   summaryTable: document.getElementById("summaryTable"),
   results: document.getElementById("results"),
+  sampleMeta: document.getElementById("sampleMeta"),
   googleKeyInput: document.getElementById("googleKeyInput"),
 };
 
@@ -91,6 +120,8 @@ els.googleKeyInput.value = localStorage.getItem(GOOGLE_KEY_STORAGE) || "";
 els.googleKeyInput.addEventListener("input", () => {
   localStorage.setItem(GOOGLE_KEY_STORAGE, els.googleKeyInput.value.trim());
 });
+
+let SAMPLE_BOOKS = [];
 
 function rowHTML(book, result) {
   const thumb = result && result.accepted[0]
@@ -119,7 +150,7 @@ function rowHTML(book, result) {
     <div class="thumb">${thumb}</div>
     <div class="info">
       <p class="book-title">${book.title}</p>
-      <p class="book-meta">${book.author}${book.series ? " · " + book.series : ""}${book.tome ? " · t." + book.tome : ""} <span class="badge ${badgeClass}">${badgeLabel}</span></p>
+      <p class="book-meta">${book.author}${book.series ? " · " + book.series : ""}${book.tome ? " · t." + book.tome : ""}${book.year ? " · " + book.year : ""} <span class="badge ${badgeClass}">${badgeLabel}</span></p>
       ${resultLines}
     </div>
   </div>`;
@@ -129,6 +160,7 @@ function renderAll(results) {
   els.results.innerHTML = SAMPLE_BOOKS.map((b, i) => rowHTML(b, results[i])).join("");
 }
 function renderSummary(results) {
+  const total = SAMPLE_BOOKS.length;
   const done = results.filter(Boolean).length;
   const confident = results.filter(r => r && r.status === "confident").length;
   const ambiguous = results.filter(r => r && r.status === "ambiguous").length;
@@ -136,19 +168,38 @@ function renderSummary(results) {
   const bySourceGB = results.filter(r => r && r.source === "Google Books").length;
   const bySourceOL = results.filter(r => r && r.source === "Open Library").length;
   const bySourceAB = results.filter(r => r && r.source === "Apple Books").length;
+  const tauxForte = done ? ((confident / total) * 100).toFixed(0) : "–";
+  const tauxCandidat = done ? (((confident + ambiguous) / total) * 100).toFixed(0) : "–";
   els.summaryTable.innerHTML = `
-    <tr><td>Traités</td><td>${done} / ${SAMPLE_BOOKS.length}</td></tr>
+    <tr><td>Traités</td><td>${done} / ${total}</td></tr>
     <tr><td>Confiance forte</td><td>${confident}</td></tr>
-    <tr><td>Ambigus</td><td>${ambiguous}</td></tr>
-    <tr><td>Introuvables</td><td>${none}</td></tr>
-    <tr><td>Trouvés via Google Books</td><td>${bySourceGB}</td></tr>
-    <tr><td>Trouvés via Open Library</td><td>${bySourceOL}</td></tr>
-    <tr><td>Trouvés via Apple Books</td><td>${bySourceAB}</td></tr>
+    <tr><td>Ambigu</td><td>${ambiguous}</td></tr>
+    <tr><td>Introuvable</td><td>${none}</td></tr>
+    <tr><td>Trouvé via Google Books (gain marginal)</td><td>${bySourceGB}</td></tr>
+    <tr><td>Trouvé via Open Library (gain marginal)</td><td>${bySourceOL}</td></tr>
+    <tr><td>Trouvé via Apple Books (gain marginal)</td><td>${bySourceAB}</td></tr>
+    <tr class="highlight"><td>Taux réellement automatisable (confiance forte / ${total})</td><td>${tauxForte}%</td></tr>
+    <tr class="highlight"><td>Taux avec candidat ((forte + ambigu) / ${total})</td><td>${tauxCandidat}%</td></tr>
   `;
 }
 
-SAMPLE_BOOKS.forEach((b, i) => { b._idx = i; });
-renderAll(new Array(SAMPLE_BOOKS.length).fill(null));
+async function init() {
+  const res = await fetch("data/books.json", { cache: "no-cache" });
+  const allBooks = await res.json();
+  const sample = pickRepresentativeSample(allBooks, 50, 2, 2);
+  sample.forEach((b, i) => { b._idx = i; });
+  SAMPLE_BOOKS = sample;
+
+  const authors = new Set(sample.map(b => b.author)).size;
+  const series = new Set(sample.map(b => b.series).filter(Boolean)).size;
+  const withoutSeries = sample.filter(b => !b.series).length;
+  const years = [...new Set(sample.map(b => b.year).filter(Boolean))].sort();
+  els.sampleMeta.textContent = `Échantillon : ${sample.length} livres · ${authors} auteurs distincts · ${series} séries distinctes · ${withoutSeries} sans série · années ${years[0]}–${years[years.length - 1]} (max 2 livres par auteur, max 2 par série).`;
+
+  renderAll(new Array(sample.length).fill(null));
+  els.runBtn.disabled = false;
+  els.runBtn.textContent = `Lancer le test (${sample.length} livres)`;
+}
 
 els.runBtn.addEventListener("click", async () => {
   els.runBtn.disabled = true;
@@ -168,6 +219,8 @@ els.runBtn.addEventListener("click", async () => {
   els.progressText.textContent = "Terminé.";
   els.runBtn.disabled = false;
 });
+
+init();
 </script>
 </body>
 </html>
