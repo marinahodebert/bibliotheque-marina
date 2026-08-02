@@ -393,16 +393,22 @@ function tomeConflict(a, b) {
   const ta = a ? Number(a) : null, tb = b ? Number(b) : null;
   return ta !== null && tb !== null && !Number.isNaN(ta) && !Number.isNaN(tb) && ta !== tb;
 }
-// cb (titre stocké, normalisé) doit être un préfixe STRICT de ca (titre OCR,
-// normalisé), et s'arrêter sur une frontière de mot (le caractère suivant
-// dans ca ne doit pas être une lettre/chiffre) — pour éviter qu'un titre
-// stocké court matche accidentellement au milieu d'un mot d'un autre titre
+// cb doit être un préfixe STRICT de ca, à une frontière de mot : le
+// caractère suivant dans ca ne doit jamais être une lettre — ça évite qu'un
+// titre court matche accidentellement au milieu d'un mot d'un autre titre
 // (ex. "Vicious" ne doit jamais être considéré préfixe de "Viciousness").
-function isPrefixMatch(ca, cb) {
+// `allowDigitBoundary` tolère en plus un chiffre comme caractère suivant :
+// réservé au cas où ca est un texte OCR potentiellement tronqué en plein
+// milieu d'un numéro de tome (le "1" de "t.1)" coupé juste après "t."). Ne
+// jamais l'activer quand cb est le texte non-fiable (l'OCR) : un chiffre qui
+// continue là pourrait être un tome différent (ex. "Tome 1" vs "Tome 10").
+function isPrefixMatch(ca, cb, allowDigitBoundary) {
   if (!cb || cb.length >= ca.length) return false;
   if (!ca.startsWith(cb)) return false;
   const nextChar = ca[cb.length];
-  return !/[a-z0-9]/i.test(nextChar);
+  if (/[a-z]/i.test(nextChar)) return false;
+  if (/[0-9]/.test(nextChar) && !allowDigitBoundary) return false;
+  return true;
 }
 // Score de qualité pour choisir, parmi plusieurs détections d'un même livre
 // sur des captures différentes, laquelle garder : titre/auteur non vides
@@ -438,11 +444,17 @@ async function fetchExistingBooks() {
 // Un conflit de tome élimine le candidat, quelle que soit la confiance par
 // ailleurs (même garde-fou tomeConflict que pour sameBookForMerge, la fusion inter-captures) ;
 // si le tome n'est détecté que d'un côté, il ne bloque jamais la correspondance.
-// Si plusieurs livres du même auteur qualifient en "certain" pour la même
-// détection (un titre préfixe d'un autre chez le même auteur — cas réel trouvé
-// dans la bibliothèque, ex. "Player (version française)" / "... : seconde
-// chance"), on choisit celui dont le titre stocké est le plus long, donc le
-// plus proche du texte OCR complet, jamais le premier rencontré.
+// Le préfixe joue dans les deux sens : soit le titre stocké est un préfixe du
+// titre OCR (Kindle ajoute du texte après le vrai titre — série/tome, édition,
+// tagline), soit c'est l'inverse, le titre OCR est un préfixe du titre stocké
+// (l'OCR a été tronqué avant la fin, ex. un numéro de tome coupé en plein
+// milieu : "... t." au lieu de "... t.1)"). Si plusieurs livres du même
+// auteur qualifient en "certain" pour la même détection (un titre préfixe
+// d'un autre chez le même auteur — cas réel trouvé dans la bibliothèque, ex.
+// "Player (version française)" / "... : seconde chance"), on choisit celui
+// dont le titre stocké a la longueur la plus proche du titre OCR (le moins de
+// texte à expliquer par un ajout ou une troncature), jamais le premier
+// rencontré.
 function matchExisting(entry, existingBooks) {
   let uncertain = null;
   const certainCandidates = [];
@@ -452,7 +464,12 @@ function matchExisting(entry, existingBooks) {
     if (!ca || !cb) continue;
     const titleExact = ca === cb;
     const titleFuzzy = !titleExact && ca.length > 8 && (ca.includes(cb) || cb.includes(ca));
-    const prefixMatch = isPrefixMatch(ca, cb);
+    // Sens 1 : le titre stocké (cb) est préfixe du titre OCR (ca) — rallonge
+    // Kindle après le vrai titre. Sens 2 : le titre OCR (ca) est préfixe du
+    // titre stocké (cb) — l'OCR a été tronqué avant la fin ; un chiffre juste
+    // après est toléré (fin de numéro de tome coupée), le titre stocké étant
+    // la donnée de confiance ici.
+    const prefixMatch = isPrefixMatch(ca, cb, false) || isPrefixMatch(cb, ca, true);
     if (!titleExact && !titleFuzzy && !prefixMatch) continue;
     const aa = entry.author ? protoClean(entry.author) : "";
     const ba = b.author ? protoClean(b.author) : "";
@@ -463,13 +480,13 @@ function matchExisting(entry, existingBooks) {
     // debug : purement informatif (export diagnostic), n'influence aucune décision.
     const debug = { ca, cb, titleExact, titleFuzzy, prefixMatch, aa, ba, authorExact, authorFuzzy };
     if ((titleExact && authorExact) || (prefixMatch && authorStrictExact)) {
-      certainCandidates.push({ book: b, debug, cbLength: cb.length });
+      certainCandidates.push({ book: b, debug, lengthDiff: Math.abs(ca.length - cb.length) });
       continue;
     }
     if (!uncertain) uncertain = { book: b, confidence: "uncertain", debug };
   }
   if (certainCandidates.length) {
-    certainCandidates.sort((x, y) => y.cbLength - x.cbLength);
+    certainCandidates.sort((x, y) => x.lengthDiff - y.lengthDiff);
     const best = certainCandidates[0];
     return { book: best.book, confidence: "certain", debug: best.debug };
   }
