@@ -28,14 +28,26 @@
   .summary b { color: #3fbe86; }
   .crops { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: .8rem; }
   .crop-item { background: #1b1b1e; border-radius: 8px; overflow: hidden; border: 1px solid rgba(242,241,238,.1); }
+  .crop-item.partial { opacity: .55; border-color: rgba(255,148,87,.5); }
   .crop-item canvas { width: 100%; display: block; }
   .crop-item .label { font-size: .65rem; color: #95939a; padding: .3rem .4rem; text-align: center; }
+  .ocr-bar { margin: 1.4rem 0; }
+  .ocr-progress { font-size: .85rem; color: #95939a; margin-left: .8rem; }
+  .preview-list { display: flex; flex-direction: column; gap: .8rem; margin-top: 1rem; }
+  .preview-card { display: flex; gap: 1rem; background: #1b1b1e; border-radius: 10px; padding: .9rem; border: 1px solid rgba(242,241,238,.1); align-items: flex-start; }
+  .preview-card.partial { border-color: rgba(255,148,87,.5); background: #201c19; }
+  .preview-cover { width: 80px; height: auto; border-radius: 6px; flex: none; }
+  .preview-fields { flex: 1; display: grid; gap: .5rem; min-width: 0; }
+  .preview-fields label { display: flex; flex-direction: column; gap: .25rem; font-size: .72rem; color: #95939a; }
+  .preview-fields input { background: #232326; color: #f2f1ee; border: 1px solid rgba(242,241,238,.16); border-radius: 7px; padding: .5rem .6rem; font: inherit; }
+  .partial-badge { display: inline-block; font-size: .72rem; font-weight: 700; color: #ff9457; background: rgba(255,148,87,.15); padding: .25rem .6rem; border-radius: 999px; margin-bottom: .3rem; }
+  .preview-check { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: #95939a; flex: none; white-space: nowrap; padding-top: .3rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Prototype — détection et découpe de couvertures</h1>
-  <p class="intro">Outil jetable, indépendant de l'application. Dépose une capture de ta bibliothèque Kindle : l'algorithme analyse les zones de contenu (les couvertures) et les zones vides (les espaces entre elles) pour détecter et découper chaque couverture automatiquement — sans OCR, sans reconnaissance de titre pour l'instant, juste la détection visuelle. Rien n'est envoyé nulle part, tout se passe dans ton navigateur.</p>
+  <p class="intro">Outil jetable, indépendant de l'application. Dépose une capture de ta bibliothèque Kindle : l'algorithme détecte et découpe chaque couverture, puis l'OCR récupère le titre et l'auteur dans la zone de texte associée. Une couverture qui touche le bord de l'image (haut ou bas) est signalée comme partielle et n'est pas cochée pour import — elle sera normalement complète dans une capture suivante qui chevauche. Rien n'est envoyé nulle part, tout se passe dans ton navigateur, et rien n'est écrit dans ta bibliothèque.</p>
 
   <div class="dropzone" id="dropzone">Dépose une image ici, ou clique pour en choisir une</div>
   <input type="file" id="fileInput" accept="image/*" />
@@ -73,8 +85,15 @@
   <div class="canvas-wrap"><canvas id="overlayCanvas"></canvas></div>
   <p class="summary" id="summary"></p>
   <div class="crops" id="crops"></div>
+
+  <div class="ocr-bar" id="ocrBar" style="display:none;">
+    <button id="extractBtn">Extraire titre / auteur (OCR)</button>
+    <span class="ocr-progress" id="ocrProgress"></span>
+  </div>
+  <div class="preview-list" id="previewList"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 const els = {
   dropzone: document.getElementById("dropzone"),
@@ -95,9 +114,15 @@ const els = {
   mergeGapVal: document.getElementById("mergeGapVal"),
   redetectBtn: document.getElementById("redetectBtn"),
   layoutMode: document.getElementById("layoutMode"),
+  ocrBar: document.getElementById("ocrBar"),
+  extractBtn: document.getElementById("extractBtn"),
+  ocrProgress: document.getElementById("ocrProgress"),
+  previewList: document.getElementById("previewList"),
 };
 
 let currentImage = null;
+let lastBoxes = [];
+let previewData = [];
 
 els.dropzone.addEventListener("click", () => els.fileInput.click());
 els.dropzone.addEventListener("dragover", e => { e.preventDefault(); els.dropzone.classList.add("drag"); });
@@ -263,10 +288,19 @@ function detectGrid(gray, width, height, opts) {
   return boxes;
 }
 
+// Une bande de ligne qui touche le bord haut ou bas de l'image n'a pas été
+// refermée par un vrai espace (elle continue au-delà de ce que la capture
+// montre) : c'est le signal qu'une ligne est coupée par le bord de l'écran,
+// pas un jugement sur le contenu lui-même.
+const EDGE_MARGIN = 3;
+function touchesEdge(y0, y1, height) {
+  return y0 <= EDGE_MARGIN || y1 >= height - 1 - EDGE_MARGIN;
+}
+
 // Mode liste : on détecte d'abord chaque ligne (une par livre), puis, à
 // l'intérieur de chaque ligne, on ne garde que la première bande de contenu
-// à partir de la gauche (la vignette) — le texte du titre/auteur qui suit
-// est délibérément ignoré ici, ce sera le rôle de l'OCR plus tard.
+// à partir de la gauche (la vignette). Le reste de la ligne (après la
+// vignette) est conservé comme "zone de texte" pour l'OCR du titre/auteur.
 function detectList(gray, width, height, opts) {
   const rowProfile = smooth(rowActivity(gray, width, height), 2);
   const rowBands = mergeBands(findContentBands(rowProfile, opts.thresholdRatio, opts.minGap), opts.mergeGap);
@@ -282,7 +316,12 @@ function detectList(gray, width, height, opts) {
     if (w < opts.minSize || h < opts.minSize) continue;
     const ratio = w / h;
     if (ratio < opts.ratioMin || ratio > opts.ratioMax) continue;
-    boxes.push({ x: cx0, y: ry0, w, h });
+    const textX = Math.min(width - 1, cx1 + 12);
+    boxes.push({
+      x: cx0, y: ry0, w, h,
+      partial: touchesEdge(ry0, ry1, height),
+      textRegion: { x: textX, y: ry0, w: Math.max(0, width - textX - 8), h },
+    });
   }
   return boxes;
 }
@@ -307,20 +346,27 @@ function runDetection() {
     mergeGap: Number(els.mergeGap.value),
   };
 
-  const boxes = els.layoutMode.value === "list"
+  const isList = els.layoutMode.value === "list";
+  const boxes = isList
     ? detectList(gray, canvas.width, canvas.height, opts)
     : detectGrid(gray, canvas.width, canvas.height, opts);
+  lastBoxes = boxes;
+  previewData = [];
+  els.previewList.innerHTML = "";
 
   ctx.lineWidth = Math.max(2, canvas.width / 400);
-  ctx.strokeStyle = "#ff5c8a";
   ctx.font = `${Math.max(14, canvas.width / 60)}px sans-serif`;
-  ctx.fillStyle = "#ff5c8a";
   boxes.forEach((b, i) => {
+    ctx.strokeStyle = b.partial ? "#ff9457" : "#ff5c8a";
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.setLineDash(b.partial ? [8, 6] : []);
     ctx.strokeRect(b.x, b.y, b.w, b.h);
-    ctx.fillText(String(i + 1), b.x + 4, b.y + Math.max(16, canvas.width / 50));
+    ctx.fillText(b.partial ? `${i + 1} (partielle)` : String(i + 1), b.x + 4, b.y + Math.max(16, canvas.width / 50));
   });
+  ctx.setLineDash([]);
 
-  els.summary.innerHTML = `<b>${boxes.length}</b> zone(s) détectée(s) — image ${canvas.width}×${canvas.height}px.`;
+  const partialCount = boxes.filter(b => b.partial).length;
+  els.summary.innerHTML = `<b>${boxes.length}</b> zone(s) détectée(s) — image ${canvas.width}×${canvas.height}px.${partialCount ? ` <span style="color:#ff9457;">${partialCount} partielle(s), en pointillé.</span>` : ""}`;
 
   els.crops.innerHTML = "";
   boxes.forEach((b, i) => {
@@ -329,15 +375,98 @@ function runDetection() {
     cropCanvas.height = b.h;
     cropCanvas.getContext("2d").drawImage(img, b.x, b.y, b.w, b.h, 0, 0, b.w, b.h);
     const item = document.createElement("div");
-    item.className = "crop-item";
+    item.className = "crop-item" + (b.partial ? " partial" : "");
     item.appendChild(cropCanvas);
     const label = document.createElement("div");
     label.className = "label";
-    label.textContent = `#${i + 1} · ${b.w}×${b.h}`;
+    label.textContent = `#${i + 1} · ${b.w}×${b.h}${b.partial ? " · partielle" : ""}`;
     item.appendChild(label);
     els.crops.appendChild(item);
   });
+
+  els.ocrBar.style.display = isList && boxes.length ? "block" : "none";
 }
+
+function cropToDataUrl(img, x, y, w, h) {
+  const c = document.createElement("canvas");
+  c.width = Math.max(1, w);
+  c.height = Math.max(1, h);
+  c.getContext("2d").drawImage(img, x, y, w, h, 0, 0, w, h);
+  return c.toDataURL("image/png");
+}
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>'"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[ch]));
+}
+
+// Découpe l'OCR brut d'une zone de texte en titre/auteur : la dernière ligne
+// est presque toujours "dans la bibliothèque Kindle" (repérée en tolérant les
+// fautes de l'OCR sur cette phrase précise), l'avant-dernière est l'auteur,
+// tout ce qui précède est le titre.
+function parseOcrText(raw) {
+  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  if (!lines.length) return { title: "", author: "" };
+  const clean = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  let end = lines.length;
+  if (end > 0 && /dans.{0,8}biblioth.{0,4}que.{0,3}kindle/.test(clean(lines[end - 1]))) end -= 1;
+  if (end <= 0) return { title: "", author: "" };
+  const author = lines[end - 1] || "";
+  const title = lines.slice(0, Math.max(0, end - 1)).join(" ").trim();
+  return { title, author };
+}
+
+async function extractTitleAuthor() {
+  if (!currentImage || !lastBoxes.length || !window.Tesseract) return;
+  els.extractBtn.disabled = true;
+  const worker = await Tesseract.createWorker("fra");
+  try {
+    const results = [];
+    for (let i = 0; i < lastBoxes.length; i++) {
+      const b = lastBoxes[i];
+      els.ocrProgress.textContent = `OCR ${i + 1}/${lastBoxes.length}…`;
+      if (b.partial || !b.textRegion || b.textRegion.w <= 0) {
+        results.push({ box: b, title: "", author: "" });
+        continue;
+      }
+      const t = b.textRegion;
+      const textCanvas = document.createElement("canvas");
+      textCanvas.width = t.w;
+      textCanvas.height = t.h;
+      textCanvas.getContext("2d").drawImage(currentImage, t.x, t.y, t.w, t.h, 0, 0, t.w, t.h);
+      const { data } = await worker.recognize(textCanvas);
+      results.push({ box: b, ...parseOcrText(data.text || "") });
+    }
+    previewData = results;
+    renderPreview();
+    els.ocrProgress.textContent = "Terminé.";
+  } finally {
+    await worker.terminate();
+    els.extractBtn.disabled = false;
+  }
+}
+els.extractBtn?.addEventListener("click", extractTitleAuthor);
+
+function renderPreview() {
+  els.previewList.innerHTML = previewData.map((r, i) => {
+    const b = r.box;
+    const cover = cropToDataUrl(currentImage, b.x, b.y, b.w, b.h);
+    return `<div class="preview-card${b.partial ? " partial" : ""}">
+      <img class="preview-cover" src="${cover}" alt="" />
+      <div class="preview-fields">
+        ${b.partial ? `<span class="partial-badge">Partielle — coupée par le bord de la capture, à reprendre dans une capture suivante</span>` : ""}
+        <label>Titre<input type="text" value="${escapeHtml(r.title)}" data-idx="${i}" data-field="title" /></label>
+        <label>Auteur<input type="text" value="${escapeHtml(r.author)}" data-idx="${i}" data-field="author" /></label>
+      </div>
+      <label class="preview-check"><input type="checkbox" data-idx="${i}" data-field="selected" ${b.partial ? "" : "checked"} /> Importer</label>
+    </div>`;
+  }).join("");
+}
+els.previewList.addEventListener("input", (e) => {
+  const idx = e.target.dataset.idx;
+  const field = e.target.dataset.field;
+  if (idx === undefined || !field || !previewData[idx]) return;
+  if (field === "selected") return; // état visuel seulement pour l'instant, pas de commit dans ce prototype
+  previewData[idx][field] = e.target.value;
+});
 </script>
 </body>
 </html>
