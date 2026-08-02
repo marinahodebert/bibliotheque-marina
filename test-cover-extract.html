@@ -382,16 +382,6 @@ function extractSeriesTome(title) {
 function protoClean(str) {
   return String(str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 }
-function titleMatch(a, b) {
-  const ca = protoClean(a), cb = protoClean(b);
-  if (!ca || !cb) return false;
-  return ca === cb || (ca.length > 8 && (ca.includes(cb) || cb.includes(ca)));
-}
-function authorMatch(a, b) {
-  const ca = protoClean(a), cb = protoClean(b);
-  if (!ca || !cb) return false;
-  return ca === cb || (ca.length > 3 && (ca.includes(cb) || cb.includes(ca)));
-}
 function tomeConflict(a, b) {
   const ta = a ? Number(a) : null, tb = b ? Number(b) : null;
   return ta !== null && tb !== null && !Number.isNaN(ta) && !Number.isNaN(tb) && ta !== tb;
@@ -406,12 +396,6 @@ function isPrefixMatch(ca, cb) {
   if (!ca.startsWith(cb)) return false;
   const nextChar = ca[cb.length];
   return !/[a-z0-9]/i.test(nextChar);
-}
-function sameBook(a, b) {
-  if (!titleMatch(a.title, b.title)) return false;
-  if (a.author && b.author && !authorMatch(a.author, b.author)) return false;
-  if (tomeConflict(a.tome, b.tome)) return false;
-  return true;
 }
 // Score de qualité pour choisir, parmi plusieurs détections d'un même livre
 // sur des captures différentes, laquelle garder : titre/auteur non vides
@@ -445,7 +429,7 @@ async function fetchExistingBooks() {
 // - "uncertain" : ne matche que par inclusion partielle (titre ou auteur),
 //                 donc plausible mais pas fiable -> ne jamais agir seul.
 // Un conflit de tome élimine le candidat, quelle que soit la confiance par
-// ailleurs (mêmes règles que sameBook/tomeConflict pour la fusion inter-captures) ;
+// ailleurs (même garde-fou tomeConflict que pour sameBookForMerge, la fusion inter-captures) ;
 // si le tome n'est détecté que d'un côté, il ne bloque jamais la correspondance.
 // Si plusieurs livres du même auteur qualifient en "certain" pour la même
 // détection (un titre préfixe d'un autre chez le même auteur — cas réel trouvé
@@ -485,6 +469,48 @@ function matchExisting(entry, existingBooks) {
   return uncertain;
 }
 
+// Fusion entre captures (deux détections brutes qui seraient le même livre vu
+// deux fois, ex. captures qui se chevauchent). Nettement plus conservatrice
+// que matchExisting ci-dessus : fusionner à tort perd définitivement un livre
+// (l'un des deux est éliminé), alors qu'un doublon non fusionné se corrige
+// d'un clic. Règle :
+//  1) titre ET auteur strictement identiques après normalisation -> fusion.
+//  2) sinon, rallonge Kindle plausible (l'un des titres est un préfixe strict
+//     de l'autre, à une frontière de mot) acceptée UNIQUEMENT si l'auteur est
+//     strictement identique des deux côtés (jamais une simple inclusion).
+//  3) tomes renseignés des deux côtés et différents -> jamais fusionner
+//     (tomeConflict, vérifié en premier).
+//  4) si chacune des deux détections correspond, avec certitude
+//     (matchExisting = "certain"), à un livre DIFFÉRENT de la bibliothèque
+//     existante (cas réel trouvé : "Player (version française)" / "...:
+//     seconde chance" chez Estelle Every) -> ne jamais fusionner, même en cas
+//     de préfixe : ce sont deux vrais livres, pas une rallonge Kindle.
+//  5) dans le doute -> ne pas fusionner : un doublon temporaire est bien
+//     moins grave qu'un livre perdu par fusion.
+function sameBookForMerge(a, b, existingBooks) {
+  if (tomeConflict(a.tome, b.tome)) return false;
+  const ca = protoClean(a.title), cb = protoClean(b.title);
+  if (!ca || !cb) return false;
+  const aa = protoClean(a.author), ba = protoClean(b.author);
+
+  if (ca === cb && aa === ba) return true;
+  if (ca === cb) return false; // titre exact mais auteurs différents (ou l'un manquant) -> trop risqué
+
+  const prefix = isPrefixMatch(ca, cb) || isPrefixMatch(cb, ca);
+  if (!prefix || !aa || !ba || aa !== ba) return false;
+
+  if (existingBooks && existingBooks.length) {
+    const matchA = matchExisting(a, existingBooks);
+    const matchB = matchExisting(b, existingBooks);
+    if (matchA && matchA.confidence === "certain" && matchB && matchB.confidence === "certain") {
+      const idA = protoClean(matchA.book.title) + "|" + protoClean(matchA.book.author);
+      const idB = protoClean(matchB.book.title) + "|" + protoClean(matchB.book.author);
+      if (idA !== idB) return false; // deux vrais livres distincts et déjà connus -> jamais fusionner
+    }
+  }
+  return true;
+}
+
 // Fusionne toutes les détections (toutes captures) en livres uniques, compare
 // à la bibliothèque existante et range chaque livre dans l'une de 4
 // catégories, chacune avec une action par défaut distincte. Ne modifie
@@ -500,7 +526,7 @@ function mergeAndDedupe(detections, existingBooks) {
 
   const groups = [];
   for (const det of complete) {
-    const target = groups.find(g => sameBook(g.best, det));
+    const target = groups.find(g => sameBookForMerge(g.best, det, existingBooks));
     if (target) {
       target.items.push(det);
       if (qualityScore(det) > qualityScore(target.best)) target.best = det;
@@ -512,7 +538,7 @@ function mergeAndDedupe(detections, existingBooks) {
   // Une couverture partielle qui correspond déjà à un livre complet ailleurs
   // n'apporte rien de plus : on l'ignore silencieusement. Sinon, elle reste
   // seule au dossier, signalée et jamais actionnable.
-  const orphanPartials = partialOnly.filter(p => !groups.some(g => sameBook(g.best, p)));
+  const orphanPartials = partialOnly.filter(p => !groups.some(g => sameBookForMerge(g.best, p, existingBooks)));
 
   const rawList = groups.map(g => ({
     ...g.best,
