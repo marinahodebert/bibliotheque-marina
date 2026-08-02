@@ -7,9 +7,10 @@ function coversClean(str) {
   return String(str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
-async function searchGoogleBooks(title, author) {
+async function searchGoogleBooks(title, author, apiKey) {
   const q = encodeURIComponent(`${title} ${author}`.trim());
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=5`;
+  const keyParam = apiKey ? `&key=${encodeURIComponent(apiKey)}` : "";
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${q}&maxResults=5${keyParam}`;
   const res = await fetch(url);
   if (!res.ok) {
     let detail = "";
@@ -88,13 +89,13 @@ function scoreCandidate(book, candidate) {
 // Cascade Google Books -> Open Library (ordre demandé). N'interroge Open
 // Library que si Google Books n'a rien renvoyé de qualifié (erreur ou zéro
 // candidat conforme), pour ne pas doubler les appels inutilement.
-async function findCoverForBook(book) {
+async function findCoverForBook(book, options = {}) {
   const errors = [];
   let source = "Google Books";
   let scored = [];
 
   try {
-    const candidates = await searchGoogleBooks(book.title, book.author);
+    const candidates = await searchGoogleBooks(book.title, book.author, options.googleApiKey);
     scored = candidates.map(c => ({ candidate: c, ...scoreCandidate(book, c) }));
   } catch (err) {
     errors.push({ source: "Google Books", message: err.message });

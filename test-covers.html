@@ -41,6 +41,12 @@
   <h1>Test de correspondance de couvertures</h1>
   <p class="intro">Page de diagnostic jetable — étape 1 du plan. Interroge Google Books puis, seulement si rien n'est qualifié, Open Library, sur un échantillon de 16 vrais livres représentatifs de ta bibliothèque (romances auto-éditées, séries à tomes, titres plus connus, une pièce de théâtre). Ne modifie rien dans <code>data/books.json</code> — purement informatif.</p>
 
+  <div class="bar" style="flex-wrap:wrap;">
+    <label style="font-size:.82rem;color:#95939a;display:flex;flex-direction:column;gap:.3rem;">
+      Clé API Google Books (facultative — restera uniquement dans ce navigateur)
+      <input id="googleKeyInput" type="password" autocomplete="off" placeholder="AIza…" style="background:#232326;color:#f2f1ee;border:1px solid rgba(242,241,238,.16);border-radius:8px;padding:.5rem .7rem;font:inherit;min-width:280px;" />
+    </label>
+  </div>
   <div class="bar">
     <button id="runBtn" type="button">Lancer le test (16 livres)</button>
     <span class="progress" id="progressText"></span>
@@ -77,7 +83,14 @@ const els = {
   progressText: document.getElementById("progressText"),
   summaryTable: document.getElementById("summaryTable"),
   results: document.getElementById("results"),
+  googleKeyInput: document.getElementById("googleKeyInput"),
 };
+
+const GOOGLE_KEY_STORAGE = "marinaCoversTestGoogleKey";
+els.googleKeyInput.value = localStorage.getItem(GOOGLE_KEY_STORAGE) || "";
+els.googleKeyInput.addEventListener("input", () => {
+  localStorage.setItem(GOOGLE_KEY_STORAGE, els.googleKeyInput.value.trim());
+});
 
 function rowHTML(book, result) {
   const thumb = result && result.accepted[0]
@@ -142,7 +155,7 @@ els.runBtn.addEventListener("click", async () => {
   for (let i = 0; i < SAMPLE_BOOKS.length; i++) {
     els.progressText.textContent = `Traitement ${i + 1}/${SAMPLE_BOOKS.length}…`;
     try {
-      results[i] = await MarinaCovers.findCoverForBook(SAMPLE_BOOKS[i]);
+      results[i] = await MarinaCovers.findCoverForBook(SAMPLE_BOOKS[i], { googleApiKey: els.googleKeyInput.value.trim() });
     } catch (err) {
       results[i] = { book: SAMPLE_BOOKS[i], status: "none", source: null, accepted: [], rejected: [], errors: [{ source: "inconnu", message: err.message }] };
     }
