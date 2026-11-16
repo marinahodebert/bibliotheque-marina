@@ -99,7 +99,7 @@
     <button id="ghChangeBtn" type="button" style="display:none;">Changer</button>
     <div class="github-form" id="githubForm" style="display:none;">
       <input id="ghRepoInput" type="text" placeholder="owner/repo" />
-      <input id="ghBranchInput" type="text" placeholder="refonte-v2" value="refonte-v2" />
+      <input id="ghBranchInput" type="text" placeholder="main" value="main" />
       <input id="ghTokenInput" type="password" placeholder="github_pat_…" autocomplete="off" />
       <button id="ghConnectBtn" type="button">Se connecter</button>
     </div>
@@ -338,7 +338,7 @@ els.ghChangeBtn.addEventListener("click", () => {
 });
 els.ghConnectBtn.addEventListener("click", async () => {
   const [owner, repo] = els.ghRepoInput.value.trim().split("/").map(s => s.trim());
-  const branch = els.ghBranchInput.value.trim() || "refonte-v2";
+  const branch = els.ghBranchInput.value.trim() || "main";
   const existing = MarinaSync.getGitHubConfig();
   const token = els.ghTokenInput.value.trim() || (existing && existing.token);
   if (!owner || !repo || !token) { els.githubStatus.textContent = "Renseigne le dépôt (owner/repo) et un token."; return; }
@@ -627,7 +627,7 @@ function qualityScore(d) {
 }
 
 // Source de vérité désormais UNIQUEMENT le data/books.json distant
-// (origin/refonte-v2 via l'API GitHub) — plus jamais la copie locale sur
+// (branche configurée, via l'API GitHub) — plus jamais la copie locale sur
 // disque, qui peut diverger de ce qui existe réellement sur le dépôt (c'est
 // exactement ce qui a causé les couvertures orphelines du 2026-08-02). Sans
 // connexion GitHub, aucune comparaison n'est possible : tout sera classé

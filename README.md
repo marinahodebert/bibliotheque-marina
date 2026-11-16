@@ -1,45 +1,45 @@
 # Bibliothèque Marina
 
-Application personnelle de suivi de lectures Kindle / Books.
+Application personnelle de suivi de lectures Kindle / Books, installable sur iPhone (PWA).
 
-## Fonctionnalités v0.2
+Site : https://marinahodebert.github.io/bibliotheque-marina/
 
-- Liste des livres lus
-- Recherche instantanée
-- Filtres par année, auteur, série, statut et livres disparus Kindle
-- Vues par livres, auteurs, séries et éléments à vérifier
-- Progression des séries avec détection de tomes manquants possibles
-- Ajout manuel de livres depuis l'application
-- Export / import des ajouts locaux
-- Mode clair / sombre
-- PWA installable sur iPhone
+## Fonctionnalités
+
+- Accueil personnel : reprendre la lecture, ajoutés récemment, dernières lectures
+- Bibliothèque complète avec recherche, filtres par statut et filtre « À vérifier »
+- Vues Séries (progression, tomes manquants) et Auteurs
+- Fiche détail modifiable (statut, notes, infos), suppression
+- Ajout manuel avec suggestions et détection de doublons
+- Import Kindle par copier-coller de la liste
+- Import Kindle par captures d'écran avec couvertures (`test-cover-extract.html`, en attendant l'intégration dans l'appli)
+- Synchronisation GitHub : `data/books.json` sur `main` est la source de vérité, chaque ajout ou modification devient un commit
+- Export / import JSON
 
 ## Structure
 
 ```text
 bibliotheque-marina/
-├── index.html
+├── index.html              application
+├── test-cover-extract.html import par captures d'écran Kindle
+├── test-covers.html        outil de test du rapprochement des couvertures
 ├── manifest.json
-├── service-worker.js
-├── README.md
-├── css/
-│   └── style.css
+├── service-worker.js       réseau d'abord, cache en secours hors ligne
+├── css/style.css
 ├── js/
-│   └── app.js
-├── data/
-│   └── data.js
+│   ├── app.js              interface
+│   ├── sync.js             lecture/écriture de books.json via l'API GitHub
+│   ├── kindle-cover-sync.js écriture livres + couvertures en un seul commit
+│   └── covers.js           recherche de couvertures (Google Books, Open Library, Apple Books)
+├── data/books.json
+├── covers/                 images de couvertures
 └── icons/
-    ├── icon.svg
-    ├── icon-192.png
-    └── icon-512.png
 ```
 
-## Déploiement GitHub Pages
+## Synchronisation
 
-1. Déposer tous les fichiers et dossiers dans le dépôt.
-2. Aller dans Settings > Pages.
-3. Source : Deploy from a branch.
-4. Branch : main / root.
-5. Enregistrer.
+Dans l'appli : Synchronisation → token GitHub (fine-grained, accès « Contents: read and write » à ce dépôt), dépôt `marinahodebert/bibliotheque-marina`, branche `main`. Le token reste dans le navigateur (localStorage), jamais dans le dépôt.
 
-L'application sera ensuite disponible via GitHub Pages.
+## Déploiement
+
+GitHub Pages, depuis `main` / racine. Chaque commit sur `main` (y compris ceux faits par la synchronisation) republie le site en une minute environ.

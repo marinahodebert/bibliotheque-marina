@@ -4,8 +4,17 @@ const GH_API = "https://api.github.com";
 const GH_PATH = "data/books.json";
 
 function getGitHubConfig() {
-  try { return JSON.parse(localStorage.getItem(GH_CONFIG_KEY)) || null; }
+  let cfg;
+  try { cfg = JSON.parse(localStorage.getItem(GH_CONFIG_KEY)) || null; }
   catch { return null; }
+  // Mise en production : une config enregistrée pendant les tests pointait
+  // sur la branche "refonte-v2". Le site publié lit et écrit sur "main" ;
+  // continuer d'écrire sur l'ancienne branche ferait "disparaître" les ajouts.
+  if (cfg && cfg.branch === "refonte-v2") {
+    cfg.branch = "main";
+    saveGitHubConfig(cfg);
+  }
+  return cfg;
 }
 function saveGitHubConfig(cfg) { localStorage.setItem(GH_CONFIG_KEY, JSON.stringify(cfg)); }
 function clearGitHubConfig() { localStorage.removeItem(GH_CONFIG_KEY); }

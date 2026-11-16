@@ -592,7 +592,7 @@ function openSyncDialog() { fillSyncForm(); els.syncDialog.showModal(); }
 function fillSyncForm() {
   const cfg = MarinaSync.getGitHubConfig();
   els.ghRepo.value = cfg ? `${cfg.owner}/${cfg.repo}` : "marinahodebert/bibliotheque-marina";
-  els.ghBranch.value = cfg?.branch || "refonte-v2";
+  els.ghBranch.value = cfg?.branch || "main";
   els.ghToken.value = "";
   els.ghToken.placeholder = cfg?.token ? "•••• déjà enregistré (laisse vide pour garder)" : "github_pat_…";
   updateSyncStatusUI();
@@ -616,7 +616,7 @@ function updateSyncStatusUI() {
 }
 async function saveAndTestGitHub() {
   const [owner, repo] = els.ghRepo.value.trim().split("/").map(s => s.trim());
-  const branch = els.ghBranch.value.trim() || "refonte-v2";
+  const branch = els.ghBranch.value.trim() || "main";
   const existing = MarinaSync.getGitHubConfig();
   const token = els.ghToken.value.trim() || existing?.token;
   if (!owner || !repo || !token) { setSyncStatus("Renseigne le dépôt (owner/repo) et un token.", "err"); return; }
