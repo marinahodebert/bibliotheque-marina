@@ -640,8 +640,12 @@ async function saveAndTestGitHub() {
     MarinaSync.saveGitHubConfig(cfg);
     remoteBooks = normalizeBooks(await loadRemoteBooks());
     refreshAndRender();
-    setSyncStatus(`Connecté ✓ ${result.count} livres trouvés sur ${owner}/${repo} (${branch}).`, "ok");
     updateSyncStatusUI();
+    // Après updateSyncStatusUI, qui sinon remplace aussitôt ce message par
+    // l'état général et donne l'impression que le test n'a rien fait.
+    setSyncStatus(`Connecté ✓ ${result.count} livres trouvés sur ${owner}/${repo} (${branch}).`, "ok");
+    els.ghToken.value = "";
+    els.ghToken.placeholder = "•••• enregistré (laisse vide pour garder)";
   } catch (err) {
     setSyncStatus(`Échec : ${err.message}`, "err");
   }
