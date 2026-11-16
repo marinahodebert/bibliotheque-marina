@@ -1209,7 +1209,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "l-ailier-au-c-ur-de-l-attention"
+    "id": "l-ailier-au-c-ur-de-l-attention",
+    "cover": "covers/l-ailier-au-c-ur-de-l-attention.jpg"
   },
   {
     "title": "Double Trouble: The perfect Lovestory?",
@@ -1221,7 +1222,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "double-trouble-the-perfect-lovestory"
+    "id": "double-trouble-the-perfect-lovestory",
+    "cover": "covers/double-trouble-the-perfect-lovestory.jpg"
   },
   {
     "title": "À nous deux : Coup de foudre à Walker Island",
@@ -1233,7 +1235,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "a-nous-deux-coup-de-foudre-a-walker-island"
+    "id": "a-nous-deux-coup-de-foudre-a-walker-island",
+    "cover": "covers/a-nous-deux-coup-de-foudre-a-walker-island.jpg"
   },
   {
     "title": "Friends to lovers avec la star du hockey",
@@ -1245,7 +1248,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "friends-to-lovers-avec-la-star-du-hockey"
+    "id": "friends-to-lovers-avec-la-star-du-hockey",
+    "cover": "covers/friends-to-lovers-avec-la-star-du-hockey.jpg"
   },
   {
     "title": "Ardente tentation: Le capitaine de hockey, père célibataire",
@@ -1257,7 +1261,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "ardente-tentation-le-capitaine-de-hockey-pere-celibataire"
+    "id": "ardente-tentation-le-capitaine-de-hockey-pere-celibataire",
+    "cover": "covers/ardente-tentation-le-capitaine-de-hockey-pere-celibataire.jpg"
   },
   {
     "title": "Coup de cœur pour le coach de hockey",
@@ -1269,7 +1274,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "coup-de-c-ur-pour-le-coach-de-hockey"
+    "id": "coup-de-c-ur-pour-le-coach-de-hockey",
+    "cover": "covers/coup-de-c-ur-pour-le-coach-de-hockey.jpg"
   },
   {
     "title": "Coup de pouce",
@@ -1281,7 +1287,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "coup-de-pouce"
+    "id": "coup-de-pouce",
+    "cover": "covers/coup-de-pouce.jpg"
   },
   {
     "title": "Au centre de l'attraction",
@@ -1293,7 +1300,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "au-centre-de-l-attraction"
+    "id": "au-centre-de-l-attraction",
+    "cover": "covers/au-centre-de-l-attraction.jpg"
   },
   {
     "title": "Coup du sort",
@@ -1305,7 +1313,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "coup-du-sort"
+    "id": "coup-du-sort",
+    "cover": "covers/coup-du-sort.jpg"
   },
   {
     "title": "48 kilos de trop",
@@ -1317,7 +1326,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "48-kilos-de-trop"
+    "id": "48-kilos-de-trop",
+    "cover": "covers/48-kilos-de-trop.jpg"
   },
   {
     "title": "(titre indisponible)",
@@ -1341,7 +1351,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "off-campus-tome-05-the-legacy"
+    "id": "off-campus-tome-05-the-legacy",
+    "cover": "covers/off-campus-tome-05-the-legacy.jpg"
   },
   {
     "title": "Curvy et coeur à prendre",
@@ -1353,7 +1364,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "curvy-et-coeur-a-prendre"
+    "id": "curvy-et-coeur-a-prendre",
+    "cover": "covers/curvy-et-coeur-a-prendre.jpg"
   },
   {
     "title": "Briser ses règles",
@@ -1365,7 +1377,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "briser-ses-regles"
+    "id": "briser-ses-regles",
+    "cover": "covers/briser-ses-regles.jpg"
   },
   {
     "title": "Off-campus - Tome 04: The goal",
@@ -1377,7 +1390,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "off-campus-tome-04-the-goal"
+    "id": "off-campus-tome-04-the-goal",
+    "cover": "covers/off-campus-tome-04-the-goal.jpg"
   },
   {
     "title": "Off-campus - Tome 03: The score",
@@ -1389,7 +1403,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "off-campus-tome-03-the-score"
+    "id": "off-campus-tome-03-the-score",
+    "cover": "covers/off-campus-tome-03-the-score.jpg"
   },
   {
     "title": "Off-campus - Tome 02: The mistake",
@@ -1401,7 +1416,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "off-campus-tome-02-the-mistake"
+    "id": "off-campus-tome-02-the-mistake",
+    "cover": "covers/off-campus-tome-02-the-mistake.jpg"
   },
   {
     "title": "(titre indisponible)",
@@ -1425,7 +1441,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "off-campus-the-deal-saison-1"
+    "id": "off-campus-the-deal-saison-1",
+    "cover": "covers/off-campus-the-deal-saison-1.jpg"
   },
   {
     "title": "Le seul but: Romance sportive universitaire",
@@ -1437,7 +1454,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "le-seul-but-romance-sportive-universitaire"
+    "id": "le-seul-but-romance-sportive-universitaire",
+    "cover": "covers/le-seul-but-romance-sportive-universitaire.jpg"
   },
   {
     "title": "La voleuse de cœurs: Romance sportive universitaire",
@@ -1449,7 +1467,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "la-voleuse-de-c-urs-romance-sportive-universitaire"
+    "id": "la-voleuse-de-c-urs-romance-sportive-universitaire",
+    "cover": "covers/la-voleuse-de-c-urs-romance-sportive-universitaire.jpg"
   },
   {
     "title": "Faux Couple... Très Mauvaise Idée",
@@ -1473,7 +1492,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "tentation-irresistible"
+    "id": "tentation-irresistible",
+    "cover": "covers/tentation-irresistible.jpg"
   },
   {
     "title": "Il suffit d'une fois",
@@ -1485,7 +1505,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "il-suffit-d-une-fois"
+    "id": "il-suffit-d-une-fois",
+    "cover": "covers/il-suffit-d-une-fois.jpg"
   },
   {
     "title": "Tentation inavouable: Père célibataire milliardaire",
@@ -1509,7 +1530,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "tentation-interdite-romance-avec-mon-patron-milliardaire"
+    "id": "tentation-interdite-romance-avec-mon-patron-milliardaire",
+    "cover": "covers/tentation-interdite-romance-avec-mon-patron-milliardaire.jpg"
   },
   {
     "title": "Un amour sans limites: Milliardaires Rebelles 8",
@@ -1521,7 +1543,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "un-amour-sans-limites-milliardaires-rebelles-8"
+    "id": "un-amour-sans-limites-milliardaires-rebelles-8",
+    "cover": "covers/un-amour-sans-limites-milliardaires-rebelles-8.jpg"
   },
   {
     "title": "Zone Protégée",
@@ -1533,7 +1556,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "zone-protegee"
+    "id": "zone-protegee",
+    "cover": "covers/zone-protegee.jpg"
   },
   {
     "title": "(titre indisponible)",
@@ -1557,7 +1581,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "le-papa-solo"
+    "id": "le-papa-solo",
+    "cover": "covers/le-papa-solo.jpg"
   },
   {
     "title": "La pulpeuse rivale du milliardaire",
@@ -1569,7 +1594,8 @@
     "status": "lu",
     "missing": false,
     "notes": "Romance ennemis à amants (titre coupé sur la capture)",
-    "id": "la-pulpeuse-rivale-du-milliardaire"
+    "id": "la-pulpeuse-rivale-du-milliardaire",
+    "cover": "covers/la-pulpeuse-rivale-du-milliardaire.jpg"
   },
   {
     "title": "Les Darkens #3 : Mon boss est un rockeur, mais pas que...",
@@ -1605,7 +1631,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "les-darkens-1-amour-d-enfance"
+    "id": "les-darkens-1-amour-d-enfance",
+    "cover": "covers/les-darkens-1-amour-d-enfance.jpg"
   },
   {
     "title": "Les Dieux de la glace : #2 Cameron",
@@ -1617,7 +1644,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "les-dieux-de-la-glace-2-cameron"
+    "id": "les-dieux-de-la-glace-2-cameron",
+    "cover": "covers/les-dieux-de-la-glace-2-cameron.jpg"
   },
   {
     "title": "Les Dieux de la Glace : #3 Derek",
@@ -1629,7 +1657,8 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "id": "les-dieux-de-la-glace-3-derek"
+    "id": "les-dieux-de-la-glace-3-derek",
+    "cover": "covers/les-dieux-de-la-glace-3-derek.jpg"
   },
   {
     "title": "Hockey X-Mas: Une deuxième chance à Noël",
@@ -6226,7 +6255,7 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "cover": ""
+    "cover": "covers/le-gardien-passion-le-gardien-de-sa-passion-victoria-eagles-hockey-romance-t-3-msbs6xnx-867.jpg"
   },
   {
     "id": "epouse-pour-5-semaines-epouse-pour-5-semaines-desires-secrets-riley-flowers-dans-la-bibliotheque-kindle-faux-mariage-faux-mariage-pour-le-gardien-de-l-equipe-de-hockey-msbs6xnx-504",
@@ -6278,7 +6307,7 @@
     "status": "lu",
     "missing": false,
     "notes": "",
-    "cover": ""
+    "cover": "covers/epouse-pour-5-semaines-desires-secrets-riley-flowers-dans-la-bibliotheque-kindle-msbsy1dw-356.jpg"
   },
   {
     "id": "l-exception-reese-calloway-dans-la-bibliotheque-kindle-msbsy1dw-424",
@@ -6396,5 +6425,577 @@
     "missing": false,
     "notes": "",
     "cover": "covers/le-c-ur-du-milliardaire-sam-l-obsession-du-milliardaire-msc483cn-208.jpg"
+  },
+  {
+    "id": "faux-couple-tres-mauvaise-idee-une-romance-de-hockey-torride-faux-couple-difference-mwjvhbgp-445",
+    "title": "Faux Couple. Trés Mauvaise Idée: Une romance de hockey torride — Faux couple & différence…",
+    "author": "Lili Valente",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/faux-couple-tres-mauvaise-idee-une-romance-de-hockey-torride-faux-couple-difference-mwjvhbgp-445.jpg"
+  },
+  {
+    "id": "livre-mwjvhbhj-450",
+    "title": "",
+    "author": ",  Briser ses règles (Les Frères Clifford t. 1)",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/livre-mwjvhbhj-450.jpg"
+  },
+  {
+    "id": "un-mariage-risque-jeux-de-milliardaires-t-2-mwjvhbip-989",
+    "title": "Un Mariage Risque (Jeux de milliardaires t. 2)",
+    "author": "Olivia Hayle",
+    "series": "Jeux de milliardaires",
+    "tome": 2,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/un-mariage-risque-jeux-de-milliardaires-t-2-mwjvhbip-989.jpg"
+  },
+  {
+    "id": "nounou-interdite-mauvais-plan-une-romance-hockey-spicy-age-gap-et-papa-solo-glace-mwjvhbiq-311",
+    "title": "Nounou Interdite, Mauvais Plan: Une romance hockey spicy, age gap et papa solo (Glace…",
+    "author": "Lili Valente",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/nounou-interdite-mauvais-plan-une-romance-hockey-spicy-age-gap-et-papa-solo-glace-mwjvhbiq-311.jpg"
+  },
+  {
+    "id": "bebe-surprise-grosse-erreur-romance-de-hockey-torride-glace-chaude-t-4-mwjvhbir-821",
+    "title": "Bébé Surprise, Grosse Erreur: Romance de hockey torride (Glace Chaude t. 4)",
+    "author": "Lili Valente",
+    "series": "Glace Chaude",
+    "tome": 4,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/bebe-surprise-grosse-erreur-romance-de-hockey-torride-glace-chaude-t-4-mwjvhbir-821.jpg"
+  },
+  {
+    "id": "promets-le-moi-serie-des-chicago-railers-hockey-t-4-mwjvhbis-916",
+    "title": "Promets-le-moi (Série des Chicago Railers Hockey t. 4)",
+    "author": "Jennifer Sucevic",
+    "series": "Série des Chicago Railers Hockey",
+    "tome": 4,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/promets-le-moi-serie-des-chicago-railers-hockey-t-4-mwjvhbis-916.jpg"
+  },
+  {
+    "id": "le-milliardaire-desabuse-devon-l-obsession-du-milliardaire-t-22-mwjvhbit-401",
+    "title": "Le milliardaire désabusé - Devon (L'obsession du milliardaire t. 22)",
+    "author": "J. S. Scott",
+    "series": "L'obsession du milliardaire",
+    "tome": 22,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/le-milliardaire-desabuse-devon-l-obsession-du-milliardaire-t-22-mwjvhbit-401.jpg"
+  },
+  {
+    "id": "tentation-ineluctable-les-freres-sterling-mwjvhbit-928",
+    "title": "Tentation inéluctable (Les frères Sterling)",
+    "author": "Layla Hagen",
+    "series": "Les frères Sterling",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/tentation-ineluctable-les-freres-sterling-mwjvhbit-928.jpg"
+  },
+  {
+    "id": "aime-moi-si-tu-oses-romance-avec-un-aristocrate-milliardaire-gentlemen-mwjvhbjb-278",
+    "title": "Aime-moi si tu oses: Romance avec un aristocrate milliardaire (Gentlemen.",
+    "author": "Rosa Lucas",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/aime-moi-si-tu-oses-romance-avec-un-aristocrate-milliardaire-gentlemen-mwjvhbjb-278.jpg"
+  },
+  {
+    "id": "faux-mariage-pour-le-gardien-de-l-equipe-de-hockey-mwjvhbje-373",
+    "title": "Faux mariage pour le gardien de l'équipe de hockey",
+    "author": "Gloria Daven",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/faux-mariage-pour-le-gardien-de-l-equipe-de-hockey-mwjvhbje-373.jpg"
+  },
+  {
+    "id": "l-exception-le-pacte-t-1-mwjvhbjf-543",
+    "title": "L'Exception (Le Pacte t. 1)",
+    "author": "Reese Calloway",
+    "series": "Le Pacte",
+    "tome": 1,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/l-exception-le-pacte-t-1-mwjvhbjf-543.jpg"
+  },
+  {
+    "id": "rhinoceros-piece-en-trois-actes-et-quatre-tableaux-mwjvhbjg-830",
+    "title": "Rhinocéros: Pièce en trois actes et quatre tableaux",
+    "author": "Eugène lonesco",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/rhinoceros-piece-en-trois-actes-et-quatre-tableaux-mwjvhbjg-830.jpg"
+  },
+  {
+    "id": "dangerous-secret-vows-une-histoire-de-passion-et-de-trahison-les-jeux-des-milliardaires-t-8-mwjvhbjz-296",
+    "title": "Dangerous Secret Vows: Une histoire de passion et de trahison (Les Jeux des Milliardaires t. 8)",
+    "author": "Anna May",
+    "series": "Les Jeux des Milliardaires",
+    "tome": 8,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/dangerous-secret-vows-une-histoire-de-passion-et-de-trahison-les-jeux-des-milliardaires-t-8-mwjvhbjz-296.jpg"
+  },
+  {
+    "id": "mon-peche-secret-une-romance-seconde-chance-desires-secrets-t-3-mwjvhbjz-850",
+    "title": "Mon péché secret: Une romance seconde chance (Désires Secrets t. 3)",
+    "author": "Riley Flowers",
+    "series": "Désires Secrets",
+    "tome": 3,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/mon-peche-secret-une-romance-seconde-chance-desires-secrets-t-3-mwjvhbjz-850.jpg"
+  },
+  {
+    "id": "tentation-secrete-les-freres-sterling-mwjvhbk0-27",
+    "title": "Tentation secrète (Les frères Sterling)",
+    "author": "Layla Hagen",
+    "series": "Les frères Sterling",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/tentation-secrete-les-freres-sterling-mwjvhbk0-27.jpg"
+  },
+  {
+    "id": "resiste-moi-si-tu-peux-romance-avec-le-meilleur-ami-de-mon-frere-gentlemen-milliardaires-mwjvhbk1-592",
+    "title": "Résiste-moi si tu peux: Romance avec le meilleur ami de mon frère (Gentlemen milliardaires)",
+    "author": "Rosa Lucas",
+    "series": "Gentlemen milliardaires",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/resiste-moi-si-tu-peux-romance-avec-le-meilleur-ami-de-mon-frere-gentlemen-milliardaires-mwjvhbk1-592.jpg"
+  },
+  {
+    "id": "curvy-fake-wife-for-the-player-edition-en-francais-romance-de-mariage-arrange-entre-mwjvhbk2-810",
+    "title": "Curvy Fake Wife for the Player: (édition en Français) Romance de Mariage Arrangé entre …",
+    "author": "Piper Sullivan",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/curvy-fake-wife-for-the-player-edition-en-francais-romance-de-mariage-arrange-entre-mwjvhbk2-810.jpg"
+  },
+  {
+    "id": "curvy-nanny-for-the-grumpy-single-dad-edition-en-francais-une-romance-avec-un-mwjvhbk3-270",
+    "title": "Curvy Nanny for the Grumpy Single Dad: (édition en Français) Une Romance avec un…",
+    "author": "Piper Sullivan",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/curvy-nanny-for-the-grumpy-single-dad-edition-en-francais-une-romance-avec-un-mwjvhbk3-270.jpg"
+  },
+  {
+    "id": "notre-equation-la-fac-t-1-mwjvhbkj-79",
+    "title": "Notre équation (La Fac t. 1)",
+    "author": "Reese Calloway",
+    "series": "La Fac",
+    "tome": 1,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/notre-equation-la-fac-t-1-mwjvhbkj-79.jpg"
+  },
+  {
+    "id": "la-recrue-objectif-marquer-t-3-mwjvhbkk-902",
+    "title": "La Recrue (Objectif : Marquer t. 3)",
+    "author": "Kendall Ryan",
+    "series": "Objectif : Marquer",
+    "tome": 3,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/la-recrue-objectif-marquer-t-3-mwjvhbkk-902.jpg"
+  },
+  {
+    "id": "le-rebelle-objectif-marquer-t-1-mwjvhbkl-874",
+    "title": "Le Rebelle (Objectif : Marquer t. 1)",
+    "author": "Kendall Ryan",
+    "series": "Objectif : Marquer",
+    "tome": 1,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/le-rebelle-objectif-marquer-t-1-mwjvhbkl-874.jpg"
+  },
+  {
+    "id": "corps-a-corps-les-tombeurs-des-vestiaires-t-5-mwjvhbl4-911",
+    "title": "Corps à corps (Les tombeurs des vestiaires t. 5)",
+    "author": "Kendall Ryan",
+    "series": "Les tombeurs des vestiaires",
+    "tome": 5,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/corps-a-corps-les-tombeurs-des-vestiaires-t-5-mwjvhbl4-911.jpg"
+  },
+  {
+    "id": "franchir-la-ligne-les-tombeurs-des-vestiaires-t-mwjvhbl5-806",
+    "title": "Franchir la ligne (Les tombeurs des vestiaires t.",
+    "author": "Kendall Ryan",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/franchir-la-ligne-les-tombeurs-des-vestiaires-t-mwjvhbl5-806.jpg"
+  },
+  {
+    "id": "tenter-sa-chance-les-tombeurs-des-vestiaires-t-mwjvhbl6-713",
+    "title": "Tenter sa chance (Les tombeurs des vestiaires t.",
+    "author": "Kendall Ryan",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/tenter-sa-chance-les-tombeurs-des-vestiaires-t-mwjvhbl6-713.jpg"
+  },
+  {
+    "id": "ne-craque-pas-pour-le-milliardaire-romance-grumpy-sunshine-avec-un-patron-milliardaire-mwjvhbl6-747",
+    "title": "Ne craque pas pour le milliardaire: romance grumpy-sunshine avec un patron milliardaire.",
+    "author": "Rosa Lucas",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/ne-craque-pas-pour-le-milliardaire-romance-grumpy-sunshine-avec-un-patron-milliardaire-mwjvhbl6-747.jpg"
+  },
+  {
+    "id": "livre-mwjvhblp-966",
+    "title": "",
+    "author": "a A A",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/livre-mwjvhblp-966.jpg"
+  },
+  {
+    "id": "d-immondes-et-sublimes-mensonges-mwjvhblq-187",
+    "title": "D'immondes et sublimes mensonges",
+    "author": "Kendall Ryan",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/d-immondes-et-sublimes-mensonges-mwjvhblq-187.jpg"
+  },
+  {
+    "id": "ca-c-est-fait-une-romance-hockey-why-choose-la-fac-t-2-mwjvhblq-274",
+    "title": "Ça, c'est fait: une romance hockey why choose (La Fac t. 2)",
+    "author": "Reese Calloway",
+    "series": "La Fac",
+    "tome": 2,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/ca-c-est-fait-une-romance-hockey-why-choose-la-fac-t-2-mwjvhblq-274.jpg"
+  },
+  {
+    "id": "une-nuit-comme-celle-ci-hors-de-la-glace-t-3-mwjvhblr-784",
+    "title": "Une Nuit Comme Celle-Ci (Hors de la glace t. 3)",
+    "author": "Kendall Ryan",
+    "series": "Hors de la glace",
+    "tome": 3,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/une-nuit-comme-celle-ci-hors-de-la-glace-t-3-mwjvhblr-784.jpg"
+  },
+  {
+    "id": "sous-la-glace-le-feu-hors-de-la-glace-t-2-mwjvhbls-455",
+    "title": "Sous la Glace, le Feu (Hors de la glace t. 2)",
+    "author": "Kendall Ryan",
+    "series": "Hors de la glace",
+    "tome": 2,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/sous-la-glace-le-feu-hors-de-la-glace-t-2-mwjvhbls-455.jpg"
+  },
+  {
+    "id": "le-tir-decisif-les-tombeurs-des-vestiaires-t-7-mwjvhblt-907",
+    "title": "Le Tir Décisif (Les tombeurs des vestiaires t. 7)",
+    "author": "Kendall Ryan",
+    "series": "Les tombeurs des vestiaires",
+    "tome": 7,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/le-tir-decisif-les-tombeurs-des-vestiaires-t-7-mwjvhblt-907.jpg"
+  },
+  {
+    "id": "mr-kane-et-moi-romance-de-la-difference-d-age-mwjvhbm9-460",
+    "title": "Mr Kane et moi: romance de la différence d'âge",
+    "author": "Rosa Lucas",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/mr-kane-et-moi-romance-de-la-difference-d-age-mwjvhbm9-460.jpg"
+  },
+  {
+    "id": "mr-walker-et-moi-mwjvhbma-934",
+    "title": "Mr Walker et moi",
+    "author": "Rosa Lucas",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/mr-walker-et-moi-mwjvhbma-934.jpg"
+  },
+  {
+    "id": "contourner-ses-regles-les-freres-clifford-t-2-mwjvhbmb-480",
+    "title": "Contourner ses règles (Les Frères Clifford t. 2)",
+    "author": "Layla Hagen",
+    "series": "Les Frères Clifford",
+    "tome": 2,
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/contourner-ses-regles-les-freres-clifford-t-2-mwjvhbmb-480.jpg"
+  },
+  {
+    "id": "mon-orc-de-glace-mwjvhbmc-724",
+    "title": "Mon Orc de Glace",
+    "author": "Reese Calloway",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/mon-orc-de-glace-mwjvhbmc-724.jpg"
+  },
+  {
+    "id": "l-echappatoire-du-phare-mwjvhbmc-895",
+    "title": "L'échappatoire du phare",
+    "author": "Reese Calloway",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/l-echappatoire-du-phare-mwjvhbmc-895.jpg"
+  },
+  {
+    "id": "coincee-avec-mon-demi-frere-a-lui-pour-noel-mwjvhbmd-25",
+    "title": "Coincée avec mon demi-frère (À lui pour Noël)",
+    "author": "Reese Calloway",
+    "series": "À lui pour Noël",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/coincee-avec-mon-demi-frere-a-lui-pour-noel-mwjvhbmd-25.jpg"
+  },
+  {
+    "id": "le-signal-brise-une-romance-universitaire-de-hockey-avec-fausse-relation-la-serie-pine-barr-mwjvhbmv-536",
+    "title": "Le signal brisé: Une romance universitaire de hockey avec fausse relation (La série Pine Barr…",
+    "author": "Clara West",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/le-signal-brise-une-romance-universitaire-de-hockey-avec-fausse-relation-la-serie-pine-barr-mwjvhbmv-536.jpg"
+  },
+  {
+    "id": "le-tir-le-plus-lointain-une-romance-universitaire-de-hockey-placee-sous-le-signe-de-la-seconde-mwjvhbmw-621",
+    "title": "Le tir le plus lointain: Une romance universitaire de hockey placée sous le signe de la seconde…",
+    "author": "Clara West",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/le-tir-le-plus-lointain-une-romance-universitaire-de-hockey-placee-sous-le-signe-de-la-seconde-mwjvhbmw-621.jpg"
+  },
+  {
+    "id": "changer-les-regles-du-jeu-une-romance-universitaire-de-hockey-avec-la-fille-de-mwjvhbmw-105",
+    "title": "Changer les règles du jeu: Une romance universitaire de hockey avec la fille de…",
+    "author": "Clara West",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/changer-les-regles-du-jeu-une-romance-universitaire-de-hockey-avec-la-fille-de-mwjvhbmw-105.jpg"
+  },
+  {
+    "id": "la-pratique-rend-parfait-une-romance-universitaire-de-hockey-entre-amis-et-amoureu-mwjvhbmx-409",
+    "title": "La pratique rend parfait: Une romance universitaire de hockey entre amis et amoureu…",
+    "author": "Clara West",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/la-pratique-rend-parfait-une-romance-universitaire-de-hockey-entre-amis-et-amoureu-mwjvhbmx-409.jpg"
+  },
+  {
+    "id": "au-dela-des-lignes-une-romance-universitaire-de-hockey-entre-ennemis-et-amoureux-la-seri-mwjvhbmy-716",
+    "title": "Au-delà des lignes: Une romance universitaire de hockey entre ennemis et amoureux (La séri…",
+    "author": "Clara West",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/au-dela-des-lignes-une-romance-universitaire-de-hockey-entre-ennemis-et-amoureux-la-seri-mwjvhbmy-716.jpg"
+  },
+  {
+    "id": "ne-craque-pas-pour-le-boss-une-romance-de-bureau-milliardaires-aux-commandes-mwjvhbmz-64",
+    "title": "Ne craque pas pour le boss: Une romance de bureau (Milliardaires aux commandes)",
+    "author": "Rosa Lucas",
+    "series": "Milliardaires aux commandes",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/ne-craque-pas-pour-le-boss-une-romance-de-bureau-milliardaires-aux-commandes-mwjvhbmz-64.jpg"
+  },
+  {
+    "id": "mr-knight-et-moi-romance-de-milliardaire-mwjvhbmz-39",
+    "title": "Mr Knight et moi: romance de milliardaire",
+    "author": "Rosa Lucas",
+    "series": "",
+    "tome": "",
+    "year": 2026,
+    "dateAdded": "2026-11-16",
+    "status": "lu",
+    "missing": false,
+    "notes": "",
+    "cover": "covers/mr-knight-et-moi-romance-de-milliardaire-mwjvhbmz-39.jpg"
   }
 ]
