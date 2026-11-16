@@ -93,6 +93,10 @@
         <span class="add-choice-title">Ajout manuel</span>
         <span class="add-choice-desc">Un livre à la fois, avec tous les détails.</span>
       </button>
+      <button class="add-choice" type="button" id="chooseCaptures">
+        <span class="add-choice-title">Captures d'écran Kindle</span>
+        <span class="add-choice-desc">Choisis tes captures de la bibliothèque Kindle : titres, auteurs et couvertures sont extraits automatiquement.</span>
+      </button>
       <button class="add-choice" type="button" id="chooseKindle">
         <span class="add-choice-title">Import Kindle</span>
         <span class="add-choice-desc">Colle une liste copiée depuis ta bibliothèque Kindle, plusieurs livres d'un coup.</span>
@@ -108,7 +112,19 @@
     <div id="kindleBody"></div>
   </dialog>
 
+  <dialog id="capturesDialog" class="dialog dialog-lg">
+    <div class="dialog-head">
+      <h2 id="capturesTitle">Importer des captures Kindle</h2>
+      <button class="icon-btn" type="button" data-dialog-close>×</button>
+    </div>
+    <div id="capturesBody"></div>
+    <input id="capturesInput" type="file" accept="image/*" multiple hidden />
+  </dialog>
+
   <script src="js/sync.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/kindle-captures.js"></script>
+  <script src="js/kindle-cover-sync.js"></script>
+  <script src="js/captures-import.js"></script>
 </body>
 </html>

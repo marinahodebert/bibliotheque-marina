@@ -35,6 +35,9 @@ async function githubRequest(cfg, method, body) {
   const url = `${GH_API}/repos/${cfg.owner}/${cfg.repo}/contents/${GH_PATH}${method === "GET" ? `?ref=${encodeURIComponent(cfg.branch)}` : ""}`;
   return fetch(url, {
     method,
+    // GitHub autorise 60 s de cache navigateur : une lecture périmée juste
+    // après une écriture ferait repartir la suivante d'une ancienne liste.
+    cache: "no-store",
     headers: {
       "Authorization": `Bearer ${cfg.token}`,
       "Accept": "application/vnd.github+json",

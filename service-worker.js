@@ -1,10 +1,13 @@
-const CACHE_NAME = "bibliotheque-marina-v1-0-0";
+const CACHE_NAME = "bibliotheque-marina-v1-1-0";
 const ASSETS = [
   "./",
   "./index.html",
   "./css/style.css",
   "./js/sync.js",
   "./js/app.js",
+  "./js/kindle-captures.js",
+  "./js/kindle-cover-sync.js",
+  "./js/captures-import.js",
   "./data/books.json",
   "./manifest.json",
   "./icons/icon.svg",

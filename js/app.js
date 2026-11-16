@@ -334,7 +334,7 @@ function coverHTML(b) {
   const label = escapeHtml(b.title === "(titre indisponible)" ? "Titre indisponible" : b.title);
   if (b.cover) {
     return `<div class="cover" data-id="${b.id}" tabindex="0" role="button" aria-label="${label}">
-      <img src="${escapeHtml(b.cover)}" alt="" loading="lazy" />
+      <img src="${escapeHtml(b.cover)}" alt="" loading="lazy" onerror="coverFallback(this)" />
       <div class="status-dot ${statusCls}"><i></i></div>
     </div>`;
   }
@@ -345,6 +345,19 @@ function coverHTML(b) {
     ${unknown ? "" : `<div class="ph-author">${escapeHtml((b.author || "").toUpperCase())}</div>`}
     <div class="status-dot ${statusCls}"><i></i></div>
   </div>`;
+}
+
+// Une couverture tout juste importée n'est servie par GitHub Pages qu'après
+// sa republication (environ une minute) : en attendant, on la lit directement
+// dans le dépôt. Si elle manque aussi là, on n'insiste pas.
+function coverFallback(img) {
+  if (img.dataset.fallback) return;
+  img.dataset.fallback = "1";
+  const cfg = window.MarinaSync?.getGitHubConfig();
+  const owner = cfg?.owner || "marinahodebert";
+  const repo = cfg?.repo || "bibliotheque-marina";
+  const branch = cfg?.branch || "main";
+  img.src = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${img.getAttribute("src")}`;
 }
 
 /* ============ accueil ============ */

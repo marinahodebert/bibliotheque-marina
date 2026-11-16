@@ -158,9 +158,9 @@
   <div class="recap-block" id="diagnosticBlock" style="display:none;"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script src="js/sync.js"></script>
 <script src="js/kindle-cover-sync.js"></script>
+<script src="js/kindle-captures.js"></script>
 <script>
 const els = {
   dropzone: document.getElementById("dropzone"),
@@ -424,411 +424,17 @@ function readOpts() {
 }
 
 // ---------------------------------------------------------------------------
-// Détection par profils de projection (inchangée, validée précédemment)
+// Moteur partagé avec l'application : js/kindle-captures.js
 // ---------------------------------------------------------------------------
-function toGrayscale(imageData) {
-  const { data, width, height } = imageData;
-  const gray = new Float32Array(width * height);
-  for (let i = 0, p = 0; i < data.length; i += 4, p++) {
-    gray[p] = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-  }
-  return gray;
-}
-function columnActivity(gray, width, height) {
-  const profile = new Float32Array(width);
-  for (let x = 0; x < width; x++) {
-    let sum = 0;
-    for (let y = 1; y < height; y++) sum += Math.abs(gray[y * width + x] - gray[(y - 1) * width + x]);
-    profile[x] = sum / height;
-  }
-  return profile;
-}
-function rowActivity(gray, width, height) {
-  const profile = new Float32Array(height);
-  const rowGrad = new Float32Array(width);
-  for (let y = 0; y < height; y++) {
-    const base = y * width;
-    rowGrad[0] = 0;
-    for (let x = 1; x < width; x++) rowGrad[x] = Math.abs(gray[base + x] - gray[base + x - 1]);
-    const smoothed = smooth(rowGrad, 6);
-    let maxVal = 0;
-    for (let x = 0; x < width; x++) if (smoothed[x] > maxVal) maxVal = smoothed[x];
-    profile[y] = maxVal;
-  }
-  return profile;
-}
-function smooth(arr, radius) {
-  const out = new Float32Array(arr.length);
-  for (let i = 0; i < arr.length; i++) {
-    let sum = 0, n = 0;
-    for (let k = -radius; k <= radius; k++) {
-      const j = i + k;
-      if (j >= 0 && j < arr.length) { sum += arr[j]; n++; }
-    }
-    out[i] = sum / n;
-  }
-  return out;
-}
-function findContentBands(profile, thresholdRatio, minGap) {
-  const max = Math.max(...profile);
-  const isBackground = profile.map(v => v < max * thresholdRatio);
-  const bands = [];
-  let start = null, gapRun = 0;
-  for (let i = 0; i < isBackground.length; i++) {
-    if (!isBackground[i]) { if (start === null) start = i; gapRun = 0; }
-    else {
-      gapRun++;
-      if (start !== null && gapRun >= minGap) { bands.push([start, i - gapRun]); start = null; }
-    }
-  }
-  if (start !== null) bands.push([start, isBackground.length - 1]);
-  return bands.filter(([a, b]) => b - a > 3);
-}
-function mergeBands(bands, maxMergeGap) {
-  if (!bands.length) return bands;
-  const sorted = [...bands].map(b => [...b]).sort((a, b) => a[0] - b[0]);
-  const merged = [sorted[0]];
-  for (let i = 1; i < sorted.length; i++) {
-    const last = merged[merged.length - 1];
-    const [s, e] = sorted[i];
-    if (s - last[1] <= maxMergeGap) last[1] = Math.max(last[1], e);
-    else merged.push([s, e]);
-  }
-  return merged;
-}
-function columnActivityInRows(gray, width, y0, y1) {
-  const h = y1 - y0;
-  const profile = new Float32Array(width);
-  for (let x = 0; x < width; x++) {
-    let sum = 0;
-    for (let y = y0 + 1; y < y1; y++) sum += Math.abs(gray[y * width + x] - gray[(y - 1) * width + x]);
-    profile[x] = sum / Math.max(1, h);
-  }
-  return profile;
-}
-const EDGE_MARGIN = 3;
-function touchesEdge(y0, y1, height) { return y0 <= EDGE_MARGIN || y1 >= height - 1 - EDGE_MARGIN; }
-
-function detectGrid(gray, width, height, opts) {
-  const colProfile = smooth(columnActivity(gray, width, height), 2);
-  const rowProfile = smooth(rowActivity(gray, width, height), 2);
-  const colBands = findContentBands(colProfile, opts.thresholdRatio, opts.minGap);
-  const rowBands = mergeBands(findContentBands(rowProfile, opts.thresholdRatio, opts.minGap), opts.mergeGap);
-  const boxes = [];
-  for (const [ry0, ry1] of rowBands) {
-    for (const [cx0, cx1] of colBands) {
-      const w = cx1 - cx0, h = ry1 - ry0;
-      if (w < opts.minSize || h < opts.minSize) continue;
-      const ratio = w / h;
-      if (ratio < opts.ratioMin || ratio > opts.ratioMax) continue;
-      boxes.push({ x: cx0, y: ry0, w, h, partial: touchesEdge(ry0, ry1, height), textRegion: null });
-    }
-  }
-  return boxes;
-}
-function detectList(gray, width, height, opts) {
-  const rowProfile = smooth(rowActivity(gray, width, height), 2);
-  const rowBands = mergeBands(findContentBands(rowProfile, opts.thresholdRatio, opts.minGap), opts.mergeGap);
-  const boxes = [];
-  for (const [ry0, ry1] of rowBands) {
-    if (ry1 - ry0 < opts.minSize) continue;
-    const colProfile = smooth(columnActivityInRows(gray, width, ry0, ry1), 2);
-    const colBands = findContentBands(colProfile, opts.thresholdRatio, opts.minGap);
-    if (!colBands.length) continue;
-    const [cx0, cx1] = colBands[0];
-    const w = cx1 - cx0, h = ry1 - ry0;
-    if (w < opts.minSize || h < opts.minSize) continue;
-    const ratio = w / h;
-    if (ratio < opts.ratioMin || ratio > opts.ratioMax) continue;
-    const textX = Math.min(width - 1, cx1 + 12);
-    boxes.push({
-      x: cx0, y: ry0, w, h,
-      partial: touchesEdge(ry0, ry1, height),
-      textRegion: { x: textX, y: ry0, w: Math.max(0, width - textX - 8), h },
-    });
-  }
-  return boxes;
-}
-
-function cropToDataUrl(img, x, y, w, h) {
-  const c = document.createElement("canvas");
-  c.width = Math.max(1, w);
-  c.height = Math.max(1, h);
-  c.getContext("2d").drawImage(img, x, y, w, h, 0, 0, w, h);
-  return c.toDataURL("image/png");
-}
+const { mergeAndDedupe, isKindleUiNoise } = KindleCaptures;
+function cropToDataUrl(img, x, y, w, h) { return KindleCaptures.cropToDataUrl(img, x, y, w, h, "image/png"); }
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>'"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[ch]));
 }
-function parseOcrText(raw) {
-  const rawLines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-  if (!rawLines.length) return { title: "", author: "" };
-  const clean = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  // Une ligne OCR sans aucune lettre (ex. un "|" isol\u00e9 \u2014 artefact de bord de
-  // couverture qui d\u00e9borde dans le recadrage du texte) n'est jamais un vrai
-  // fragment de titre ou d'auteur : on l'ignore avant de reconstituer le
-  // titre, plut\u00f4t que de le laisser polluer le d\u00e9but du titre (ce qui casse
-  // sinon la correspondance par pr\u00e9fixe strict avec books.json).
-  const lines = rawLines.filter(l => /\p{L}/u.test(l));
-  if (!lines.length) return { title: "", author: "" };
-  let end = lines.length;
-  if (end > 0 && /dans.{5,40}kind/.test(clean(lines[end - 1]))) end -= 1;
-  if (end <= 0) return { title: "", author: "" };
-  const author = lines[end - 1] || "";
-  const title = lines.slice(0, Math.max(0, end - 1)).join(" ").trim();
-  return { title, author };
-}
-// Même heuristique que dans l'app réelle : un suffixe "(Série t.N)" en fin de
-// titre, quand il existe, donne série + tome ; sinon les deux restent vides.
-function extractSeriesTome(title) {
-  const m = String(title || "").match(/\(([^()]+?)(?:\s+t\.?\s*(\d+)|\s+tome\s*(\d+))?\)\s*$/i);
-  if (!m) return { series: "", tome: "" };
-  return { series: m[1].trim(), tome: m[2] || m[3] || "" };
-}
-
-// ---------------------------------------------------------------------------
-// Normalisation / correspondance — même principe que le dédoublonnage déjà
-// construit pour l'import Kindle texte (clean() + égalité ou inclusion).
-// ---------------------------------------------------------------------------
-function protoClean(str) {
-  return String(str || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-}
-function tomeConflict(a, b) {
-  const ta = a ? Number(a) : null, tb = b ? Number(b) : null;
-  return ta !== null && tb !== null && !Number.isNaN(ta) && !Number.isNaN(tb) && ta !== tb;
-}
-// cb doit être un préfixe STRICT de ca, à une frontière de mot : le
-// caractère suivant dans ca ne doit jamais être une lettre — ça évite qu'un
-// titre court matche accidentellement au milieu d'un mot d'un autre titre
-// (ex. "Vicious" ne doit jamais être considéré préfixe de "Viciousness").
-// `allowDigitBoundary` tolère en plus un chiffre comme caractère suivant :
-// réservé au cas où ca est un texte OCR potentiellement tronqué en plein
-// milieu d'un numéro de tome (le "1" de "t.1)" coupé juste après "t."). Ne
-// jamais l'activer quand cb est le texte non-fiable (l'OCR) : un chiffre qui
-// continue là pourrait être un tome différent (ex. "Tome 1" vs "Tome 10").
-function isPrefixMatch(ca, cb, allowDigitBoundary) {
-  if (!cb || cb.length >= ca.length) return false;
-  if (!ca.startsWith(cb)) return false;
-  const nextChar = ca[cb.length];
-  if (/[a-z]/i.test(nextChar)) return false;
-  if (/[0-9]/.test(nextChar) && !allowDigitBoundary) return false;
-  return true;
-}
-// Score de qualité pour choisir, parmi plusieurs détections d'un même livre
-// sur des captures différentes, laquelle garder : titre/auteur non vides
-// d'abord, texte le plus long ensuite (proxy d'un OCR plus complet), taille
-// de la couverture en dernier (proxy d'un cadrage plus complet).
-function qualityScore(d) {
-  let s = 0;
-  if (d.title) s += 1000 + d.title.length;
-  if (d.author) s += 500;
-  s += (d.w * d.h) / 1000;
-  return s;
-}
-
-// Source de vérité désormais UNIQUEMENT le data/books.json distant
-// (branche configurée, via l'API GitHub) — plus jamais la copie locale sur
-// disque, qui peut diverger de ce qui existe réellement sur le dépôt (c'est
-// exactement ce qui a causé les couvertures orphelines du 2026-08-02). Sans
-// connexion GitHub, aucune comparaison n'est possible : tout sera classé
-// "nouveau" plutôt que de risquer une comparaison à des données obsolètes.
 async function fetchExistingBooks() {
-  const cfg = window.MarinaSync ? MarinaSync.getGitHubConfig() : null;
-  if (!cfg || !cfg.token) {
-    console.warn("Non connecté à GitHub : impossible de comparer à la bibliothèque distante, tout sera classé \"nouveau\".");
-    return [];
-  }
-  try {
-    const current = await MarinaSync.githubGetFile(cfg);
-    return current.books;
-  } catch (e) {
-    console.warn("Lecture du books.json distant impossible :", e.message);
-    return [];
-  }
-}
-
-// Cherche le meilleur livre déjà présent correspondant à une détection, et
-// qualifie la confiance de la correspondance :
-// - "certain" si l'une de ces deux conditions est vraie :
-//     a) titre normalisé strictement égal, et auteur égal (ou l'un des deux
-//        manque, ce qui n'est pas un conflit) ;
-//     b) auteur normalisé STRICTEMENT identique des deux côtés (les deux
-//        renseignés), ET le titre stocké est un préfixe strict du titre OCR
-//        (cas Kindle très fréquent : sous-titre / mention édition / série-tome
-//        ajoutés par Kindle après le vrai titre — jamais l'inverse).
-// - "uncertain" : ne matche que par inclusion partielle (titre ou auteur),
-//                 donc plausible mais pas fiable -> ne jamais agir seul.
-// Un conflit de tome élimine le candidat, quelle que soit la confiance par
-// ailleurs (même garde-fou tomeConflict que pour sameBookForMerge, la fusion inter-captures) ;
-// si le tome n'est détecté que d'un côté, il ne bloque jamais la correspondance.
-// Le préfixe joue dans les deux sens : soit le titre stocké est un préfixe du
-// titre OCR (Kindle ajoute du texte après le vrai titre — série/tome, édition,
-// tagline), soit c'est l'inverse, le titre OCR est un préfixe du titre stocké
-// (l'OCR a été tronqué avant la fin, ex. un numéro de tome coupé en plein
-// milieu : "... t." au lieu de "... t.1)"). Si plusieurs livres du même
-// auteur qualifient en "certain" pour la même détection (un titre préfixe
-// d'un autre chez le même auteur — cas réel trouvé dans la bibliothèque, ex.
-// "Player (version française)" / "... : seconde chance"), on choisit celui
-// dont le titre stocké a la longueur la plus proche du titre OCR (le moins de
-// texte à expliquer par un ajout ou une troncature), jamais le premier
-// rencontré.
-function matchExisting(entry, existingBooks) {
-  let uncertain = null;
-  const certainCandidates = [];
-  for (const b of existingBooks) {
-    if (tomeConflict(entry.tome, b.tome)) continue;
-    const ca = protoClean(entry.title), cb = protoClean(b.title);
-    if (!ca || !cb) continue;
-    const titleExact = ca === cb;
-    const titleFuzzy = !titleExact && ca.length > 8 && (ca.includes(cb) || cb.includes(ca));
-    // Sens 1 : le titre stocké (cb) est préfixe du titre OCR (ca) — rallonge
-    // Kindle après le vrai titre. Sens 2 : le titre OCR (ca) est préfixe du
-    // titre stocké (cb) — l'OCR a été tronqué avant la fin ; un chiffre juste
-    // après est toléré (fin de numéro de tome coupée), le titre stocké étant
-    // la donnée de confiance ici.
-    const prefixMatch = isPrefixMatch(ca, cb, false) || isPrefixMatch(cb, ca, true);
-    if (!titleExact && !titleFuzzy && !prefixMatch) continue;
-    const aa = entry.author ? protoClean(entry.author) : "";
-    const ba = b.author ? protoClean(b.author) : "";
-    const authorExact = !aa || !ba || aa === ba;
-    const authorStrictExact = !!aa && !!ba && aa === ba;
-    const authorFuzzy = !authorExact && aa.length > 3 && ba.length > 3 && (aa.includes(ba) || ba.includes(aa));
-    if (!authorExact && !authorFuzzy) continue;
-    // debug : purement informatif (export diagnostic), n'influence aucune décision.
-    const debug = { ca, cb, titleExact, titleFuzzy, prefixMatch, aa, ba, authorExact, authorFuzzy };
-    if ((titleExact && authorExact) || (prefixMatch && authorStrictExact)) {
-      certainCandidates.push({ book: b, debug, lengthDiff: Math.abs(ca.length - cb.length) });
-      continue;
-    }
-    if (!uncertain) uncertain = { book: b, confidence: "uncertain", debug };
-  }
-  if (certainCandidates.length) {
-    certainCandidates.sort((x, y) => x.lengthDiff - y.lengthDiff);
-    const best = certainCandidates[0];
-    return { book: best.book, confidence: "certain", debug: best.debug };
-  }
-  return uncertain;
-}
-
-// Fusion entre captures (deux détections brutes qui seraient le même livre vu
-// deux fois, ex. captures qui se chevauchent). Nettement plus conservatrice
-// que matchExisting ci-dessus : fusionner à tort perd définitivement un livre
-// (l'un des deux est éliminé), alors qu'un doublon non fusionné se corrige
-// d'un clic. Règle :
-//  1) titre ET auteur strictement identiques après normalisation -> fusion.
-//  2) sinon, rallonge Kindle plausible (l'un des titres est un préfixe strict
-//     de l'autre, à une frontière de mot) acceptée UNIQUEMENT si l'auteur est
-//     strictement identique des deux côtés (jamais une simple inclusion).
-//  3) tomes renseignés des deux côtés et différents -> jamais fusionner
-//     (tomeConflict, vérifié en premier).
-//  4) si chacune des deux détections correspond, avec certitude
-//     (matchExisting = "certain"), à un livre DIFFÉRENT de la bibliothèque
-//     existante (cas réel trouvé : "Player (version française)" / "...:
-//     seconde chance" chez Estelle Every) -> ne jamais fusionner, même en cas
-//     de préfixe : ce sont deux vrais livres, pas une rallonge Kindle.
-//  5) dans le doute -> ne pas fusionner : un doublon temporaire est bien
-//     moins grave qu'un livre perdu par fusion.
-function sameBookForMerge(a, b, existingBooks) {
-  if (tomeConflict(a.tome, b.tome)) return false;
-  const ca = protoClean(a.title), cb = protoClean(b.title);
-  if (!ca || !cb) return false;
-  const aa = protoClean(a.author), ba = protoClean(b.author);
-
-  if (ca === cb && aa === ba) return true;
-  if (ca === cb) return false; // titre exact mais auteurs différents (ou l'un manquant) -> trop risqué
-
-  const prefix = isPrefixMatch(ca, cb) || isPrefixMatch(cb, ca);
-  if (!prefix || !aa || !ba || aa !== ba) return false;
-
-  if (existingBooks && existingBooks.length) {
-    const matchA = matchExisting(a, existingBooks);
-    const matchB = matchExisting(b, existingBooks);
-    if (matchA && matchA.confidence === "certain" && matchB && matchB.confidence === "certain") {
-      const idA = protoClean(matchA.book.title) + "|" + protoClean(matchA.book.author);
-      const idB = protoClean(matchB.book.title) + "|" + protoClean(matchB.book.author);
-      if (idA !== idB) return false; // deux vrais livres distincts et déjà connus -> jamais fusionner
-    }
-  }
-  return true;
-}
-
-// Détecte le bruit d'interface Kindle (onglets de navigation de l'appli lus
-// par erreur comme s'ils étaient le titre/auteur d'un livre — cas réel trouvé
-// le 2026-08-02 : auteur "PLUS", auteur "BIBLIOTHÈQUE PLUS"). Volontairement
-// étroit pour ne jamais éliminer un vrai livre :
-//  1) le champ auteur (ou le titre) est composé UNIQUEMENT de mots de cette
-//     liste fermée d'éléments d'interface connus ;
-//  2) filet de sécurité générique : le champ auteur brut n'a AUCUNE minuscule
-//     (les onglets Kindle sont toujours en capitales ; un vrai nom d'auteur,
-//     tel qu'affiché dans la liste Kindle, ne l'est jamais) — même principe
-//     que le filtrage de bruit déjà utilisé pour l'import Kindle texte.
-const KINDLE_UI_WORDS = new Set([
-  "accueil", "bibliotheque", "biblotheque", "plus", "boutique", "recherche",
-  "rechercher", "decouvrir", "reglages", "parcourir", "retour", "recemment", "ajoutes",
-]);
-function isKindleUiNoise(title, author) {
-  const wordsOf = s => protoClean(s).split(/\s+/).filter(Boolean);
-  const allUiWords = s => { const w = wordsOf(s); return w.length > 0 && w.every(x => KINDLE_UI_WORDS.has(x)); };
-  if (allUiWords(author) || allUiWords(title)) return true;
-  if (author && author.trim().length <= 40 && !/[a-z]/.test(author) && /[A-ZÀ-Ý]/.test(author)) return true;
-  return false;
-}
-
-// Fusionne toutes les détections (toutes captures) en livres uniques, compare
-// à la bibliothèque existante et range chaque livre dans l'une de 4
-// catégories, chacune avec une action par défaut distincte. Ne modifie
-// jamais books.json ni le dépôt : "action" ne vit qu'en mémoire ici.
-//   - "new"                : absent de la bibliothèque -> "add" (coché).
-//   - "existing-no-cover"   : déjà présent, sans couverture -> "add-cover" (coché).
-//   - "existing-has-cover"  : déjà présent, couverture déjà là -> "none" (à cocher
-//                             manuellement pour "replace-cover").
-//   - "uncertain"           : correspondance floue -> "none", validation manuelle requise.
-// Le filtre anti-bruit s'applique ICI (pas seulement à l'OCR fraîche) pour
-// protéger aussi les détections déjà en cache dans IndexedDB (bouton
-// "Rejouer le matching"), sans avoir à refaire l'OCR.
-function mergeAndDedupe(detections, existingBooks) {
-  const usable = detections.filter(d => !isKindleUiNoise(d.title, d.author));
-  const complete = usable.filter(d => !d.partial);
-  const partialOnly = usable.filter(d => d.partial);
-
-  const groups = [];
-  for (const det of complete) {
-    const target = groups.find(g => sameBookForMerge(g.best, det, existingBooks));
-    if (target) {
-      target.items.push(det);
-      if (qualityScore(det) > qualityScore(target.best)) target.best = det;
-    } else {
-      groups.push({ items: [det], best: det });
-    }
-  }
-
-  // Une couverture partielle qui correspond déjà à un livre complet ailleurs
-  // n'apporte rien de plus : on l'ignore silencieusement. Sinon, elle reste
-  // seule au dossier, signalée et jamais actionnable.
-  const orphanPartials = partialOnly.filter(p => !groups.some(g => sameBookForMerge(g.best, p, existingBooks)));
-
-  const rawList = groups.map(g => ({
-    ...g.best,
-    mergedCount: g.items.length,
-    mergedFromCaptures: [...new Set(g.items.map(i => i.captureIndex))].sort((a, b) => a - b),
-  })).concat(orphanPartials.map(p => ({
-    ...p, mergedCount: 1, mergedFromCaptures: [p.captureIndex],
-  })));
-
-  return rawList.map(entry => {
-    if (entry.partial) {
-      return { ...entry, category: "partial", existingMatch: null, action: "none" };
-    }
-    const match = matchExisting(entry, existingBooks);
-    if (!match) {
-      return { ...entry, category: "new", existingMatch: null, action: "add" };
-    }
-    if (match.confidence === "uncertain") {
-      return { ...entry, category: "uncertain", existingMatch: match.book, matchDebug: match.debug, action: "none" };
-    }
-    const category = match.book.cover ? "existing-has-cover" : "existing-no-cover";
-    return { ...entry, category, existingMatch: match.book, action: category === "existing-no-cover" ? "add-cover" : "none" };
-  });
+  const { books, error } = await KindleCaptures.fetchExistingBooks();
+  if (error) console.warn("Comparaison à la bibliothèque distante impossible :", error);
+  return books;
 }
 
 // ---------------------------------------------------------------------------
@@ -850,43 +456,21 @@ async function analyzeAllCaptures() {
   const opts = readOpts();
   const isList = els.layoutMode.value === "list";
 
-  const worker = await Tesseract.createWorker("fra");
   try {
-    for (let ci = 0; ci < capturedImages.length; ci++) {
-      const { img, name } = capturedImages[ci];
-      els.progress.textContent = `Capture ${ci + 1}/${capturedImages.length} : détection…`;
-
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const gray = toGrayscale(imageData);
-      const boxes = isList
-        ? detectList(gray, canvas.width, canvas.height, opts)
-        : detectGrid(gray, canvas.width, canvas.height, opts);
-
-      renderCaptureOverlay(ci, img, boxes, name);
-
-      for (let bi = 0; bi < boxes.length; bi++) {
-        const b = boxes[bi];
-        let title = "", author = "";
-        if (!b.partial && b.textRegion && b.textRegion.w > 0) {
-          els.progress.textContent = `Capture ${ci + 1}/${capturedImages.length} : OCR livre ${bi + 1}/${boxes.length}…`;
-          const tc = document.createElement("canvas");
-          tc.width = b.textRegion.w;
-          tc.height = b.textRegion.h;
-          tc.getContext("2d").drawImage(img, b.textRegion.x, b.textRegion.y, b.textRegion.w, b.textRegion.h, 0, 0, b.textRegion.w, b.textRegion.h);
-          const { data } = await worker.recognize(tc);
-          ({ title, author } = parseOcrText(data.text || ""));
-        }
-        const { series, tome } = extractSeriesTome(title);
-        allDetections.push({ captureIndex: ci, x: b.x, y: b.y, w: b.w, h: b.h, partial: b.partial, title, author, series, tome });
-      }
-    }
-  } finally {
-    await worker.terminate();
+    allDetections = await KindleCaptures.analyzeCaptures(capturedImages, {
+      layout: isList ? "list" : "grid",
+      opts,
+      onBoxes: (ci, boxes) => renderCaptureOverlay(ci, capturedImages[ci].img, boxes, capturedImages[ci].name),
+      onProgress: ({ capture, captures, book, books }) => {
+        els.progress.textContent = book
+          ? `Capture ${capture}/${captures} : OCR livre ${book}/${books}…`
+          : `Capture ${capture}/${captures} : détection…`;
+      },
+    });
+  } catch (err) {
+    els.progress.textContent = `Échec : ${err.message}`;
+    els.analyzeAllBtn.disabled = false;
+    return;
   }
 
   els.progress.textContent = "Comparaison à ta bibliothèque…";

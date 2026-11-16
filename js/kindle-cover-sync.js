@@ -56,7 +56,7 @@
           tome: entry.tome ? Number(entry.tome) : "",
           year: new Date().getFullYear(),
           dateAdded: new Date().toISOString().slice(0, 10),
-          status: "lu",
+          status: entry.status || "lu",
           missing: false,
           notes: "",
           cover,
@@ -87,6 +87,9 @@
     opts = opts || {};
     const res = await fetch(`${GH_API}${path}`, {
       method: opts.method || "GET",
+      // Jamais de réponse en cache : une branche ou un books.json périmés
+      // feraient écrire un commit basé sur un état dépassé.
+      cache: "no-store",
       headers: {
         "Authorization": `Bearer ${cfg.token}`,
         "Accept": "application/vnd.github+json",
